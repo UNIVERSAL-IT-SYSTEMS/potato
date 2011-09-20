@@ -1,0 +1,115 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    background: #eef;
+    color: black;
+    padding: 1em 2em;
+}
+
+a:link, a:visited, a:active, a:hover {
+    text-decoration: none;
+}
+
+div#footer {
+    font-size: 0.8em;
+    margin-top: 1em;
+    text-align: right;
+    border-top: 1px solid grey;
+    padding-top: 1em;
+}
+
+div#menu {
+    border-radius: 2em 0em 0em 0em;
+    background: white url(images/padlock2.png) no-repeat 1em 1em;
+    float: left;
+    width: 10em;
+    border: 1px solid grey;
+    padding: 10em 0em 1em 0em;
+    margin-bottom: 1em;
+    font-size: 0.9em;
+}
+
+div#menu a {
+    display: block;
+    font-weight: bold;
+    padding: 0em 1em;
+}
+div#menu a:hover {
+    background: #77f;
+    color: white;
+}
+
+div#content {
+    border-radius: 0em 3em 0em 0em;
+    margin-left: 10em;
+    border: 1px solid grey;
+    padding: 0.5em 2em;
+    background: white;
+    max-width: 45em;
+}
+
+input.iesux {
+    width: 10em;
+}
+
+.msgInfo, .msgWarning, .msgCritical {
+    border-radius: 0em 2em 0em 0em;
+    padding: 1em;
+    font-weight: bold;
+    margin: 1.5em 0em 2em 0em;
+    padding-left: 80px;
+    min-height: 48px;
+}
+
+.msgInfo {
+    background: #eee url(images/msgInfo.png) no-repeat 1em 1em;
+    border: 1px solid grey;
+}
+
+.msgWarning {
+    background: #fcc url(images/msgWarning.png) no-repeat 1em 1em;
+    border: 1px solid red;
+}
+
+.msgCritical {
+    background: #fcc url(images/msgCritical.png) no-repeat 1em 1em;
+    border: 1px solid red;
+}
+
+
+.qrcode {
+    float:right;
+}
+
+h1, h2, h3 {
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 2em;
+}
+h2 {
+    font-size: 1.6em;
+}
+h3 {
+    font-size: 1.4em;
+}
+
+
+th {
+    text-align: right;
+}
+
+table.userlist tr:nth-child(2n-1) {
+	background-color: #f4f4f4;
+}
+
+table.userlist td {
+    padding: 0.2em 2em 0.2em 1em;
+    min-width: 2em;
+}
+
+table.userlist a img {
+    border: 0px;
+}
+
