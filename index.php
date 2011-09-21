@@ -117,7 +117,7 @@ if ( $user->hasToken() ) {
 ?>
 
 <div id="secret" <?php echo $user->hasToken() ? 'style="display: none;"' : '' ?>>
-    <form method="post" action="index.php?userName=<?php echo htmlentities($user->userName) ?>"> 
+    <form method="post" action="index.php?userName=<?php echo urlencode($user->userName) ?>"> 
         <table>
             <tr>
                 <th>Secret:</th>
@@ -138,7 +138,7 @@ if ( $user->hasPin() ) {
 }
 ?>
 <div id="pin" <?php echo ($user->hasPin() || !$user->hasToken()) ? 'style="display: none;"' : '' ?>>
-    <form method="post" action="index.php?userName=<?php echo htmlentities($user->userName) ?>"> 
+    <form method="post" action="index.php?userName=<?php echo urlencode($user->userName) ?>"> 
         <table>
             <tr>
                 <th>Pin:</th>
