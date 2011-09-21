@@ -60,11 +60,11 @@ include 'header.php';
 <table> 
     <tr> 
         <th>Username:</th> 
-        <td><input type="text" name="loginUserName" size="10" id="focusme" class="iesux" /></td> 
+        <td><input type="text" name="loginUserName" size="10" maxlength="16" value="<?php echo isset($loginUserName) ? htmlentities($loginUserName) : "" ?>" id="focusUserName" class="iesux" /></td> 
     </tr>
     <tr>
         <th>Password:</th>
-        <td><input type="password" name="loginPassword" value="" size="10" class="iesux" /></td>
+        <td><input type="password" name="loginPassword" value="" size="10" class="iesux" id="focusPassword" /></td>
     </tr> 
     <tr> 
         <td></td>
@@ -75,7 +75,7 @@ include 'header.php';
 
 <script type="text/javascript">
     function setfocus() {
-        domUserName = document.getElementById("focusme");
+        domUserName = document.getElementById("<?php echo isset($loginUserName) ? "focusPassword" : "focusUserName" ?>");
         domUserName.focus();
     }
     window.onload=setfocus;
