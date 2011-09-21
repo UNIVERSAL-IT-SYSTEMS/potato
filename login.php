@@ -34,8 +34,7 @@ if ( !empty($_POST['loginUserName']) ) {
     $loginPassword = $_POST['loginPassword'];
 
     try {
-        if ( true ) {
-        // if( pam_auth( $loginUserName, $loginPassword ) ) {
+        if( pam_auth( $loginUserName, $loginPassword ) ) {
             $posixGroupUser = posix_getgrnam($groupUser);
             if ( in_array( $loginUserName, $posixGroupUser['members'] ) ) {
                 $_SESSION['currentUser'] = $loginUserName;

@@ -26,10 +26,10 @@
  */
 
 // The POSIX group which has admin rights
-$groupAdmin = "markus";
+$groupAdmin = "dadm";
 
 // The POSIX group to which users must belong
-$groupUser = "markus";
+$groupUser = "imtec-world";
 
 // Database configuration
 $dbServer = 'localhost';

@@ -40,12 +40,12 @@ if (isset($_POST['action'])) {
         switch ($_POST['action']) {
             case 'delete':
                 $user->delete();
-                $_SESSION['msgInfo'] = 'User account "' . $user->userName . '" deleted.';
+                $_SESSION['msgInfo'] = 'User account "' . htmlentities($user->userName) . '" deleted.';
                 break;
 
             case 'unlock':
                 $user->unlock();
-                $_SESSION['msgInfo'] = 'User account "' . $user->userName . '" unlocked.';
+                $_SESSION['msgInfo'] = 'User account "' . htmlentities($user->userName) . '" unlocked.';
                 break;
         }
 
@@ -67,7 +67,7 @@ foreach ($dbh->query($sql) as $row) {
 ?>
     <tr>
         <td>
-            <a href="index.php?userName=<?php echo htmlentities($row['userName']) ?>">
+            <a href="index.php?userName=<?php echo urlencode($row['userName']) ?>">
                 <?php echo htmlentities($row['userName']) ?>
             </a>
         </td>
@@ -83,7 +83,7 @@ foreach ($dbh->query($sql) as $row) {
 ?>
         </td>
         <td>
-            <a href="logviewer.php?userName=<?php echo htmlentities($row['userName']) ?>">
+            <a href="logviewer.php?userName=<?php echo urlencode($row['userName']) ?>">
                 <img src="images/logviewer.png" alt="View logs" title="View logs" />
             </a>
         </td>

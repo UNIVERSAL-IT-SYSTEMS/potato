@@ -35,8 +35,9 @@ if ( ! $currentUser->isAdmin() ) {
 
 include 'header.php';
 
+echo "<h1>Log viewer: " . htmlentities($_GET['userName']) . "</h1>\n";
+
 ?>
-<h1>Log viewer</h1>
 <table class="userlist" cellpadding="0" cellspacing="0">
 
 <?php

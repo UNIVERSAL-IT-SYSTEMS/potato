@@ -35,11 +35,11 @@ if ( isset($_GET['userName']) ) {
     # Only allow edit of oneself, unless you're an admin
     if ( ! $currentUser->isAdmin() 
          && $userName != $currentUser->userName ) {
-        Header( "Location:index.php" );
-        exit;
+        $_SESSION['msgWarning'] = "You are not an administrator. You are only allowed to edit your own account.";
+        $userName = $currentUser->userName;
     }
 } else {
-    $userName = $_SESSION['currentUser'];
+    $userName = $currentUser->userName;
 }
 try {
     $user->fetch($userName);
@@ -67,8 +67,16 @@ if ( isset($_POST['action']) ) {
 include 'header.php';
 ?>
 
-<h1>User settings</h1>
 
+<?php
+
+if ( $currentUser->userName != $userName ) {
+    // Editing someone else. Add some context, and ignore the detailed instructions
+    echo "<h1>User settings: " . htmlentities($userName) . "</h1>";
+} else {
+
+?>
+<h1>User settings</h1>
 <div class="qrcode">
     <img src="images/droidotp-qr.png" />
 </div>
@@ -88,7 +96,9 @@ additional clients.
 
         <p>Once you have properly installed and configured your app, initialize it
 and register its secret here.</p>
-
+<?php
+}
+?>
 
 <script type="text/javascript">
 function toggleVisibility( sName ) {

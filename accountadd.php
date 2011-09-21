@@ -42,7 +42,7 @@ print "<h1>Add account</h1>\n";
     <table> 
         <tr> 
             <th>Username:</th> 
-            <td><input id="focusme" type="text" name="userName" value="" size="20" /></td> 
+            <td><input id="focusme" type="text" name="userName" value="" size="20" maxlength="16" /></td> 
             <td><input id="submit" type="submit" value="Add account"></td>
         </tr> 
     </table>
