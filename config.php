@@ -3,7 +3,7 @@
  * Mobile OTP self-service station and administration console
  * Version 1.0
  * 
- * PHP Version 5 with PDO, MySQL, LDAP support
+ * PHP Version 5 with PDO, MySQL, and PAM support
  * 
  * Written by Markus Berg
  *   email: markus@kelvin.nu
