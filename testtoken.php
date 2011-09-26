@@ -45,30 +45,37 @@ if ( ! empty($_POST['testPassPhrase']) ) {
             $posixGroupUser = posix_getgrnam($groupUser);
             if ( ! in_array( $testUserName, $posixGroupUser['members'] ) ) {
                 $_SESSION['msgWarning'] = "FAIL! User is not a member of the \"${groupUser}\" access group.";
-                $user->invalidLogin($testPassPhrase);
+                $user->invalidLogin();
+                $user->log("Invalid login. User is not a member of ${groupUser}.");
             } elseif ( ! $user->hasPin() ) {
                 $_SESSION['msgWarning'] = "FAIL! Account has no PIN.";
-                $user->invalidLogin($testPassPhrase);
+                $user->invalidLogin();
+                $user->log("Invalid login. Account has no pin.");
             } elseif ( ! $user->hasToken() ) {
                 $_SESSION['msgWarning'] = "FAIL! Account has no token.";
-                $user->invalidLogin($testPassPhrase);
+                $user->invalidLogin();
+                $user->log("Invalid login. Account has no token.");
             } elseif ( $user->invalidLogins > 4 ) {
                 $_SESSION['msgWarning'] = "FAIL! Account locked out due to too many incorrect login attempts. Please contact the helpdesk to reset your account.";
-                $user->invalidLogin($testPassPhrase);
+                $user->invalidLogin();
+                $user->log("Invalid login. Account locked out.");
             } elseif ( $user->replayAttack($testPassPhrase)) {
                 $_SESSION['msgWarning'] = "FAIL! Passphrase has been used before, and is no longer valid.";
-                $user->invalidLogin($testPassPhrase);
+                $user->invalidLogin();
+                $user->log("Invalid login. OTP replay.", $testPassPhrase);
             } else {
                 $_SESSION['msgInfo'] = "ACCEPT! Login was successful.";
                 $user->validLogin($testPassPhrase);
             }
         } else {
             $_SESSION['msgWarning'] = "FAIL! Login was unsuccessful.";
-            $user->invalidLogin($testPassPhrase);
+            $user->invalidLogin();
+            $user->log("Invalid login.");
         }
     } catch (NoSuchUserException $ignore) {
         $_SESSION['msgWarning'] = "FAIL! No token registered for this user.";
-        $user->invalidLogin($testPassPhrase);
+        $user->invalidLogin();
+        $user->log("Invalid login. Account has no token.");
     }
 }
 

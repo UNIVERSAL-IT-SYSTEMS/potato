@@ -92,21 +92,24 @@ class User {
         return ( !empty($this->pin) );
     }
 
-    function invalidLogin($passPhrase) {
+    function invalidLogin() {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = invalidLogins+1 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
-
-        $ps = $dbh->prepare("INSERT INTO Log (userName, passPhrase, message) VALUES (:userName, :passPhrase, :message)");
-        $ps->execute(array( ":userName" => $this->userName,
-                            ":passPhrase" => $passPhrase,
-                            ":message" => "Invalid login"));
     }
 
     function isAdmin() {
         global $groupAdmin;
         $groupInfo = posix_getgrnam($groupAdmin);
         return (in_array($this->userName, $groupInfo['members']));
+    }
+
+    function log($message, $passPhrase = "") {
+        global $dbh;
+        $ps = $dbh->prepare("INSERT INTO Log (userName, passPhrase, message) VALUES (:userName, :passPhrase, :message)");
+        $ps->execute(array( ":userName" => $this->userName,
+                            ":passPhrase" => $passPhrase,
+                            ":message" => $message));
     }
 
     function replayAttack($passPhrase) {
@@ -135,20 +138,14 @@ class User {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = 0 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
-        $ps = $dbh->prepare("INSERT INTO Log (userName, message) VALUES (:userName, :message)");
-        $ps->execute(array( ":userName" => $this->userName,
-                            ":message" => "Account unlocked"));
+        $this->log("Account unlocked");
     }
 
     function validLogin($passPhrase) {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = 0 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
-
-        $ps = $dbh->prepare("INSERT INTO Log (userName, passPhrase, message) VALUES (:userName, :passPhrase, :message)");
-        $ps->execute(array( ":userName" => $this->userName,
-                            ":passPhrase" => $passPhrase,
-                            ":message" => "Success"));
+        $this->log("Success", $passPhrase);
     }
 }
 ?>

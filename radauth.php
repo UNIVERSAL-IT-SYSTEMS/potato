@@ -39,21 +39,30 @@ try {
         $posixGroupUser = posix_getgrnam($groupUser);
         if ( ! in_array( $userName, $posixGroupUser['members'] ) ) {
             // User not member of access group
+            $user->invalidLogin();
+            $user->log("Invalid login. Not member of ${groupUser}.");
         } elseif ( ! $user->hasPin() ) {
             // Account has no PIN
+            $user->invalidLogin();
+            $user->log("Invalid login. No pin registered to this user.");
         } elseif ( ! $user->hasToken() ) {
             // Account has no token
+            $user->invalidLogin();
+            $user->log("Invalid login. No token registered to this user.");
         } elseif ( $user->invalidLogins > 4 ) {
             // Account locked out
+            $user->invalidLogin();
+            $user->log("Invalid login. Account locked out.");
         } elseif ( $user->replayAttack($passPhrase)) {
             // Replay attack
+            $user->invalidLogin();
+            $user->log("Invalid login. OTP replay", $passPhrase);
         } else {
             $user->validLogin($passPhrase);
             echo "ACCEPT\n";
             exit(0);
         }
     }
-    $user->invalidLogin($passPhrase);
 } catch (NoSuchUserException $ignore) {
     // No such user
 }
