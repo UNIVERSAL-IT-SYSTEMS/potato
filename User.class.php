@@ -66,9 +66,6 @@ class User {
         $ps->execute(array( ":userName" => $this->userName,
                             ":secret" => $this->secret,
                             ":pin" => $this->pin));
-        $ps = $dbh->prepare("INSERT INTO Log (userName, message) VALUES (:userName, :message)");
-        $ps->execute(array( ":userName" => $this->userName,
-                            ":message" => "Secret or pin initialized"));
     }
 
     function delete() {

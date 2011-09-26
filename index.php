@@ -58,7 +58,16 @@ if ( isset($_POST['action']) ) {
 
     if ( empty($user->errors) ) {
         $user->save();
-        $_SESSION['msgInfo'] = "Changes saved";
+        switch ($_POST['action']) {
+            case "updatePin":
+                $_SESSION['msgInfo'] = "New PIN saved";
+                $user->log("PIN initialized");
+                break;
+            case "updateSecret":
+                $_SESSION['msgInfo'] = "New token secret saved";
+                $user->log("Token initialized");
+                break;
+        }
     } else {
         $_SESSION['msgWarning'] = $user->getErrors();
     }

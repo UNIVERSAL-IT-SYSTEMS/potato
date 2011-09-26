@@ -70,7 +70,7 @@ if ( ! empty($_POST['testPassPhrase']) ) {
         } else {
             $_SESSION['msgWarning'] = "FAIL! Login was unsuccessful.";
             $user->invalidLogin();
-            $user->log("Invalid login.");
+            $user->log("Invalid login");
         }
     } catch (NoSuchUserException $ignore) {
         $_SESSION['msgWarning'] = "FAIL! No token registered for this user.";
