@@ -1,0 +1,12 @@
+DEFAULT Suffix == ".guest"
+	Login-IP-Host = klingon.sectra.net,
+	Class = "External-users"
+
+DEFAULT Group == "dadm", Auth-Type = Accept
+	Class = "DCSNET-users"
+
+DEFAULT Group == "DCS-alla", Auth-Type = Accept
+	Class = "DCSNET-users"
+
+DEFAULT Auth-Type = Accept
+	Class = "Remoteaccess"
