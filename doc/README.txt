@@ -1,0 +1,49 @@
+This is a standard CentOS 5.7 installation, with the following additional packages:
+
+php53-common
+php53-process
+php53
+php53-pdo
+php53-mysql
+php53-cli
+freeradius2
+httpd
+mysql-server
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+Unless you like tinkering, begin by deactivating SELinux.
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+When you start mysql for the first time, you're recommended to harden the
+installation by removing the anon users and deleting test tables. Go ahead and
+do that.
+
+Copy the mossad package to /var/www/html
+
+Make configuration changes in config.php, mossad_schema.sql (change the
+password)
+
+import the database schema by issuing the command:
+mysql -u root -p < mossad_schema.sql
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+You should now be able to log into the web interface, register tokens and
+pins. You should also be able to verify the token functionality from the web
+interface.
+
+Make sure everything works before proceeding to the next step
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+FreeRadius
+
+enter /etc/raddb/cert and execute "./bootstrap" as the radius user
+
+The following configuration files need alteration:
+/etc/raddb/users
+/etc/raddb/radiusd.conf
+/etc/raddb/sites-available/default
+
