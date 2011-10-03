@@ -28,9 +28,13 @@
 include "config.php";
 include "User.class.php";
 
-$userName = $argv[1];
-$passPhrase = $argv[2];
+$options = getopt("u:p:d:c:n:");
 
+$userName = $options["u"];
+$passPhrase = $options["p"];
+
+$mschapChallenge = $options["c"];
+$mschapResponse = $options["n"];
 
 try {
     $user = new User();
