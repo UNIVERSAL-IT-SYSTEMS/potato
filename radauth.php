@@ -62,6 +62,9 @@ try {
             echo "ACCEPT\n";
             exit(0);
         }
+    } else {
+        $user->invalidLogin();
+        $user->log("Invalid login");
     }
 } catch (NoSuchUserException $ignore) {
     // No such user
