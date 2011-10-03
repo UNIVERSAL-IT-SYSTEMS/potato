@@ -28,6 +28,30 @@
 include "config.php";
 include "User.class.php";
 
+function NTLMHash( $input ) {
+    // Convert the password from UTF8 to UTF16 (little endian)
+    $Input=iconv('UTF-8', 'UTF-16LE', $input);
+
+    $MD4Hash=hash('md4', $input);
+
+    // Make it uppercase, not necessary, but it's common to do so with NTLM hashes
+    $NTLMHash=strtoupper($MD4Hash);
+
+    return($NTLMHash);
+}
+
+function ntlm_hmac_md5($key, $msg) {
+    $blocksize = 64;
+    if (strlen($key) > $blocksize)
+        $key = pack('H*', md5($key));
+
+    $key = str_pad($key, $blocksize, "\0");
+    $ipadk = $key ^ str_repeat("\x36", $blocksize);
+    $opadk = $key ^ str_repeat("\x5c", $blocksize);
+    return pack('H*', md5($opadk.pack('H*', md5($ipadk.$msg))));
+}
+
+
 $options = getopt("u:p:d:c:n:");
 
 $userName = $options["u"];
@@ -35,6 +59,8 @@ $passPhrase = $options["p"];
 
 $mschapChallenge = $options["c"];
 $mschapResponse = $options["n"];
+
+echo NTLMHash("asdf");
 
 try {
     $user = new User();
