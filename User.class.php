@@ -33,6 +33,7 @@ class User {
     protected $pin;
     public $invalidLogins;
     public $errors = array();
+    private $passPhrase;
 
     function fetch($userName) {
         global $dbh;
@@ -52,12 +53,36 @@ class User {
     function checkMOTP ($passPhrase) {
         $now = intval( gmdate("U") / 10 );
         $maxDrift = 180/10;
-        $validPasswords = array();
+        $validOtps = array();
         for ( $time = $now - $maxDrift ; $time <= $now + $maxDrift ; $time++ ) {
             $otp = substr( md5($time . $this->secret . $this->pin ), 0, 6);
-            array_push($validPasswords, $otp);
+            array_push($validOtps, $otp);
         }
-        return (in_array($passPhrase, $validPasswords));
+        if ( $i = array_search($passPhrase, $validOtps ) ) {
+            $this->passPhrase = $validOtps[$i];
+            return true;
+        }
+        return false;
+    }
+
+    // perform mschapv2 authentication
+    function checkMOTPmschap ($challenge, $peerChallenge, $response) {
+        $now = intval( gmdate("U") / 10 );
+        $maxDrift = 180/10;
+        $validPasswords = array();
+        $validOtps = array();
+        for ( $time = $now - $maxDrift ; $time <= $now + $maxDrift ; $time++ ) {
+            $otp = substr( md5($time . $this->secret . $this->pin ), 0, 6);
+            $resp = GenerateNTResponse($challenge, $peerChallenge, $this->userName, $otp);
+            array_push($validOtps, $otp);
+            array_push($validPasswords, $resp);
+        }
+        // Find out which otp was used in order to prevent replay attacks
+        if ( $i = array_search($response, $validPasswords ) ) {
+            $this->passPhrase = $validOtps[$i];
+            return true;
+        }
+        return false;
     }
 
     function save() {
@@ -101,19 +126,19 @@ class User {
         return (in_array($this->userName, $groupInfo['members']));
     }
 
-    function log($message, $passPhrase = "") {
+    function log($message) {
         global $dbh;
         $ps = $dbh->prepare("INSERT INTO Log (userName, passPhrase, message) VALUES (:userName, :passPhrase, :message)");
         $ps->execute(array( ":userName" => $this->userName,
-                            ":passPhrase" => $passPhrase,
+                            ":passPhrase" => $this->passPhrase,
                             ":message" => $message));
     }
 
-    function replayAttack($passPhrase) {
+    function replayAttack() {
         global $dbh;
         $ps = $dbh->prepare('SELECT * from Log where time > (now() - 360) AND userName=:userName AND passPhrase=:passPhrase AND message="Success"');
         $ps->execute(array(":userName"=>$this->userName,
-                            ":passPhrase"=>$passPhrase));
+                            ":passPhrase"=>$this->passPhrase));
 
         return ($ps->rowCount() > 0);
     }
@@ -138,11 +163,11 @@ class User {
         $this->log("Account unlocked");
     }
 
-    function validLogin($passPhrase) {
+    function validLogin() {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = 0 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
-        $this->log("Success", $passPhrase);
+        $this->log("Success");
     }
 }
 ?>

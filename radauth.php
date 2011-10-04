@@ -27,45 +27,29 @@
 
 include "config.php";
 include "User.class.php";
+include "mschap.php";
 
-function NTLMHash( $input ) {
-    // Convert the password from UTF8 to UTF16 (little endian)
-    $Input=iconv('UTF-8', 'UTF-16LE', $input);
-
-    $MD4Hash=hash('md4', $input);
-
-    // Make it uppercase, not necessary, but it's common to do so with NTLM hashes
-    $NTLMHash=strtoupper($MD4Hash);
-
-    return($NTLMHash);
-}
-
-function ntlm_hmac_md5($key, $msg) {
-    $blocksize = 64;
-    if (strlen($key) > $blocksize)
-        $key = pack('H*', md5($key));
-
-    $key = str_pad($key, $blocksize, "\0");
-    $ipadk = $key ^ str_repeat("\x36", $blocksize);
-    $opadk = $key ^ str_repeat("\x5c", $blocksize);
-    return pack('H*', md5($opadk.pack('H*', md5($ipadk.$msg))));
-}
-
-
-$options = getopt("u:p:d:c:n:");
+$options = getopt("u:p:d:c:n:q:");
 
 $userName = $options["u"];
 $passPhrase = $options["p"];
 
-$mschapChallenge = $options["c"];
-$mschapResponse = $options["n"];
-
-echo NTLMHash("asdf");
+$mschapChallenge = pack( 'H*', substr($options["c"], 2) );
+$mschapPeerChallenge = pack( 'H*', substr($options["n"], 6, 32) );
+$mschapResponse = pack( 'H*', $options["q"] );
 
 try {
     $user = new User();
     $user->fetch($userName);
-    if ( $user->checkMOTP($passPhrase) ) {
+    $loginOk = false;
+
+    if ( !empty($passPhrase) ) {
+        $loginOk = $user->checkMOTP($passPhrase);
+    } elseif ( !empty($mschapChallenge) && !empty($mschapPeerChallenge) && !empty($mschapResponse) ) {
+        $loginOk = $user->checkMOTPmschap($mschapChallenge, $mschapPeerChallenge, $mschapResponse);
+    }
+
+    if ( $loginOk ) {
         $posixGroupUser = posix_getgrnam($groupUser);
         if ( ! in_array( $userName, $posixGroupUser['members'] ) ) {
             // User not member of access group
@@ -83,12 +67,12 @@ try {
             // Account locked out
             $user->invalidLogin();
             $user->log("Invalid login. Account locked out.");
-        } elseif ( $user->replayAttack($passPhrase)) {
+        } elseif ( $user->replayAttack()) {
             // Replay attack
             $user->invalidLogin();
-            $user->log("Invalid login. OTP replay", $passPhrase);
+            $user->log("Invalid login. OTP replay");
         } else {
-            $user->validLogin($passPhrase);
+            $user->validLogin();
             echo "ACCEPT\n";
             exit(0);
         }

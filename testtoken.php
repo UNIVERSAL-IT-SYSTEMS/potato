@@ -62,10 +62,10 @@ if ( ! empty($_POST['testPassPhrase']) ) {
             } elseif ( $user->replayAttack($testPassPhrase)) {
                 $_SESSION['msgWarning'] = "FAIL! Passphrase has been used before, and is no longer valid.";
                 $user->invalidLogin();
-                $user->log("Invalid login. OTP replay.", $testPassPhrase);
+                $user->log("Invalid login. OTP replay.");
             } else {
                 $_SESSION['msgInfo'] = "ACCEPT! Login was successful.";
-                $user->validLogin($testPassPhrase);
+                $user->validLogin();
             }
         } else {
             $_SESSION['msgWarning'] = "FAIL! Login was unsuccessful.";
