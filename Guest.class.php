@@ -48,6 +48,8 @@ class Guest {
 
     function generate() {
         global $dbh;
+        $ps = $dbh->prepare("DELETE FROM Guest where userName=:userName");
+        $ps->execute(array( ":userName" => $this->userName));
         $ps = $dbh->prepare("INSERT INTO Guest (userName, password) VALUES (:userName, :password)");
         $ps->execute(array( ":userName" => $this->userName,
                             ":password" => $this->generatePassword()));
