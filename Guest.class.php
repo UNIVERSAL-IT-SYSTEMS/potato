@@ -25,7 +25,39 @@
  * 
  */
 
+class NoGuestException extends Exception { }
+
 class Guest {
+    public $userName;
+    public $password;
+    public $dateExpiration;
+
+    function fetch($userName) {
+        global $dbh;
+        $ps = $dbh->prepare("SELECT userName, password, dateCreation + interval 7 day as dateExpiration FROM Guest where userName=:userName and dateCreation>(now() - interval 7 day)" );
+        $ps->execute(array(":userName"=>$userName));
+
+        $this->userName = $userName;
+        if ( $row = $ps->fetch() ) {
+            $this->password=$row['password'];
+            $this->dateExpiration=$row['dateExpiration'];
+        } else {
+            throw new NoGuestException();
+        }
+    }
+
+    function generate() {
+        global $dbh;
+        $ps = $dbh->prepare("INSERT INTO Guest (userName, password) VALUES (:userName, :password)");
+        $ps->execute(array( ":userName" => $this->userName,
+                            ":password" => $this->generatePassword()));
+    }
+
+    function deactivate() {
+        global $dbh;
+        $ps = $dbh->prepare("DELETE FROM Guest where userName=:userName");
+        $ps->execute(array( ":userName" => $this->userName));
+    }
 
     /***
      * Function for generating simple semi-secure passwords for wifi 
@@ -38,7 +70,7 @@ class Guest {
         $aPrefix = array('a', 'aero', 'anti', 'ante', 'auto', 
                          'bi', 'bio',
                          'centi', 'cine', 'contra', 
-                         'deca', 'demo', 'duo', 'dyna', 
+                         'deca', 'demo', 'duo', 'dyna', 'dino',
                          'eco', 'ergo', 'extra', 
                          'geo', 'gyno', 
                          'hetero', 'hypo', 'kilo',
@@ -53,10 +85,10 @@ class Guest {
         // 31 suffices
         $aSuffix = array('acy', 'al', 'ance', 'ate', 'able', 
                          'dom', 
-                         'ence', 'er', 'en', 'esque', 
+                         'ence', 'er', 'en',
                          'fy', 'ful', 
                          'ment', 'ness',
-                         'ist', 'ity', 'ify', 'ize', 'ise', 'ible', 'ic', 'ical', 'icious', 'ous', 'ish', 'ive', 
+                         'ist', 'ity', 'ify', 'ize', 'ise', 'ible', 'ic', 'ical', 'ous', 'ish', 'ive', 
                          'less', 
                          'sion',
                          'tion', 'ty', 
@@ -98,7 +130,7 @@ class Guest {
         $pwd .= $pwdSuffix;
 
         $pwd .= rand(2, 999);
-        $pwd .= $aSalt[array_rand($aSalt)];
+        # $pwd .= $aSalt[array_rand($aSalt)];
 
         // 50% chance of capitalizing the first letter
         if (rand(0, 1) == 1) {

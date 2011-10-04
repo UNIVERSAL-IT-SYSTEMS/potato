@@ -11,6 +11,13 @@ CREATE TABLE IF NOT EXISTS `User` (
   PRIMARY KEY  (`UserName`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `Guest` (
+  `userName` char(16) NOT NULL,
+  `password` varchar(32) NOT NULL,
+  `dateCreation` timestamp default CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`UserName`)
+) ENGINE=InnoDB CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `Log` (
   `time` timestamp default CURRENT_TIMESTAMP,
   `userName` char(16) NOT NULL,

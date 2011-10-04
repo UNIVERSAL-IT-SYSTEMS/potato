@@ -38,9 +38,35 @@ $mschapChallenge = pack( 'H*', substr($options["c"], 2) );
 $mschapPeerChallenge = pack( 'H*', substr($options["n"], 6, 32) );
 $mschapResponse = pack( 'H*', $options["q"] );
 
+if ( substr( $userName, -6 ) == ".guest" ) {
+    // Guest login
+    $guestName = substr( $userName, 0, -6 );
+    $guest = new Guest();
+    
+    try {
+        $guest->fetch($guestName);
+
+        $loginOk = false;
+        if ( !empty($passPhrase) ) {
+            $loginOk = ($guest->password == $passPhrase);
+        } elseif ( !empty($mschapChallenge) && !empty($mschapPeerChallenge) && !empty($mschapResponse) ) {
+            $loginOk = ($mschapResponse == GenerateNTResponse($mschapChallenge, $mschapPeerChallenge, $guestName, $guest->password));
+        }
+
+        if ( $loginOk ) {
+            echo "ACCEPT\n";
+            exit(0);
+        }
+    } catch (NoGuestException $ignore) {
+    }
+    echo "FAIL\n";
+    exit(1);
+}
+
 try {
     $user = new User();
     $user->fetch($userName);
+
     $loginOk = false;
 
     if ( !empty($passPhrase) ) {
