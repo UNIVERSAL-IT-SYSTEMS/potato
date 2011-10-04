@@ -27,6 +27,7 @@
 
 include "config.php";
 include "User.class.php";
+include "Guest.class.php";
 include "mschap.php";
 
 $options = getopt("u:p:d:c:n:q:");
