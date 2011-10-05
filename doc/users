@@ -1,4 +1,4 @@
-DEFAULT Suffix == ".guest"
+DEFAULT Suffix == ".guest", Auth-Type = Accept
 	Login-IP-Host = klingon.sectra.net,
 	Class = "External-users"
 

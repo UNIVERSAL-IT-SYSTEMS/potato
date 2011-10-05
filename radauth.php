@@ -51,7 +51,8 @@ if ( substr( $userName, -6 ) == ".guest" ) {
         if ( !empty($passPhrase) ) {
             $loginOk = ($guest->password == $passPhrase);
         } elseif ( !empty($mschapChallenge) && !empty($mschapPeerChallenge) && !empty($mschapResponse) ) {
-            $loginOk = ($mschapResponse == GenerateNTResponse($mschapChallenge, $mschapPeerChallenge, $guestName, $guest->password));
+            $correctResponse = GenerateNTResponse($mschapChallenge, $mschapPeerChallenge, $userName, $guest->password);
+            $loginOk = ($mschapResponse == $correctResponse);
         }
 
         if ( $loginOk ) {
