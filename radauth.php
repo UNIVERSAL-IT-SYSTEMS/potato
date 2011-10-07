@@ -39,6 +39,9 @@ $mschapChallenge = pack( 'H*', substr($options["c"], 2) );
 $mschapPeerChallenge = pack( 'H*', substr($options["n"], 6, 32) );
 $mschapResponse = pack( 'H*', $options["q"] );
 
+$loginOk = false;
+$mschap = false;
+
 if ( substr( $userName, -6 ) == ".guest" ) {
     // Guest login
     $guestName = substr( $userName, 0, -6 );
@@ -47,21 +50,21 @@ if ( substr( $userName, -6 ) == ".guest" ) {
     try {
         $guest->fetch($guestName);
 
-        $loginOk = false;
         if ( !empty($passPhrase) ) {
             $loginOk = ($guest->password == $passPhrase);
         } elseif ( !empty($mschapChallenge) && !empty($mschapPeerChallenge) && !empty($mschapResponse) ) {
             $correctResponse = GenerateNTResponse($mschapChallenge, $mschapPeerChallenge, $userName, $guest->password);
+            $mschap = true;
             $loginOk = ($mschapResponse == $correctResponse);
         }
 
         if ( $loginOk ) {
-            echo "ACCEPT\n";
+            echo $mschap ? GenerateAuthenticatorResponse($guest->password, $mschapResponse, $mschapPeerChallenge, $mschapChallenge, $userName) : "ACCEPT\n";
             exit(0);
         }
     } catch (NoGuestException $ignore) {
     }
-    echo "FAIL\n";
+    echo $mschap ? "E=691 R=0 C=00000000000000000000000000000000 V=3 " : "FAIL\n";
     exit(1);
 }
 
@@ -69,12 +72,11 @@ try {
     $user = new User();
     $user->fetch($userName);
 
-    $loginOk = false;
-
     if ( !empty($passPhrase) ) {
         $loginOk = $user->checkMOTP($passPhrase);
     } elseif ( !empty($mschapChallenge) && !empty($mschapPeerChallenge) && !empty($mschapResponse) ) {
         $loginOk = $user->checkMOTPmschap($mschapChallenge, $mschapPeerChallenge, $mschapResponse);
+        $mschap = true;
     }
 
     if ( $loginOk ) {
@@ -101,7 +103,7 @@ try {
             $user->log("Invalid login. OTP replay");
         } else {
             $user->validLogin();
-            echo "ACCEPT\n";
+            echo $mschap ? GenerateAuthenticatorResponse($user->passPhrase, $mschapResponse, $mschapPeerChallenge, $mschapChallenge, $userName) : "ACCEPT\n";
             exit(0);
         }
     } else {
@@ -112,7 +114,7 @@ try {
     // No such user
 }
 
-echo "FAIL\n";
+echo $mschap ? "E=691 R=0 C=00000000000000000000000000000000 V=3 " : "FAIL\n";
 exit(1);
 
 ?>

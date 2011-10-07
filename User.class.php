@@ -33,7 +33,7 @@ class User {
     protected $pin;
     public $invalidLogins;
     public $errors = array();
-    private $passPhrase;
+    public $passPhrase;
 
     function fetch($userName) {
         global $dbh;
