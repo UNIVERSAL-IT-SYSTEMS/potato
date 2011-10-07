@@ -159,27 +159,32 @@ A.6 GenerateAuthenticatorResponse()
 
 function GenerateAuthenticatorResponse($pwPlain, $ntResponse, $peerChallenge, $authChallenge, $userName) {
 
-    $magic1 = "4D616769632073657276"
+// Magic server to client signing constant
+/*    $magic1 = "4D616769632073657276"
             . "657220746F20636C6965"
             . "6E74207369676E696E67"
             . "20636F6E7374616E74";
     $magic1bin = pack ('H*', $magic1);
-
-    $magic2 = "50616420746F206D616B"
+*/
+    $magic1 = "Magic server to client signing constant";
+// Pad to make it do more than one iteration
+/*    $magic2 = "50616420746F206D616B"
             . "6520697420646F206D6F"
             . "7265207468616E206F6E"
             . "6520697465726174696F"
             . "6E";
     $magic2bin = pack ('H*', $magic2);
+*/
+    $magic2 = "Pad to make it do more than one iteration";
 
     // Hash the password with MD4. Twice.
     $pwHashHash = NtPasswordHashHash($pwPlain);
 
-    $digest = hash("sha1", $pwHashHash . $ntResponse . $magic1bin, true);
+    $digest = hash("sha1", $pwHashHash . $ntResponse . $magic1, true);
 
     $challenge = ChallengeHash($peerChallenge, $authChallenge, $userName);
 
-    $authResponse = hash( "sha1", $digest . $challenge . $magic2bin );
+    $authResponse = hash( "sha1", $digest . $challenge . $magic2 );
 
     return "S=" . strtoupper($authResponse);
 }
