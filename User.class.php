@@ -66,14 +66,14 @@ class User {
     }
 
     // perform mschapv2 authentication
-    function checkMOTPmschap ($challenge, $peerChallenge, $response) {
+    function checkMOTPmschap ($peerChallenge, $authChallenge, $response) {
         $now = intval( gmdate("U") / 10 );
         $maxDrift = 180/10;
         $validPasswords = array();
         $validOtps = array();
         for ( $time = $now - $maxDrift ; $time <= $now + $maxDrift ; $time++ ) {
             $otp = substr( md5($time . $this->secret . $this->pin ), 0, 6);
-            $resp = GenerateNTResponse($challenge, $peerChallenge, $this->userName, $otp);
+            $resp = GenerateNTResponse($peerChallenge, $authChallenge, $this->userName, $otp);
             array_push($validOtps, $otp);
             array_push($validPasswords, $resp);
         }

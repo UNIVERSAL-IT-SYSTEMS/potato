@@ -35,7 +35,7 @@ $options = getopt("u:p:d:c:n:q:");
 $userName = $options["u"];
 $passPhrase = $options["p"];
 
-$mschapChallenge = pack( 'H*', substr($options["c"], 2) );
+$mschapAuthChallenge = pack( 'H*', substr($options["c"], 2) );
 $mschapPeerChallenge = pack( 'H*', substr($options["n"], 6, 32) );
 $mschapResponse = pack( 'H*', $options["q"] );
 
@@ -52,14 +52,14 @@ if ( substr( $userName, -6 ) == ".guest" ) {
 
         if ( !empty($passPhrase) ) {
             $loginOk = ($guest->password == $passPhrase);
-        } elseif ( !empty($mschapChallenge) && !empty($mschapPeerChallenge) && !empty($mschapResponse) ) {
-            $correctResponse = GenerateNTResponse($mschapChallenge, $mschapPeerChallenge, $userName, $guest->password);
+        } elseif ( !empty($mschapPeerChallenge) && !empty($mschapAuthChallenge) && !empty($mschapResponse) ) {
+            $correctResponse = GenerateNTResponse($mschapPeerChallenge, $mschapAuthChallenge, $userName, $guest->password);
             $mschap = true;
             $loginOk = ($mschapResponse == $correctResponse);
         }
 
         if ( $loginOk ) {
-            echo $mschap ? GenerateAuthenticatorResponse($guest->password, $mschapResponse, $mschapPeerChallenge, $mschapChallenge, $userName) : "ACCEPT\n";
+            echo $mschap ? GenerateAuthenticatorResponse($guest->password, $mschapResponse, $mschapPeerChallenge, $mschapAuthChallenge, $userName) : "ACCEPT\n";
             exit(0);
         }
     } catch (NoGuestException $ignore) {
@@ -74,7 +74,7 @@ try {
 
     if ( !empty($passPhrase) ) {
         $loginOk = $user->checkMOTP($passPhrase);
-    } elseif ( !empty($mschapChallenge) && !empty($mschapPeerChallenge) && !empty($mschapResponse) ) {
+    } elseif ( !empty($mschapPeerChallenge) && !empty($mschapAuthChallenge) && !empty($mschapResponse) ) {
         $loginOk = $user->checkMOTPmschap($mschapChallenge, $mschapPeerChallenge, $mschapResponse);
         $mschap = true;
     }

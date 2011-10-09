@@ -27,28 +27,25 @@
 
 function NtPasswordHash($pwPlain) {
     $uni = iconv('UTF-8', 'UTF-16LE', $pwPlain);
-    return hash ("md4", $uni, true);
+    return hash ("md4", $pwPlain, true);
 }
 
 function NtPasswordHashHash($pwPlain) {
-    $ntHash = NtPasswordHash($pwPlain);
-    return hash ("md4", $ntHash, true);
+    return hash( "md4", NtPasswordHash($pwPlain), true);
 }
 
-function ChallengeResponse($challenge, $ntHash) {
-    while (strlen($ntHash) < 21) {
-        $ntHash .= "\0";
-    }
-    $resp1 = desEncrypt( substr($ntHash, 0, 7), $challenge);
-    $resp2 = desEncrypt( substr($ntHash, 7, 7), $challenge);
-    $resp3 = desEncrypt( substr($ntHash, 14, 7), $challenge);
+function ChallengeResponse($challengeHash, $ntHash) {
+    $ntHash = str_pad( $ntHash, 21, "\0" );
+    $ret1 = desEncrypt( $challengeHash, substr($ntHash, 0, 7));
+    $ret2 = desEncrypt( $challengeHash, substr($ntHash, 7, 7));
+    $ret3 = desEncrypt( $challengeHash, substr($ntHash, 14, 7));
 
-    return $resp1 . $resp2 . $resp3;
+    return $ret1 . $ret2 . $ret3;
 }
 
-function desEncrypt($key, $str) {
+function desEncrypt($clear, $key) {
     $key = insertParity($key);
-    $crypto =  mcrypt_encrypt(MCRYPT_DES, $key, $str, MCRYPT_MODE_ECB);
+    $crypto =  mcrypt_encrypt(MCRYPT_DES, $key, $clear, MCRYPT_MODE_ECB);
     return $crypto;
 }
 
@@ -70,17 +67,16 @@ function insertParity($key) {
     return pack('H*', $finalkey);
 }
 
-function ChallengeHash($challenge, $peerChallenge, $userName) {
-    $hash =  hash ("sha1", $peerChallenge . $challenge . $userName, true);
-    return substr($hash, 0, 8);
-}
-
-function GenerateNTResponse($challenge, $peerChallenge, $userName, $pwPlain) {
-    $challengeHash = ChallengeHash($challenge, $peerChallenge, $userName);
+function GenerateNTResponse($peerChallenge, $authChallenge, $userName, $pwPlain) {
+    $challengeHash = ChallengeHash($peerChallenge, $authChallenge, $userName);
     $pwHash = NtPasswordHash($pwPlain);
     return ChallengeResponse($challengeHash, $pwHash);
 }
 
+function ChallengeHash($peerChallenge, $authChallenge, $userName) {
+    $hash =  hash ("sha1", $peerChallenge . $authChallenge . $userName, true);
+    return substr($hash, 0, 8);
+}
 
 
 /*
@@ -158,36 +154,30 @@ A.6 GenerateAuthenticatorResponse()
 */
 
 function GenerateAuthenticatorResponse($pwPlain, $ntResponse, $peerChallenge, $authChallenge, $userName) {
-
-// Magic server to client signing constant
-/*    $magic1 = "4D616769632073657276"
+/*
+    $magic1 = "4D616769632073657276"
             . "657220746F20636C6965"
             . "6E74207369676E696E67"
             . "20636F6E7374616E74";
     $magic1bin = pack ('H*', $magic1);
-*/
-    $magic1 = "Magic server to client signing constant";
-// Pad to make it do more than one iteration
-/*    $magic2 = "50616420746F206D616B"
+
+    $magic2 = "50616420746F206D616B"
             . "6520697420646F206D6F"
             . "7265207468616E206F6E"
             . "6520697465726174696F"
             . "6E";
     $magic2bin = pack ('H*', $magic2);
 */
+
+    $magic1 = "Magic server to client signing constant";
     $magic2 = "Pad to make it do more than one iteration";
 
     // Hash the password with MD4. Twice.
     $pwHashHash = NtPasswordHashHash($pwPlain);
-
     $digest = hash("sha1", $pwHashHash . $ntResponse . $magic1, true);
-
     $challenge = ChallengeHash($peerChallenge, $authChallenge, $userName);
-
     $authResponse = hash( "sha1", $digest . $challenge . $magic2 );
-
     return "S=" . strtoupper($authResponse);
 }
-
 
 ?>
