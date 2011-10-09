@@ -60,12 +60,13 @@ if ( substr( $userName, -6 ) == ".guest" ) {
         }
 
         if ( $loginOk ) {
-            echo $mschap ? GenerateAuthenticatorResponse($guest->password, $mschapResponse, $mschapPeerChallenge, $mschapAuthChallenge, $userName) : "ACCEPT\n";
+            $mschapAuthResponse = GenerateAuthenticatorResponse($guest->password, $mschapResponse, $mschapPeerChallenge, $mschapAuthChallenge, $userName);
+            echo $mschap ? "Reply-Message := \"${mschapAuthResponse}\"" : "ACCEPT";
             exit(0);
         }
     } catch (NoGuestException $ignore) {
     }
-    echo $mschap ? $msChapErrorMessage : "FAIL";
+    echo $mschap ? "Reply-Message := \"$mschapErrorMessage\"" : "FAIL";
     exit(1);
 }
 
@@ -76,7 +77,7 @@ try {
     if ( !empty($passPhrase) ) {
         $loginOk = $user->checkMOTP($passPhrase);
     } elseif ( !empty($mschapPeerChallenge) && !empty($mschapAuthChallenge) && !empty($mschapResponse) ) {
-        $loginOk = $user->checkMOTPmschap($mschapChallenge, $mschapPeerChallenge, $mschapResponse);
+        $loginOk = $user->checkMOTPmschap($mschapPeerChallenge, $mschapAuthChallenge, $mschapResponse);
         $mschap = true;
     }
 
@@ -105,7 +106,8 @@ try {
             $user->log("Invalid login. OTP replay");
         } else {
             $user->validLogin();
-            echo $mschap ? GenerateAuthenticatorResponse($user->passPhrase, $mschapResponse, $mschapPeerChallenge, $mschapChallenge, $userName) : "ACCEPT\n";
+            $mschapAuthResponse = GenerateAuthenticatorResponse($user->passPhrase, $mschapResponse, $mschapPeerChallenge, $mschapAuthChallenge, $userName);
+            echo $mschap ? "Reply-Message := \"${mschapAuthResponse}\"" : "ACCEPT";
             exit(0);
         }
     } else {
@@ -116,7 +118,7 @@ try {
     // No such user
 }
 
-echo $mschap ? $mschapErrorMessage : "FAIL";
+echo $mschap ? "Reply-Message := \"$mschapErrorMessage\"" : "FAIL";
 exit(1);
 
 /*
