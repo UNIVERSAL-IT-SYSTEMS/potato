@@ -41,6 +41,7 @@ $mschapResponse = pack( 'H*', $options["q"] );
 
 $loginOk = false;
 $mschap = false;
+$mschapErrorMessage = "E=691 R=1 C=00000000000000000000000000000000 V=3 M=Access_denied";
 
 if ( substr( $userName, -6 ) == ".guest" ) {
     // Guest login
@@ -64,7 +65,7 @@ if ( substr( $userName, -6 ) == ".guest" ) {
         }
     } catch (NoGuestException $ignore) {
     }
-    echo $mschap ? "E=691 R=0 C=00000000000000000000000000000000 V=3 " : "FAIL\n";
+    echo $mschap ? $msChapErrorMessage : "FAIL";
     exit(1);
 }
 
@@ -97,6 +98,7 @@ try {
             // Account locked out
             $user->invalidLogin();
             $user->log("Invalid login. Account locked out.");
+            $mschapErrorMessage = "E=647 R=1 C=00000000000000000000000000000000 V=3 M=Account_locked_out";
         } elseif ( $user->replayAttack()) {
             // Replay attack
             $user->invalidLogin();
@@ -114,7 +116,18 @@ try {
     // No such user
 }
 
-echo $mschap ? "E=691 R=0 C=00000000000000000000000000000000 V=3 " : "FAIL\n";
+echo $mschap ? $mschapErrorMessage : "FAIL";
 exit(1);
+
+/*
+
+These are the mschapv2 failure codes as per the spec:
+    646 ERROR_RESTRICTED_LOGON_HOURS
+    647 ERROR_ACCT_DISABLED
+    648 ERROR_PASSWD_EXPIRED
+    649 ERROR_NO_DIALIN_PERMISSION
+    691 ERROR_AUTHENTICATION_FAILURE
+    709 ERROR_CHANGING_PASSWORD
+*/
 
 ?>
