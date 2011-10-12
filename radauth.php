@@ -60,13 +60,23 @@ if ( substr( $userName, -6 ) == ".guest" ) {
         }
 
         if ( $loginOk ) {
-            $mschapAuthResponse = GenerateAuthenticatorResponse($guest->password, $mschapResponse, $mschapPeerChallenge, $mschapAuthChallenge, $userName);
-            echo $mschap ? "Reply-Message := \"${mschapAuthResponse}\"" : "ACCEPT";
+            if ($mschap) {
+                $mschapAuthResponse = GenerateAuthenticatorResponse($guest->password, $mschapResponse, $mschapPeerChallenge, $mschapAuthChallenge, $userName);
+                echo "attribute := \"PW_MSCHAP2_SUCCESS\",\n";
+                echo "vp_strvalue := \"${mschapAuthResponse}\"\n";
+            } else {
+                echo "ACCEPT";
+            }
             exit(0);
         }
     } catch (NoGuestException $ignore) {
     }
-    echo $mschap ? "Reply-Message := \"$mschapErrorMessage\"" : "FAIL";
+    if ($mschap) {
+        echo "attribute := \"PW_MSCHAP2_ERROR\",\n";
+        echo "vp_strvalue := \"$mschapErrorMessage\"\n";
+    } else {
+        echo "FAIL";
+    }
     exit(1);
 }
 
@@ -106,8 +116,13 @@ try {
             $user->log("Invalid login. OTP replay");
         } else {
             $user->validLogin();
-            $mschapAuthResponse = GenerateAuthenticatorResponse($user->passPhrase, $mschapResponse, $mschapPeerChallenge, $mschapAuthChallenge, $userName);
-            echo $mschap ? "Reply-Message := \"${mschapAuthResponse}\"" : "ACCEPT";
+            if ($mschap) {
+                $mschapAuthResponse = GenerateAuthenticatorResponse($user->passPhrase, $mschapResponse, $mschapPeerChallenge, $mschapAuthChallenge, $userName);
+                echo "attribute := \"PW_MSCHAP2_SUCCESS\"";
+                echo "vp_strvalue := \"${mschapAuthResponse}\"";
+            } else {
+                echo "ACCEPT";
+            }
             exit(0);
         }
     } else {
@@ -118,7 +133,12 @@ try {
     // No such user
 }
 
-echo $mschap ? "Reply-Message := \"$mschapErrorMessage\"" : "FAIL";
+if ($mschap) {
+    echo "attribute := \"PW_MSCHAP2_ERROR\",\n";
+    echo "vp_strvalue := \"$mschapErrorMessage\"\n";
+} else {
+    echo "FAIL";
+}
 exit(1);
 
 /*
