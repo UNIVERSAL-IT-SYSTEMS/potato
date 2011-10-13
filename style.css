@@ -113,3 +113,28 @@ table.userlist a img {
     border: 0px;
 }
 
+.instructions {
+    border: 1px solid grey;
+    background: #ffffbb;
+    position: absolute;
+    display: none;
+    width: 25em;
+    box-shadow: -5px 5px 5px #aaa;
+}
+.instructioncontents {
+    padding: 1em;
+}
+.closebutton {
+    float: right;
+    background: #aaaaff;
+    font-size: 0.8em;
+    padding: 0.5em;
+    border: 1px outset black;
+    font-weight: bold;
+}
+.closebutton:hover {
+    cursor: pointer;
+    background: red;
+    color: white;
+}
+

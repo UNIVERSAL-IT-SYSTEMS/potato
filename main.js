@@ -57,3 +57,14 @@ var LogoutTimer = (function(){
     };
 })();
 
+function setVisibility( sName, visibility ) {
+    var domName = document.getElementById( sName );
+    domName.style.display = ( visibility ? "block" : "none" );
+}
+
+function moveToPos( element, parent ) {
+    domElement = document.getElementById(element);
+    domElement.style.left = parent.pageX;
+    domElement.style.top = parent.pageY;
+}
+
