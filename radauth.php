@@ -39,9 +39,6 @@ $mschapAuthChallenge = pack( 'H*', substr($options["c"], 2) );
 $mschapPeerChallenge = pack( 'H*', substr($options["n"], 6, 32) );
 $mschapResponse = pack( 'H*', $options["q"] );
 
-$loginOk = false;
-$mschap = false;
-$mschapErrorMessage = "E=691 R=1 C=00000000000000000000000000000000 V=3 M=Access_denied";
 
 if ( substr( $userName, -6 ) == ".guest" ) {
     // Guest login
@@ -51,38 +48,30 @@ if ( substr( $userName, -6 ) == ".guest" ) {
     try {
         $guest->fetch($guestName);
 
-        if ( !empty($passPhrase) ) {
-            $loginOk = ($guest->password == $passPhrase);
-        } elseif ( !empty($mschapPeerChallenge) && !empty($mschapAuthChallenge) && !empty($mschapResponse) ) {
-            $correctResponse = GenerateNTResponse($mschapPeerChallenge, $mschapAuthChallenge, $userName, $guest->password);
-            $mschap = true;
-            $loginOk = ($mschapResponse == $correctResponse);
-        }
-
-        if ( $loginOk ) {
-            if ($mschap) {
-                $mschapAuthResponse = GenerateAuthenticatorResponse($guest->password, $mschapResponse, $mschapPeerChallenge, $mschapAuthChallenge, $userName);
-                echo "attribute := \"PW_MSCHAP2_SUCCESS\",\n";
-                echo "vp_strvalue := \"${mschapAuthResponse}\"\n";
-            } else {
-                echo "ACCEPT";
+        if ( empty($passPhrase) ) {
+            # Unknown authentication mechanism. Probably mschapv2.
+            $mschapAuthResponse = GenerateNTResponse($mschapPeerChallenge, $mschapAuthChallenge, $userName, $guest->password);
+            if ($mschapAuthResponse == $mschapResponse ) {
+                # User auth checks out. Set cleartext password for mschap module to use
+                echo "Cleartext-Password := \"" . $guest->password . "\"";
+                exit(0);
             }
-            exit(0);
+            exit(1);
+        } else {
+            # Cleartext password available; see if it's the correct one
+            exit ($guest->password == $passPhrase ? 0 : 1);
         }
     } catch (NoGuestException $ignore) {
+        exit(1);
     }
-    if ($mschap) {
-        echo "attribute := \"PW_MSCHAP2_ERROR\",\n";
-        echo "vp_strvalue := \"$mschapErrorMessage\"\n";
-    } else {
-        echo "FAIL";
-    }
-    exit(1);
 }
 
 try {
     $user = new User();
     $user->fetch($userName);
+
+    $loginOk = false;
+    $mschap = false;
 
     if ( !empty($passPhrase) ) {
         $loginOk = $user->checkMOTP($passPhrase);
@@ -109,7 +98,6 @@ try {
             // Account locked out
             $user->invalidLogin();
             $user->log("Invalid login. Account locked out.");
-            $mschapErrorMessage = "E=647 R=1 C=00000000000000000000000000000000 V=3 M=Account_locked_out";
         } elseif ( $user->replayAttack()) {
             // Replay attack
             $user->invalidLogin();
@@ -117,11 +105,7 @@ try {
         } else {
             $user->validLogin();
             if ($mschap) {
-                $mschapAuthResponse = GenerateAuthenticatorResponse($user->passPhrase, $mschapResponse, $mschapPeerChallenge, $mschapAuthChallenge, $userName);
-                echo "attribute := \"PW_MSCHAP2_SUCCESS\"";
-                echo "vp_strvalue := \"${mschapAuthResponse}\"";
-            } else {
-                echo "ACCEPT";
+                echo "Cleartext-Password := \"" . $user->passPhrase . "\"";
             }
             exit(0);
         }
@@ -130,15 +114,8 @@ try {
         $user->log("Invalid login");
     }
 } catch (NoSuchUserException $ignore) {
-    // No such user
 }
 
-if ($mschap) {
-    echo "attribute := \"PW_MSCHAP2_ERROR\",\n";
-    echo "vp_strvalue := \"$mschapErrorMessage\"\n";
-} else {
-    echo "FAIL";
-}
 exit(1);
 
 /*

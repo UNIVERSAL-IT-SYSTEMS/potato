@@ -27,7 +27,7 @@
 
 function NtPasswordHash($pwPlain) {
     $uni = iconv('UTF-8', 'UTF-16LE', $pwPlain);
-    return hash ("md4", $pwPlain, true);
+    return hash ("md4", $uni, true);
 }
 
 function NtPasswordHashHash($pwPlain) {
