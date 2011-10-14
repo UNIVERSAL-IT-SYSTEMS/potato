@@ -7,7 +7,6 @@ authorize {
         preprocess
         chap
         suffix
-#	sql
         files
 	motp
         expiration
@@ -28,7 +27,9 @@ authenticate {
  	Auth-Type MOTP {
  		motp
 	}
-	# unix
+ 	Auth-Type MSCHAP {
+ 		mschap
+	}
 }
  
 preacct {
@@ -41,12 +42,10 @@ accounting {
         detail
         unix
         radutmp
-        # sql
         attr_filter.accounting_response
 }
 session {
         radutmp
-        # sql
 }
 post-auth {
         Post-Auth-Type REJECT {
