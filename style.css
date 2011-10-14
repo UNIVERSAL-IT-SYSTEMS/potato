@@ -119,7 +119,7 @@ table.userlist a img {
     position: absolute;
     display: none;
     width: 25em;
-    box-shadow: -5px 5px 5px #aaa;
+    box-shadow: 5px 5px 5px #aaa;
 }
 .instructioncontents {
     padding: 1em;

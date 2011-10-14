@@ -32,7 +32,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
         <meta http-equiv="X-UA-Compatible" content="IE=9" /> 
-        <link href="style.css" rel="stylesheet" type="text/css" />
+        <link href="style.css?version=2" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="main.js"></script>
         <title>One-time password configuration</title>
     </head>

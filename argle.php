@@ -86,42 +86,45 @@ if ( $currentUser->userName != $userName ) {
 
 ?>
 
-<div class="instructions" id="android">
-  <div class="closebutton" onclick="setVisibility('android', false);">[close]</div>
-  <div class="instructioncontents">
-    <h2>Android</h2>
-    <p>Download the <a href="http://www.androidpit.com/en/android/market/apps/app/net.marinits.android.droidotp/DroidOTP">DroidOTP</a> app from Google Market</p>
-    <p></p>
-  </div>
-</div>
-
-<div class="instructions" id="iphone">
-  <div class="closebutton" onclick="setVisibility('iphone', false);">[close]</div>
-  <div class="instructioncontents">
-    <h2>iPhone</h2>
-    <p>Download the <a href="http://itunes.apple.com/us/app/mobile-otp/id328973960&mt=8">iOTP</a> app from iTMS</p>
-    <p></p>
-  </div>
-</div>
-
-<div class="instructions" id="midlet">
-  <div class="closebutton" onclick="setVisibility('midlet', false);">[close]</div>
-  <div class="instructioncontents">
-    <h2>Java MIDlet</h2>
-    <p>Start the web browser on your phone, and enter the following address:<br />
-    <strong><pre>http://motp.sf.net/MobileOTP.jar</pre></strong><br />
-    (capitalization matters).</p>
-    <p></p>
-  </div>
-</div>
 
 <h1>User settings</h1>
 <p>In order to use the Mobile OTP service, you must configure your mobile.
 What type of phone do you have? Click for instructions:
     <ul>
-        <li><a href="#" onclick="moveToPos('android', this); setVisibility('android', true); return(false);">Android</a></li>
-        <li><a href="#" onclick="moveToPos('iphone', this); setVisibility('iphone', true); return(false);">iPhone</a></li>
-        <li><a href="#" onclick="moveToPos('midlet', this); setVisibility('midlet', true); return(false);">JAVA MIDlet compatible phone</a> (such as older non-smartphone SonyEricsson or Nokias)</li>
+        <li><a href="#" onclick="setVisibility('android', true); return(false);">Android</a>
+            <div class="instructions" id="android">
+              <div class="closebutton" onclick="setVisibility('android', false);">[close]</div>
+              <div class="instructioncontents">
+                <h2>Android</h2>
+                <p>Download the <a href="http://www.androidpit.com/en/android/market/apps/app/net.marinits.android.droidotp/DroidOTP">DroidOTP</a> app from Google Market</p>
+                <p></p>
+              </div>
+            </div>
+        </li>
+
+        <li><a href="#" onclick="setVisibility('iphone', true); return(false);">iPhone</a>
+            <div class="instructions" id="iphone">
+              <div class="closebutton" onclick="setVisibility('iphone', false);">[close]</div>
+              <div class="instructioncontents">
+                <h2>iPhone</h2>
+                <p>Download the <a href="http://itunes.apple.com/us/app/mobile-otp/id328973960&mt=8">iOTP</a> app from iTMS</p>
+                <p></p>
+              </div>
+            </div>
+        </li>
+
+        <li><a href="#" onclick="setVisibility('midlet', true); return(false);">JAVA MIDlet compatible phone</a> (such as older non-smartphone SonyEricsson or Nokias)
+            <div class="instructions" id="midlet">
+              <div class="closebutton" onclick="setVisibility('midlet', false);">[close]</div>
+              <div class="instructioncontents">
+                <h2>Java MIDlet</h2>
+                <p>Start the web browser on your phone, and enter the following address:<br />
+                <strong><pre>http://motp.sf.net/MobileOTP.jar</pre></strong><br />
+                (capitalization matters).</p>
+                <p></p>
+              </div>
+            </div>
+        </li>
     </ul>
 </p>
 
