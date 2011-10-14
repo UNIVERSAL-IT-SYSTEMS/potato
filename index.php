@@ -85,42 +85,75 @@ if ( $currentUser->userName != $userName ) {
 } else {
 
 ?>
+
+
 <h1>User settings</h1>
-<div class="qrcode">
-    <img src="images/droidotp-qr.png" />
-</div>
-<p>In order to use the Mobile OTP service, you must register a 
-<a href="http://motp.sourceforge.net/">Mobile OTP</a> soft token
-to your user account. Please use one of the following apps:
+<p>In order to use the Mobile OTP service, you must configure your mobile.
+Click for instructions for your phone:
     <ul>
-        <li>Android: <a href="http://www.androidpit.com/en/android/market/apps/app/net.marinits.android.droidotp/DroidOTP">DroidOTP</a></li>
-        <li>iPhone: <a href="http://itunes.apple.com/us/app/mobile-otp/id328973960&mt=8">iOTP</a></li>
-        <li>JAVA MIDlet compatible phones (older non-smartphone SonyEricsson and Nokias, for instance): <a href="http://motp.sourceforge.net/MobileOTP.jar">MobileOTP.jar</a> or 
-            <a href="http://motp.sourceforge.net/MobileOTP.jad">MobileOTP.jad</a></li>
+        <li><a href="#" onclick="setVisibility('android', true); return(false);">Android</a>
+            <div class="instructions" id="android">
+              <div class="closebutton" onclick="setVisibility('android', false);">[close]</div>
+              <div class="instructioncontents">
+                <h2>Android</h2>
+                <div class="qrcode">
+                  <img src="images/droidotp-qr.png" />
+                </div>
+                <p>Install the <a href="http://www.androidpit.com/en/android/market/apps/app/net.marinits.android.droidotp/DroidOTP">DroidOTP</a> app from Google Market</p>
+                <ol>
+                  <li>Initialize secret, and register it here. Do not write this secret down anywhere else.</li>
+                  <li>Once you have entered a "Secret", you must also select a PIN. This action is also performed in this web interface</li>
+                </ol>
+                <p>Setup is now complete. Proceed to the <a href="testtoken.php">token testing area</a> to test your new token</p>
+              </div>
+            </div>
+        </li>
+
+        <li><a href="#" onclick="setVisibility('iphone', true); return(false);">iPhone</a>
+            <div class="instructions" id="iphone">
+              <div class="closebutton" onclick="setVisibility('iphone', false);">[close]</div>
+              <div class="instructioncontents">
+                <h2>iPhone</h2>
+                <p>Install the <a href="http://itunes.apple.com/us/app/mobile-otp/id328973960&mt=8">iOTP</a> app from iTMS, and follow these steps:</p>
+                <ol>
+                  <li>Initialize secret, and register it here. Do not write this secret down anywhere else.</li>
+                  <li>Once you have entered a "Secret", you must also select a PIN. This action is also performed in this web interface</li>
+                </ol>
+                <p>Setup is now complete. Proceed to the <a href="testtoken.php">token testing area</a> to test your new token</p>
+              </div>
+            </div>
+        </li>
+
+        <li><a href="#" onclick="setVisibility('midlet', true); return(false);">JAVA MIDlet compatible phone</a> (such as older non-smartphone SonyEricsson or Nokias)
+            <div class="instructions" id="midlet">
+              <div class="closebutton" onclick="setVisibility('midlet', false);">[close]</div>
+              <div class="instructioncontents">
+                <h2>Java MIDlet</h2>
+                <p>Start the web browser on your phone, and enter the following address:<br />
+                <pre>http://motp.sf.net/MobileOTP.jar</pre>
+                <em>(note: capitalization matters)</em></p>
+
+                <p>The app should now be installed on your phone and is prompting for your PIN code. In order to initialize the app for use, follow these steps:</p>
+                <ol>
+                  <li>Enter PIN code <strong>"0000"</strong></li>
+                  <li>The token should now prompt you for <strong>"25 random keys"</strong>. Go ahead and enter 25 random numbers and klick "Ok"</li>
+                  <li>The token now presents your 16 character "Init-Secret" in the display. Enter that secret into this web interface. Do not write this secret down anywhere else.</li>
+                  <li>Once you have entered a "Secret", you must also select a PIN. This action is also performed in this web interface</li>
+                </ol>
+                <p>Setup is now complete. Go to <a href="testtoken.php">test token</a> to test your new token</p>
+              </div>
+            </div>
+        </li>
     </ul>
-    If you're unable to get any of these clients to work, please check the 
-<a href="http://motp.sourceforge.net/">Mobile OTP</a> project page for 
-additional clients.
 </p>
 
-        <p>Once you have properly installed and configured your app, initialize it
-and register its secret here.</p>
 <?php
 }
-?>
 
-<script type="text/javascript">
-function toggleVisibility( sName ) {
-    var domName = document.getElementById( sName );
-    domName.style.display = ( domName.style.display=="none" ? "block" : "none" );
-}
-</script>
-
-<?php
 if ( $user->hasToken() ) {
     echo '<div id="infoSecret">' . "\n";
     echo "A token is already registered to this account.\n";
-    echo '<input type="button" name="Reset" value="Change token secret..." onclick="toggleVisibility(\'secret\'); toggleVisibility(\'infoSecret\'); document.getElementById(\'focusSecret\').focus(); return(false); "/>' . "\n";
+    echo '<input type="button" name="Reset" value="Change token secret..." onclick="setVisibility(\'secret\', true); setVisibility(\'infoSecret\', false); document.getElementById(\'focusSecret\').focus(); return(false); "/>' . "\n";
     echo "</div>\n";
 }
 ?>
@@ -142,7 +175,7 @@ if ( $user->hasToken() ) {
 if ( $user->hasPin() ) {
     echo '<div id="infoPin">' . "\n";
     echo "A pin is already registered to this account.\n";
-    echo '<input type="button" name="Change pin..." value="Change pin..." onclick="toggleVisibility(\'pin\'); toggleVisibility(\'infoPin\'); document.getElementById(\'focusPin\').focus(); return(false); "/>' . "\n";
+    echo '<input type="button" name="Change pin..." value="Change pin..." onclick="setVisibility(\'pin\', true); setVisibility(\'infoPin\', false); document.getElementById(\'focusPin\').focus(); return(false); "/>' . "\n";
     echo "</div>\n";
 }
 ?>

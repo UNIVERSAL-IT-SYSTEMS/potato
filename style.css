@@ -83,6 +83,7 @@ input.iesux {
 
 h1, h2, h3 {
     font-weight: bold;
+    margin: 0.5em 0em;
 }
 
 h1 {
@@ -122,7 +123,7 @@ table.userlist a img {
     box-shadow: 5px 5px 5px #aaa;
 }
 .instructioncontents {
-    padding: 1em;
+    padding: 0em 1em 1em 1em;
 }
 .closebutton {
     float: right;
