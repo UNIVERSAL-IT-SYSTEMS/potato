@@ -89,7 +89,7 @@ if ( $currentUser->userName != $userName ) {
 
 <h1>User settings</h1>
 <p>In order to use the Mobile OTP service, you must configure your mobile.
-What type of phone do you have? Click for instructions:
+Click for instructions for your phone:
     <ul>
         <li><a href="#" onclick="setVisibility('android', true); return(false);">Android</a>
             <div class="instructions" id="android">
@@ -119,9 +119,20 @@ What type of phone do you have? Click for instructions:
               <div class="instructioncontents">
                 <h2>Java MIDlet</h2>
                 <p>Start the web browser on your phone, and enter the following address:<br />
-                <strong><pre>http://motp.sf.net/MobileOTP.jar</pre></strong><br />
-                (capitalization matters).</p>
-                <p></p>
+                <pre>http://motp.sf.net/MobileOTP.jar</pre>
+                <em>(note: capitalization matters)</em></p>
+
+                <p>The app should now be installed on your phone and is prompting for your PIN code. In order to initialize the app for use, follow these steps:
+                  <ol>
+                    <li>Enter PIN code <strong>"0000"</strong></li>
+                    <li>The token should now prompt you for <strong>"25 random keys"</strong>. Go ahead and enter 25 random numbers and klick "Ok"</li>
+                    <li>The token now presents your 16 character "Init-Secret" in the display. Enter that secret into this web interface. Do not write this secret down anywhere else.</li>
+                    <li>Once you have entered a "Secret", you must also select a PIN. This action is also performed in this web interface</li>
+                  </ol>
+                </p>
+                <p>
+                  Setup is now complete. Go to <a href="https://password.sectra.net/testtoken.php">test token</a> to test your new token
+                </p>
               </div>
             </div>
         </li>
