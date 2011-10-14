@@ -78,7 +78,9 @@ input.iesux {
 
 
 .qrcode {
-    float:right;
+    float: right;
+    border: 1px solid grey;
+    background: white;
 }
 
 h1, h2, h3 {
@@ -119,7 +121,7 @@ table.userlist a img {
     background: #ffffbb;
     position: absolute;
     display: none;
-    width: 25em;
+    width: 35em;
     box-shadow: 5px 5px 5px #aaa;
 }
 .instructioncontents {

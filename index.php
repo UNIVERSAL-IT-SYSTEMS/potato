@@ -140,7 +140,7 @@ Click for instructions for your phone:
                   <li>The token now presents your 16 character "Init-Secret" in the display. Enter that secret into this web interface. Do not write this secret down anywhere else.</li>
                   <li>Once you have entered a "Secret", you must also select a PIN. This action is also performed in this web interface</li>
                 </ol>
-                <p>Setup is now complete. Go to <a href="testtoken.php">test token</a> to test your new token</p>
+                <p>Setup is now complete. Proceed to the <a href="testtoken.php">token testing area</a> to test your new token</p>
               </div>
             </div>
         </li>
