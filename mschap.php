@@ -25,6 +25,16 @@
  *
  */
 
+/**
+ * mschapv2 authentication, as specified by:
+ * http://tools.ietf.org/html/rfc2759
+ */
+
+/**
+ * Depending on the source of your plaintext password, you might need to
+ * disable unicode conversion.
+ * Make sure that you know what type of data you're using.
+ */
 function NtPasswordHash($pwPlain) {
     $uni = iconv('UTF-8', 'UTF-16LE', $pwPlain);
     return hash ("md4", $uni, true);
@@ -53,10 +63,10 @@ function desEncrypt($clear, $key) {
 function insertParity($key) {
     $bits = "";
     for ($i = 0; $i < strlen($key); $i++) {
-        $bits .= sprintf('%08s', decbin(ord($key{$i})));
+        $bits .= sprintf('%08s', decbin(ord($key[$i])));
     }
 
-    // Add a zero after every seven bits
+    // Insert a zero after every seven bits
     $newkey = chunk_split($bits, 7, '0');
     $aNewkey = str_split( $newkey, 8);
     $finalkey = "";
