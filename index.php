@@ -89,15 +89,16 @@ if ( $currentUser->userName != $userName ) {
 
 <h1>User settings</h1>
 <p>In order to use the Mobile OTP service, you must configure your mobile.
-Click for instructions for your phone:
+Click for detailed instructions for your phone:
     <ul>
         <li><a href="#" onclick="setVisibility('android', true); return(false);">Android</a>
             <div class="instructions" id="android">
-              <div class="closebutton" onclick="setVisibility('android', false);">[close]</div>
+              <div class="closebutton" onclick="setVisibility('android', false);"></div>
               <div class="instructioncontents">
                 <h2>Android</h2>
                 <div class="qrcode">
                   <img src="images/droidotp-qr.png" />
+                  Scan this QR code to be linked directly to this app at the Android market.
                 </div>
                 <p>Install the <a href="http://www.androidpit.com/en/android/market/apps/app/net.marinits.android.droidotp/DroidOTP">DroidOTP</a> app from Google Market</p>
                 <ol>
@@ -111,7 +112,7 @@ Click for instructions for your phone:
 
         <li><a href="#" onclick="setVisibility('iphone', true); return(false);">iPhone</a>
             <div class="instructions" id="iphone">
-              <div class="closebutton" onclick="setVisibility('iphone', false);">[close]</div>
+              <div class="closebutton" onclick="setVisibility('iphone', false);"></div>
               <div class="instructioncontents">
                 <h2>iPhone</h2>
                 <p>Install the <a href="http://itunes.apple.com/us/app/mobile-otp/id328973960&mt=8">iOTP</a> app from iTMS, and follow these steps:</p>
@@ -126,14 +127,14 @@ Click for instructions for your phone:
 
         <li><a href="#" onclick="setVisibility('midlet', true); return(false);">JAVA MIDlet compatible phone</a> (such as older non-smartphone SonyEricsson or Nokias)
             <div class="instructions" id="midlet">
-              <div class="closebutton" onclick="setVisibility('midlet', false);">[close]</div>
+              <div class="closebutton" onclick="setVisibility('midlet', false);"></div>
               <div class="instructioncontents">
                 <h2>Java MIDlet</h2>
                 <p>Start the web browser on your phone, and enter the following address:<br />
                 <pre>http://motp.sf.net/MobileOTP.jar</pre>
                 <em>(note: capitalization matters)</em></p>
 
-                <p>The app should now be installed on your phone and is prompting for your PIN code. In order to initialize the app for use, follow these steps:</p>
+                <p>Confirm that you want to install the program. Once installed, the app will be prompting you for your PIN code. In order to initialize the app for use, follow these steps:</p>
                 <ol>
                   <li>Enter PIN code <strong>"0000"</strong></li>
                   <li>The token should now prompt you for <strong>"25 random keys"</strong>. Go ahead and enter 25 random numbers and klick "Ok"</li>

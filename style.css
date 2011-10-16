@@ -81,6 +81,13 @@ input.iesux {
     float: right;
     border: 1px solid grey;
     background: white;
+    width: 100px;
+}
+
+
+.qrcode img {
+    width: 82px;
+    height: 82px;
 }
 
 h1, h2, h3 {
@@ -119,7 +126,7 @@ table.userlist a img {
 .instructions {
     border: 1px solid grey;
     background: #ffffbb;
-    position: absolute;
+    /* position: absolute; */
     display: none;
     width: 35em;
     box-shadow: 5px 5px 5px #aaa;
@@ -129,15 +136,20 @@ table.userlist a img {
 }
 .closebutton {
     float: right;
-    background: #aaaaff;
+    margin: 4px;
+    background: url(images/dialog-close.png) #77f no-repeat;
     font-size: 0.8em;
-    padding: 0.5em;
-    border: 1px outset black;
-    font-weight: bold;
+    border: 2px outset;
+    width: 16px;
+    height: 16px;
 }
 .closebutton:hover {
     cursor: pointer;
-    background: red;
+    background: url(images/dialog-close.png) #f55 no-repeat;
     color: white;
+}
+.closebutton:active {
+    border: 2px inset;
+    background: url(images/dialog-close.png) #a22 no-repeat;
 }
 
