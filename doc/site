@@ -50,7 +50,14 @@ session {
 post-auth {
         Post-Auth-Type REJECT {
                 attr_filter.access_reject
-        }
+
+		# Make sure client doesn't retry with the same password
+		if (reply:MS-CHAP-Error =~ /E=691 R=1/) {
+			update reply {
+				MS-CHAP-Error := "E=691 R=0"
+			}
+		}
+	}
 }
 pre-proxy {
 }
