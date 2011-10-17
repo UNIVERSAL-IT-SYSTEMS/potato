@@ -88,6 +88,7 @@ input.iesux {
 .qrcode img {
     width: 82px;
     height: 82px;
+    text-align: center;
 }
 
 h1, h2, h3 {
@@ -139,7 +140,7 @@ table.userlist a img {
     margin: 4px;
     background: url(images/dialog-close.png) #77f no-repeat;
     font-size: 0.8em;
-    border: 2px outset;
+    border: 2px outset #ccc;
     width: 16px;
     height: 16px;
 }
@@ -149,7 +150,7 @@ table.userlist a img {
     color: white;
 }
 .closebutton:active {
-    border: 2px inset;
+    border: 2px inset #aaa;
     background: url(images/dialog-close.png) #a22 no-repeat;
 }
 
