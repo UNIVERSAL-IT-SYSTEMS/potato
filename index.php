@@ -100,10 +100,15 @@ Click for detailed instructions for your phone:
                   <img src="images/droidotp-qr.png" />
                   <div>QR link to this app at the Android market.</div>
                 </div>
-                <p>Install the <a href="http://www.androidpit.com/en/android/market/apps/app/net.marinits.android.droidotp/DroidOTP">DroidOTP</a> app from Google Market</p>
+                <p>Install the <a href="http://www.androidpit.com/en/android/market/apps/app/net.marinits.android.droidotp/DroidOTP">DroidOTP</a> app from Google Market, and follow these steps:</p>
                 <ol>
-                  <li>Initialize secret, and register it here. Do not write this secret down anywhere else.</li>
-                  <li>Once you have entered a "Secret", you must also select a PIN. This action is also performed in this web interface</li>
+                  <li>Click the menu button, and select "Settings"</li>
+                  <li>Click add, and choose a memorable name for your token. For example: "Work"</li>
+                  <li>Click on "Initialize"</li>
+                  <li>Shake your phone for a few seconds, and click the "Ok" button</li>
+                  <li>Your phone will now display a 16 character "Secret". Enter the secret in this web interface. Do not write this secret down anywhere else.</li>
+                  <li>Once your secret is safely registered here, click "Hide secret" on your phone. This will prevent your secret from falling into the wrong hands</li>
+                  <li>Register a PIN in this web interface</li>
                 </ol>
                 <p>Setup is now complete. Proceed to the <a href="testtoken.php">token testing area</a> to test your new token</p>
               </div>
