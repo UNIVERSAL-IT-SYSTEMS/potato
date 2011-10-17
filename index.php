@@ -98,7 +98,7 @@ Click for detailed instructions for your phone:
                 <h2>Android</h2>
                 <div class="qrcode">
                   <img src="images/droidotp-qr.png" />
-                  Scan this QR code to be linked directly to this app at the Android market.
+                  <div>QR link to this app at the Android market.</div>
                 </div>
                 <p>Install the <a href="http://www.androidpit.com/en/android/market/apps/app/net.marinits.android.droidotp/DroidOTP">DroidOTP</a> app from Google Market</p>
                 <ol>

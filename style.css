@@ -81,14 +81,15 @@ input.iesux {
     float: right;
     border: 1px solid grey;
     background: white;
-    width: 100px;
+    width: 84px;
 }
-
-
 .qrcode img {
     width: 82px;
     height: 82px;
-    text-align: center;
+}
+.qrcode div {
+    font-size: 0.8em;
+    padding: 0px 8px 8px 8px;
 }
 
 h1, h2, h3 {
