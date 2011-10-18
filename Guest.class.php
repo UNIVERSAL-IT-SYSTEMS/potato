@@ -53,12 +53,14 @@ class Guest {
         $ps = $dbh->prepare("INSERT INTO Guest (userName, password) VALUES (:userName, :password)");
         $ps->execute(array( ":userName" => $this->userName,
                             ":password" => $this->generatePassword()));
+        $this->log("Wifi guest account activated");
     }
 
     function deactivate() {
         global $dbh;
         $ps = $dbh->prepare("DELETE FROM Guest where userName=:userName");
         $ps->execute(array( ":userName" => $this->userName));
+        $this->log("Wifi guest account deactivated");
     }
 
     /***
@@ -148,6 +150,13 @@ class Guest {
         for ( $i=0; $i< 25; $i++) {
             echo $this->generatePassword() . "<br />";
         }
+    }
+
+    function log($message) {
+        global $dbh;
+        $ps = $dbh->prepare("INSERT INTO Log (userName, message) VALUES (:userName, :message)");
+        $ps->execute(array( ":userName" => $this->userName,
+                            ":message" => $message));
     }
 
 }
