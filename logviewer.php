@@ -33,17 +33,31 @@ if ( ! $currentUser->isAdmin() ) {
     exit;
 }
 
+include 'NavigationBar.class.php';
 include 'header.php';
-
 echo "<h1>Log viewer: " . htmlentities($_GET['userName']) . "</h1>\n";
+
+global $dbh;
+$ps = $dbh->prepare("SELECT COUNT(*) from Log where userName=:userName");
+$ps->execute(array(":userName"=>$_GET['userName']));
+$row = $ps->fetch();
+
+$navBar = new NavigationBar();
+$navBar->setNumRows($row[0]);
+$navBar->setUserName($_GET['userName']);
+$navBar->setPageCurrent($_GET['page']);
+$navBar->printNavBar();
 
 ?>
 <table class="userlist" cellpadding="0" cellspacing="0">
 
 <?php
-global $dbh;
-$ps = $dbh->prepare("SELECT time, passPhrase, message from Log where userName=:userName order by time DESC");
-$ps->execute(array(":userName"=>$_GET['userName']));
+
+$ps = $dbh->prepare("SELECT time, passPhrase, message from Log where userName=:userName order by time DESC limit :rowsPerPage offset :rowsOffset");
+$ps->bindValue(':userName', $_GET['userName']);
+$ps->bindValue(':rowsPerPage', $navBar->getRowsPerPage(), PDO::PARAM_INT);
+$ps->bindValue(':rowsOffset', $navBar->getRowsOffset(), PDO::PARAM_INT);
+$ps->execute();
 
 while ($row = $ps->fetch()) {
 ?>
@@ -55,10 +69,10 @@ while ($row = $ps->fetch()) {
 <?php
 }
 ?>
-
 </table>
 
-
 <?php
+$navBar->printNavBar();
+
 include 'footer.php';
 ?>

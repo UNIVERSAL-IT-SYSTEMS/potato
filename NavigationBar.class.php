@@ -1,0 +1,86 @@
+<?php
+/**
+ * Mobile OTP self-service station and administration console
+ * Version 1.0
+ * 
+ * PHP Version 5 with PDO, MySQL, LDAP support
+ * 
+ * Written by Markus Berg
+ *   email: markus@kelvin.nu
+ *   http://kelvin.nu/mossad/
+ * 
+ * Copyright 2011 Markus Berg
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ */
+
+class NavigationBar {
+    private $numRows;
+    private $rowsPerPage = 100;
+    private $pageCurrent;
+    private $pageTotal;
+    private $userName;
+
+    function getRowsOffset() {
+        return ($this->pageCurrent - 1 )*$this->rowsPerPage;
+    }
+
+    function getRowsPerPage() {
+        return $this->rowsPerPage;
+    }
+
+    function setUserName($userName) {
+        $this->userName = $userName;
+    }
+    
+    function setNumRows($rows) {
+        $this->numRows = $rows;
+        $this->pageTotal = ceil($this->numRows / $this->rowsPerPage);
+    }
+
+    function setPageCurrent($page) {
+        $this->pageCurrent = is_numeric($page) ? $page : 1;
+        $this->pageCurrent = ($this->pageCurrent > $this->pageTotal ? $this->pageTotal : $this->pageCurrent);
+        $this->pageCurrent = ($this->pageCurrent < 1 ? 1 : $this->pageCurrent);
+    }
+    
+    function getEntry($page, $title = "") {
+        if ($page < 1 or $page > $this->pageTotal) {
+            return "";
+        }
+        $title = $title == "" ? $page : $title;
+        return "    <td><a href=\"?userName=" . urlencode($this->userName) . "&page=" . $page . "\">" . $title . "</a></td>\n";
+    }
+    
+    function printNavBar() {
+        if ( $this->pageTotal == 1 ) {
+            return;
+        }
+        echo "<table>\n";
+        echo "  <tr>\n";
+        echo $this->pageCurrent == 1 ? "<td>« first</td>" : $this->getEntry(1, "« first");
+        echo $this->pageCurrent == 1 ? "<td>&lt;</td>" : $this->getEntry( ($this->pageCurrent - 1), "&lt;");
+        echo $this->getEntry($this->pageCurrent - 2);
+        echo $this->getEntry($this->pageCurrent - 1);
+        echo "    <td>" . $this->pageCurrent . "</td>\n";
+        echo $this->getEntry($this->pageCurrent + 1);
+        echo $this->getEntry($this->pageCurrent + 2);
+        echo $this->pageCurrent == $this->pageTotal ? "<td>&gt;</td>" : $this->getEntry( ($this->pageCurrent + 1), "&gt;");
+        echo $this->pageCurrent == $this->pageTotal ? "<td>last »</td>" : $this->getEntry( $this->pageTotal, "last »" );
+        echo "  </tr>\n";
+        echo "</table>\n";
+    }
+}
+
+?>
