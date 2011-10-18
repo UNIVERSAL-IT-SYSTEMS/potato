@@ -90,7 +90,7 @@ foreach ($dbh->query($sql) as $row) {
 
         <td>
 <?php
-    echo '<form action="accountadmin.php" method="post">' . "\n";
+    echo '<form action="accountadmin.php" method="post" onsubmit="return(confirm(\'Are you sure that you want to delete the user?\'));">' . "\n";
     echo '<input type="hidden" name="action" value="delete">' . "\n";
     echo '<input type="hidden" name="userName" value="' . $row['userName'] . '">' . "\n";
     echo '<input type="image" src="images/trashcan_empty.png" alt="Delete account" title="Delete account" />' . "\n";
