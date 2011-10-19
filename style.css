@@ -154,4 +154,31 @@ table.userlist a img {
     border: 2px inset #aaa;
     background: url(images/dialog-close.png) #a22 no-repeat;
 }
-
+div.navbarContainer {
+    border-top: 1px solid #777;
+    border-bottom: 1px solid #777;
+    background: #f4f4f4;
+    font-weight: bold;
+    font-size: 0.8em;
+    text-align: center;
+}
+.navbar {
+    border-collapse: collapse;
+}
+.navbar td {
+    text-align: center;
+    min-width: 2em;
+    padding: 0em;
+    margin: 0em;
+}
+.navbar td a {
+    display: block;
+    padding: 0.2em 0.5em;
+}
+.navbar td a:hover {
+    background: #ddd;
+}
+.navbar td.current {
+    background: #ddd;
+    padding: 0.2em 0.5em;
+}

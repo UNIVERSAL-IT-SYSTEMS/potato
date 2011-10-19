@@ -60,26 +60,30 @@ class NavigationBar {
             return "";
         }
         $title = $title == "" ? $page : $title;
-        return "    <td><a href=\"?userName=" . urlencode($this->userName) . "&page=" . $page . "\">" . $title . "</a></td>\n";
+        return "      <td><a href=\"?userName=" . urlencode($this->userName) . "&page=" . $page . "\">" . $title . "</a></td>\n";
     }
     
     function printNavBar() {
         if ( $this->pageTotal == 1 ) {
             return;
         }
-        echo "<table>\n";
-        echo "  <tr>\n";
-        echo $this->pageCurrent == 1 ? "<td>« first</td>" : $this->getEntry(1, "« first");
-        echo $this->pageCurrent == 1 ? "<td>&lt;</td>" : $this->getEntry( ($this->pageCurrent - 1), "&lt;");
+        echo "<div class=\"navbarContainer\">\n";
+        echo "  <table class=\"navbar\">\n";
+        echo "    <tr>\n";
+        echo $this->pageCurrent == 1 ? "<td class=\"current\">« first</td>" : $this->getEntry(1, "« first");
+        echo $this->getEntry($this->pageCurrent - 4);
+        echo $this->getEntry($this->pageCurrent - 3);
         echo $this->getEntry($this->pageCurrent - 2);
         echo $this->getEntry($this->pageCurrent - 1);
-        echo "    <td>" . $this->pageCurrent . "</td>\n";
+        echo "      <td class=\"current\">" . $this->pageCurrent . "</td>\n";
         echo $this->getEntry($this->pageCurrent + 1);
         echo $this->getEntry($this->pageCurrent + 2);
-        echo $this->pageCurrent == $this->pageTotal ? "<td>&gt;</td>" : $this->getEntry( ($this->pageCurrent + 1), "&gt;");
-        echo $this->pageCurrent == $this->pageTotal ? "<td>last »</td>" : $this->getEntry( $this->pageTotal, "last »" );
-        echo "  </tr>\n";
-        echo "</table>\n";
+        echo $this->getEntry($this->pageCurrent + 3);
+        echo $this->getEntry($this->pageCurrent + 4);
+        echo $this->pageCurrent == $this->pageTotal ? "<td class=\"current\">last »</td>" : $this->getEntry( $this->pageTotal, "last »" );
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</div>\n";
     }
 }
 
