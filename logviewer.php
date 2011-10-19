@@ -44,7 +44,7 @@ $row = $ps->fetch();
 
 $navBar = new NavigationBar();
 $navBar->setNumRows($row[0]);
-$navBar->setUserName($_GET['userName']);
+$navBar->addGetParam("userName", $_GET['userName']);
 $navBar->setPageCurrent($_GET['page']);
 $navBar->printNavBar();
 

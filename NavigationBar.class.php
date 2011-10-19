@@ -30,7 +30,7 @@ class NavigationBar {
     private $rowsPerPage = 100;
     private $pageCurrent;
     private $pageTotal;
-    private $userName;
+    private $getParams = array();
 
     function getRowsOffset() {
         return ($this->pageCurrent - 1 )*$this->rowsPerPage;
@@ -40,10 +40,10 @@ class NavigationBar {
         return $this->rowsPerPage;
     }
 
-    function setUserName($userName) {
-        $this->userName = $userName;
+    function addGetParam($key, $value) {
+        $this->getParams[] = "${key}=" . urlencode( $value );
     }
-    
+
     function setNumRows($rows) {
         $this->numRows = $rows;
         $this->pageTotal = ceil($this->numRows / $this->rowsPerPage);
@@ -59,8 +59,11 @@ class NavigationBar {
         if ($page < 1 or $page > $this->pageTotal) {
             return "";
         }
+        $params = $this->getParams;
+        $params[] = "page=" . $page;
+        $url = "?" . implode('&', $params);
         $title = $title == "" ? $page : $title;
-        return "      <td><a href=\"?userName=" . urlencode($this->userName) . "&page=" . $page . "\">" . $title . "</a></td>\n";
+        return "      <td><a href=\"${url}\">" . $title . "</a></td>\n";
     }
     
     function printNavBar() {
