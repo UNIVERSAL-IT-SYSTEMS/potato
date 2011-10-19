@@ -167,12 +167,12 @@ div.navbarContainer {
 }
 .navbar td {
     text-align: center;
-    min-width: 2em;
     padding: 0em;
     margin: 0em;
 }
 .navbar td a {
     display: block;
+    min-width: 2em;
     padding: 0.2em 0.5em;
 }
 .navbar td a:hover {
@@ -180,5 +180,6 @@ div.navbarContainer {
 }
 .navbar td.current {
     background: #ddd;
+    min-width: 2em;
     padding: 0.2em 0.5em;
 }
