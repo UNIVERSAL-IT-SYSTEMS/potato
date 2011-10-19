@@ -27,6 +27,11 @@
 
 include "config.php";
 include "session.php";
+
+if ($wifiSSID == "") {
+    header("Location: index.php");
+}
+
 include "Guest.class.php";
 
 $guest = new Guest();
@@ -51,7 +56,7 @@ include 'header.php';
 
 ?>
 <h1>Wifi guest account</h1>
-<p>In order to provide wifi access to Sectra guests, you can activate a
+<p>In order to provide wifi access to <?php echo $orgName; ?> guests, you can activate a
 guest account which is only granted access to the external network.</p>
 
 <form method="POST" action="wifiguest.php">
@@ -62,7 +67,7 @@ try {
     $guest->fetch($currentUser->userName);
     echo "The following guest account is active:";
     echo "<ul>\n";
-    echo "<li>SSID: sectra-wifi</li>\n";
+    echo "<li>SSID: " . $wifiSSID . "</li>\n";
     echo "<li>Username: " . $currentUser->userName . ".guest</li>";
     echo "<li>Password: " . $guest->password . "</li>\n";
     echo "<li>Valid until: " . $guest->dateExpiration . "</li>\n";

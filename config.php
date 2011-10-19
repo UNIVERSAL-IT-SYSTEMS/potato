@@ -31,6 +31,13 @@ $groupAdmin = "dadm";
 // The POSIX group to which users must belong
 $groupUser = "imtec-world";
 
+// What organization should the UI be branded as
+$orgName = "Sectra";
+
+// What SSID is the wireless guest account for?
+// Set to empty string to disable wifi guest functionality
+$wifiSSID = "Sectra-Wifi";
+
 // Database configuration
 $dbServer = 'localhost';
 $dbName = 'mossad';
