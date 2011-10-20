@@ -120,10 +120,13 @@ Click for detailed instructions for your phone:
               <div class="closebutton" onclick="setVisibility('iphone', false);"></div>
               <div class="instructioncontents">
                 <h2>iPhone</h2>
-                <p>Install the <a href="http://itunes.apple.com/us/app/mobile-otp/id328973960&mt=8">iOTP</a> app from iTMS, and follow these steps:</p>
+                <p>Install the <a href="http://itunes.apple.com/us/app/mobile-otp/id328973960&mt=8">iOTP</a> app from app store, and follow these steps:</p>
                 <ol>
-                  <li>Initialize secret, and register it here. Do not write this secret down anywhere else.</li>
-                  <li>Once you have entered a "Secret", you must also select a PIN. This action is also performed in this web interface</li>
+                  <li>On first start of the app, you will be prompted to create an account</li>
+                  <li>Select a memorable name for your account; for example "Work"</li>
+                  <li>Click "Generate secret", and select either 16 or 32 characters</li>
+                  <li>Your phone will now display a 16 (or 32) character "Secret". Enter the secret in this web interface. Do not write this secret down anywhere else.</li>
+                  <li>Register a PIN in this web interface</li>
                 </ol>
                 <p>Setup is now complete. Proceed to the <a href="testtoken.php">token testing area</a> to test your new token</p>
               </div>
