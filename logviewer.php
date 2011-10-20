@@ -36,6 +36,8 @@ if ( ! $currentUser->isAdmin() ) {
 include 'NavigationBar.class.php';
 include 'header.php';
 echo "<h1>Log viewer: " . htmlentities($_GET['userName']) . "</h1>\n";
+$userInfo = posix_getpwnam($_GET['userName']);
+echo "<p><b>User fullname: </b>" . htmlentities(iconv('UTF-8', 'UTF-16LE', $userInfo['gecos'])) . "</p>\n";
 
 global $dbh;
 $ps = $dbh->prepare("SELECT COUNT(*) from Log where userName=:userName");
