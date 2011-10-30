@@ -25,30 +25,15 @@
  * 
  */
 
-// The POSIX group which has admin rights
-$groupAdmin = "sysadmins";
+// Activate demo mode?
+$demo = true;
 
-// The POSIX group to which users must belong
-$groupUser = "motp-users";
+// All demo users
+$demoUsers = array(
+    "alice" => "fu",
+    "bob" => "bar",
+    "charlie" => "fubar",
+);
 
-// What organization should the UI be branded as
-$orgName = "Kelvin";
-
-// What SSID is the wireless guest account for?
-// Set to empty string to disable wifi guest functionality
-$wifiSSID = "Kelvin-Wifi";
-
-// Database configuration
-$dbServer = 'localhost';
-$dbName = 'mossad';
-$dbUser = 'mossad';
-$dbPassword = 'SuperSecret99';
-
-try {
-    $dbh = new PDO("mysql:host=${dbServer};dbname=${dbName}", $dbUser, $dbPassword);
-} catch (Exception $ignore) {
-    echo "Database error.";
-    exit();
-}
 
 ?>

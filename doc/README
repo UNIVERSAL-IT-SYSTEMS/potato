@@ -5,6 +5,7 @@ php53-process
 php53
 php53-pdo
 php53-mysql
+php53-mcrypt
 php53-cli
 freeradius2
 httpd

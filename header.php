@@ -51,9 +51,9 @@ LOGOUTTIMER;
     <div id="menu">
 <?php
 if ( isset($currentUser) ) {
-    echo '        <a href="/">Home</a>' . "\n";
-    echo '        <a href="/testtoken.php">Test token</a>' . "\n";
-    echo $wifiSSID=="" ? "" : '        <a href="/wifiguest.php">Wifi guest</a>' . "\n";
+    echo '        <a href="index.php">Home</a>' . "\n";
+    echo '        <a href="testtoken.php">Test token</a>' . "\n";
+    echo $wifiSSID=="" ? "" : '        <a href="wifiguest.php">Wifi guest</a>' . "\n";
     if ( $currentUser->isAdmin() ) {
 ?>
         <a href="accountadd.php">Add account</a>
