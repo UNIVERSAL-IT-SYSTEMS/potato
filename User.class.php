@@ -34,6 +34,7 @@ class User {
     public $invalidLogins;
     public $errors = array();
     public $passPhrase;
+    private $maxDrift = 300;
 
     function fetch($userName) {
         global $dbh;
@@ -52,9 +53,8 @@ class User {
 
     function checkMOTP ($passPhrase) {
         $now = intval( gmdate("U") / 10 );
-        $maxDrift = 180/10;
         $validOtps = array();
-        for ( $time = $now - $maxDrift ; $time <= $now + $maxDrift ; $time++ ) {
+        for ( $time = $now - ($this->maxDrift/10) ; $time <= $now + ($this->maxDrift/10) ; $time++ ) {
             $otp = substr( md5($time . $this->secret . $this->pin ), 0, 6);
             array_push($validOtps, $otp);
         }
@@ -68,10 +68,9 @@ class User {
     // perform mschapv2 authentication
     function checkMOTPmschap ($peerChallenge, $authChallenge, $response) {
         $now = intval( gmdate("U") / 10 );
-        $maxDrift = 180/10;
         $validPasswords = array();
         $validOtps = array();
-        for ( $time = $now - $maxDrift ; $time <= $now + $maxDrift ; $time++ ) {
+        for ( $time = $now - ($this->maxDrift/10); $time <= $now + ($this->maxDrift/10) ; $time++ ) {
             $otp = substr( md5($time . $this->secret . $this->pin ), 0, 6);
             $resp = GenerateNTResponse($peerChallenge, $authChallenge, $this->userName, $otp);
             array_push($validOtps, $otp);
@@ -136,7 +135,7 @@ class User {
 
     function replayAttack() {
         global $dbh;
-        $ps = $dbh->prepare('SELECT * from Log where time > (now() - 360) AND userName=:userName AND passPhrase=:passPhrase AND message="Success"');
+        $ps = $dbh->prepare('SELECT * from Log where time > (now() - ' . $this->maxDrift*2 . ') AND userName=:userName AND passPhrase=:passPhrase AND message="Success"');
         $ps->execute(array(":userName"=>$this->userName,
                             ":passPhrase"=>$this->passPhrase));
 
