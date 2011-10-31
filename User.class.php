@@ -152,7 +152,7 @@ class User {
     }
 
     function setSecret($newSecret) {
-        $this->secret = $newSecret;
+        $this->secret = str_replace(" ", "", $newSecret);
     }
 
     function unlock() {
