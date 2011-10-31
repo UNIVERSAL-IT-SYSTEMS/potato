@@ -70,24 +70,25 @@ class Guest {
      * http://www.anyexample.com/programming/php/php__password_generation.xml
      */
     function generatePassword() {
-        // 39 prefixes
-        $aPrefix = array('a', 'aero', 'anti', 'ante', 'auto', 
-                         'bi', 'bio',
-                         'centi', 'cine', 'contra', 
-                         'deca', 'demo', 'duo', 'dyna', 'dino',
-                         'eco', 'ergo', 'extra', 
+        // 57 prefixes
+        $aPrefix = array('aero', 'anti', 'ante', 'ande', 'auto', 
+                         'ba', 'be', 'bi', 'bio', 'bo', 'bu', 'by', 
+                         'ca', 'ce', 'ci', 'cou', 'co', 'cu', 'cy', 
+                         'da', 'de', 'di', 'duo', 'dy', 
+                         'eco', 'ergo', 'exa', 
                          'geo', 'gyno', 
-                         'hetero', 'hypo', 'kilo',
+                         'he', 'hy', 'ki',
                          'intra', 
-                         'macro', 'micro', 'maxi', 'mega', 'mini', 'mono', 
-                         'nano', 'omni', 
+                         'ma', 'mi', 'me', 'mo', 'my', 
+                         'na', 'ni', 'ne', 'no', 'ny', 
+                         'omni', 
                          'pre', 'pro', 'per', 
-                         'super', 
-                         'tera', 'tri', 'tetra',
+                         'sa', 'se', 'si', 'su', 'so', 'sy', 
+                         'ta', 'te', 'tri',
                          'uni');
 
-        // 31 suffices
-        $aSuffix = array('acy', 'al', 'ance', 'ate', 'able', 
+        // 30 suffices
+        $aSuffix = array('acy', 'al', 'ance', 'ate', 'able', 'an', 
                          'dom', 
                          'ence', 'er', 'en',
                          'fy', 'ful', 
