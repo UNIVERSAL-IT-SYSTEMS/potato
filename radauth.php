@@ -32,7 +32,7 @@ include "mschap.php";
 
 $options = getopt("u:p:d:c:n:q:");
 
-$userName = $options["u"];
+$userName = strtolower($options["u"]);
 $passPhrase = $options["p"];
 
 $mschapAuthChallenge = pack( 'H*', substr($options["c"], 2) );

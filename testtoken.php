@@ -28,7 +28,7 @@
 include "config.php";
 include "session.php";
 
-$testUserName = empty($_POST['testUserName']) ? $currentUser->userName : $_POST['testUserName'];
+$testUserName = empty($_POST['testUserName']) ? $currentUser->userName : strtolower($_POST['testUserName']);
 
 if ( ! empty($_POST['testPassPhrase']) ) {
     $testPassPhrase = $_POST['testPassPhrase'];
