@@ -161,8 +161,8 @@ Click for detailed instructions for your phone:
 
 if ( $user->hasToken() ) {
     echo '<div id="infoSecret">' . "\n";
-    echo "A token is already registered to this account.\n";
-    echo '<input type="button" name="Reset" value="Change token secret..." onclick="setVisibility(\'secret\', true); setVisibility(\'infoSecret\', false); document.getElementById(\'focusSecret\').focus(); return(false); "/>' . "\n";
+    // echo "A token is already registered to this account.\n";
+    echo '<input type="button" name="Reset" value="Change your token secret..." onclick="setVisibility(\'secret\', true); setVisibility(\'infoSecret\', false); document.getElementById(\'focusSecret\').focus(); return(false); "/>' . "\n";
     echo "</div>\n";
 }
 ?>
@@ -183,8 +183,8 @@ if ( $user->hasToken() ) {
 <?php
 if ( $user->hasPin() ) {
     echo '<div id="infoPin">' . "\n";
-    echo "A pin is already registered to this account.\n";
-    echo '<input type="button" name="Change pin..." value="Change pin..." onclick="setVisibility(\'pin\', true); setVisibility(\'infoPin\', false); document.getElementById(\'focusPin\').focus(); return(false); "/>' . "\n";
+    // echo "A pin is already registered to this account.\n";
+    echo '<input type="button" name="Change your pin..." value="Change your pin..." onclick="setVisibility(\'pin\', true); setVisibility(\'infoPin\', false); document.getElementById(\'focusPin\').focus(); return(false); "/>' . "\n";
     echo "</div>\n";
 }
 ?>
