@@ -119,6 +119,7 @@ table.userlist tr:nth-child(2n-1) {
 table.userlist td {
     padding: 0.2em 2em 0.2em 1em;
     min-width: 2em;
+    white-space: nowrap;
 }
 
 table.userlist a img {
@@ -183,3 +184,7 @@ div.navbarContainer {
     min-width: 2em;
     padding: 0.2em 0.5em;
 }
+.navbar td.spacer {
+    width: 3em;
+}
+

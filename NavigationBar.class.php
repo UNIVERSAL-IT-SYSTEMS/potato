@@ -74,6 +74,7 @@ class NavigationBar {
         echo "  <table class=\"navbar\">\n";
         echo "    <tr>\n";
         echo $this->pageCurrent == 1 ? "<td class=\"current\">« first</td>" : $this->getEntry(1, "« first");
+        echo $this->pageCurrent - 4 > 1 ? "<td class=\"spacer\">...</td>\n" : "";
         echo $this->getEntry($this->pageCurrent - 4);
         echo $this->getEntry($this->pageCurrent - 3);
         echo $this->getEntry($this->pageCurrent - 2);
@@ -83,6 +84,7 @@ class NavigationBar {
         echo $this->getEntry($this->pageCurrent + 2);
         echo $this->getEntry($this->pageCurrent + 3);
         echo $this->getEntry($this->pageCurrent + 4);
+        echo $this->pageCurrent + 4 < $this->pageTotal ? "<td class=\"spacer\">...</td>\n" : "";
         echo $this->pageCurrent == $this->pageTotal ? "<td class=\"current\">last »</td>" : $this->getEntry( $this->pageTotal, "last »" );
         echo "    </tr>\n";
         echo "  </table>\n";
