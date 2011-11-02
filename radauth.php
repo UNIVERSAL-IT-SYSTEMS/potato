@@ -74,7 +74,7 @@ try {
     $mschap = false;
 
     if ( !empty($passPhrase) ) {
-        $loginOk = $user->checkMOTP($passPhrase);
+        $loginOk = $user->checkOTP($passPhrase);
     } elseif ( !empty($mschapPeerChallenge) && !empty($mschapAuthChallenge) && !empty($mschapResponse) ) {
         $loginOk = $user->checkMOTPmschap($mschapPeerChallenge, $mschapAuthChallenge, $mschapResponse);
         $mschap = true;

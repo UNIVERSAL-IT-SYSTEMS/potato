@@ -41,7 +41,7 @@ if ( ! empty($_POST['testPassPhrase']) ) {
     try {
         $user = new User();
         $user->fetch($testUserName);
-        if ( $user->checkMOTP($testPassPhrase) ) {
+        if ( $user->checkOTP($testPassPhrase) ) {
             $posixGroupUser = posix_getgrnam($groupUser);
             if ( ! in_array( $testUserName, $posixGroupUser['members'] ) ) {
                 $_SESSION['msgWarning'] = "FAIL! User is not a member of the \"${groupUser}\" access group.";

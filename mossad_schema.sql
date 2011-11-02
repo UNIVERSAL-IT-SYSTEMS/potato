@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `User` (
   `userName` char(16) NOT NULL,
   `secret` varchar(32) NOT NULL,
   `pin` char(8),
+  `hotpCounter` int(8) NOT NULL default '0',
   `invalidLogins` tinyint(1) not null default 0,
   PRIMARY KEY  (`userName`)
 ) ENGINE=InnoDB CHARSET=utf8;

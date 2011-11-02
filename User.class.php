@@ -29,12 +29,14 @@ class NoSuchUserException extends Exception { }
 
 class User {
     public $userName;
-    protected $secret;
-    protected $pin;
+    private $secret;
+    private $pin;
     public $invalidLogins;
     public $errors = array();
     public $passPhrase;
     private $maxDrift = 300;
+    private $hotpCounter;
+    private $hotpLookahead = 5;
 
     function fetch($userName) {
         global $dbh;
@@ -45,9 +47,20 @@ class User {
         if ( $row = $ps->fetch() ) {
             $this->secret=$row['secret'];
             $this->pin=$row['pin'];
+            $this->hotpCounter=$row['hotpCounter'];
             $this->invalidLogins=$row['invalidLogins'];
         } else {
             throw new NoSuchUserException();
+        }
+    }
+
+    function checkOTP($passPhrase) {
+        if ( strlen($passPhrase) > 6 ) {
+            $providedPP = substr($passPhrase, -6);
+            $providedPin = substr($passPhrase, 0, -6);
+            return ( $providedPin != $this->pin ? false : $this->checkHOTP($providedPP) );
+        } else {
+            return $this->checkMOTP($passPhrase);
         }
     }
 
@@ -61,6 +74,19 @@ class User {
         if ( $i = array_search($passPhrase, $validOtps ) ) {
             $this->passPhrase = $validOtps[$i];
             return true;
+        }
+        return false;
+    }
+
+    function checkHOTP ($passPhrase) {
+        for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
+            $otp = $this->oathTruncate($this->oathHotp($c));
+            if ( $otp == $passPhrase ) {
+                $this->passPhrase = $validOtps[$i];
+                $this->hotpCounter = $c+1;
+                $this->save();
+                return true;
+            }
         }
         return false;
     }
@@ -86,10 +112,11 @@ class User {
 
     function save() {
         global $dbh;
-        $ps = $dbh->prepare("INSERT INTO User (userName, secret, pin) VALUES (:userName, :secret, :pin) ON DUPLICATE KEY UPDATE secret=:secret, pin=:pin");
+        $ps = $dbh->prepare("INSERT INTO User (userName, secret, pin, hotpCounter) VALUES (:userName, :secret, :pin, :hotpCounter) ON DUPLICATE KEY UPDATE secret=:secret, pin=:pin, hotpCounter=:hotpCounter");
         $ps->execute(array( ":userName" => $this->userName,
                             ":secret" => $this->secret,
-                            ":pin" => $this->pin));
+                            ":pin" => $this->pin,
+                            ":hotpCounter" => $this->hotpCounter));
     }
 
     function delete() {
@@ -152,6 +179,7 @@ class User {
     }
 
     function setSecret($newSecret) {
+        $this->hotpCounter = 0;
         $this->secret = str_replace(" ", "", $newSecret);
     }
 
@@ -167,6 +195,42 @@ class User {
         $ps = $dbh->prepare("UPDATE User set invalidLogins = 0 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
         $this->log("Success");
+    }
+
+
+    // This code from http://php.net/manual/en/function.hash-hmac.php
+    function oathHotp ($counter) {
+        // Counter
+        // the counter value can be more than one byte long, so we need to go multiple times
+        $cur_counter = array(0, 0, 0, 0, 0, 0, 0, 0);
+        for($i=7;$i>=0;$i--) {
+            $cur_counter[$i] = pack ('C*', $counter);
+            $counter = $counter >> 8;
+        }
+        $bin_counter = implode($cur_counter);
+        $bin_counter = str_pad ($bin_counter, 8, chr(0), STR_PAD_LEFT);
+        $hash = hash_hmac ('sha1', $bin_counter, $this->secret);
+        return $hash;
+    }
+
+    // This code from http://php.net/manual/en/function.hash-hmac.php
+    function oathTruncate($hash, $length = 6) {
+        // Convert to dec
+        foreach(str_split($hash,2) as $hex) {
+            $hmac_result[]=hexdec($hex);
+        }
+
+        // Find offset
+        $offset = $hmac_result[19] & 0xf;
+
+        // Algorithm from RFC
+        return
+        (
+            (($hmac_result[$offset+0] & 0x7f) << 24 ) |
+            (($hmac_result[$offset+1] & 0xff) << 16 ) |
+            (($hmac_result[$offset+2] & 0xff) << 8 ) |
+            ($hmac_result[$offset+3] & 0xff)
+        ) % pow(10,$length);
     }
 }
 ?>
