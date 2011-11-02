@@ -10,8 +10,8 @@ authorize {
 	suffix
 	files
 	motp
-	expiration
-	logintime
+#	expiration
+#	logintime
 	pap
 }
  
@@ -33,23 +33,23 @@ authenticate {
 }
  
 preacct {
-        preprocess
-        acct_unique
-        suffix
-        files
+	preprocess
+	acct_unique
+	suffix
+	files
 }
 accounting {
-        detail
-        unix
-        radutmp
-        attr_filter.accounting_response
+	detail
+	unix
+	radutmp
+	attr_filter.accounting_response
 }
 session {
-        radutmp
+	radutmp
 }
 post-auth {
-        Post-Auth-Type REJECT {
-                attr_filter.access_reject
+	Post-Auth-Type REJECT {
+		attr_filter.access_reject
 	}
 }
 pre-proxy {

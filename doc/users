@@ -1,12 +1,20 @@
-DEFAULT Suffix == ".guest", Auth-Type = Accept
-	Login-IP-Host = klingon.sectra.net,
-	Class = "External-users"
+# Enable this section if you want to allow guest logins to your wifi
+# You will also need to configure your wifi network to direct users to the
+# proper network based on the "Class="
+# 
+# DEFAULT Suffix == ".guest", Auth-Type = Accept
+# 	Login-IP-Host = wifi-controller.example.com,
+# 	Class = "External-users"
 
-DEFAULT Group == "dadm", Auth-Type = Accept
-	Class = "DCSNET-users"
 
-DEFAULT Group == "DCS-alla", Auth-Type = Accept
-	Class = "DCSNET-users"
+# Direct sysadmins to the correct network.
+# This needs to be configured in your wifi network or vpn gateway as well.
+# 
+# DEFAULT Group == "sysadmin", Auth-Type = Accept
+# 	Class = "Sysadmin-users"
 
+
+
+# This is the simplest configuration.
 DEFAULT Auth-Type = Accept
 	Class = "Remoteaccess"
