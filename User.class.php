@@ -66,14 +66,12 @@ class User {
 
     function checkMOTP ($passPhrase) {
         $now = intval( gmdate("U") / 10 );
-        $validOtps = array();
-        for ( $time = $now - ($this->maxDrift/10) ; $time <= $now + ($this->maxDrift/10) ; $time++ ) {
+        for ( $time = $now + ($this->maxDrift/10) ; $time >= $now - ($this->maxDrift/10) ; $time-- ) {
             $otp = substr( md5($time . $this->secret . $this->pin ), 0, 6);
-            array_push($validOtps, $otp);
-        }
-        if ( $i = array_search($passPhrase, $validOtps ) ) {
-            $this->passPhrase = $validOtps[$i];
-            return true;
+            if ( $otp == $passPhrase ) {
+                $this->passPhrase = $otp;
+                return true;
+            }
         }
         return false;
     }
@@ -82,7 +80,7 @@ class User {
         for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
             $otp = $this->oathTruncate($this->oathHotp($c));
             if ( $otp == $passPhrase ) {
-                $this->passPhrase = $validOtps[$i];
+                $this->passPhrase = $otp;
                 $this->hotpCounter = $c+1;
                 $this->save();
                 return true;
@@ -96,17 +94,27 @@ class User {
         $now = intval( gmdate("U") / 10 );
         $validPasswords = array();
         $validOtps = array();
-        for ( $time = $now - ($this->maxDrift/10); $time <= $now + ($this->maxDrift/10) ; $time++ ) {
+        for ( $time = $now + ($this->maxDrift/10); $time >= $now - ($this->maxDrift/10) ; $time-- ) {
             $otp = substr( md5($time . $this->secret . $this->pin ), 0, 6);
-            $resp = GenerateNTResponse($peerChallenge, $authChallenge, $this->userName, $otp);
-            array_push($validOtps, $otp);
-            array_push($validPasswords, $resp);
+            $calcResponse = GenerateNTResponse($peerChallenge, $authChallenge, $this->userName, $otp);
+            if ( $calcResponse == $response ) {
+                $this->passPhrase = $otp;
+                return true;
+            }
         }
-        // Find out which otp was used in order to prevent replay attacks
-        if ( $i = array_search($response, $validPasswords ) ) {
-            $this->passPhrase = $validOtps[$i];
-            return true;
+
+        // Repeat process for HOTP token
+        for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
+            $otp = $this->pin . $this->oathTruncate($this->oathHotp($c));
+            $calcResponse = GenerateNTResponse($peerChallenge, $authChallenge, $this->userName, $otp);
+            if ( $calcResponse == $response ) {
+                $this->passPhrase = $otp;
+                $this->hotpCounter = $c+1;
+                $this->save();
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -154,9 +162,13 @@ class User {
 
     function log($message) {
         global $dbh;
+
+        // Don't log the pin...
+        $pp = strlen($this->passPhrase) > 6 ? substr($this->passPhrase, -6) : $this->passPhrase;
+
         $ps = $dbh->prepare("INSERT INTO Log (userName, passPhrase, message) VALUES (:userName, :passPhrase, :message)");
         $ps->execute(array( ":userName" => $this->userName,
-                            ":passPhrase" => $this->passPhrase,
+                            ":passPhrase" => $pp,
                             ":message" => $message));
     }
 
