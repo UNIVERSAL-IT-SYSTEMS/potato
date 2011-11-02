@@ -90,7 +90,7 @@ class User {
     }
 
     // perform mschapv2 authentication
-    function checkMOTPmschap ($peerChallenge, $authChallenge, $response) {
+    function checkOTPmschap ($peerChallenge, $authChallenge, $response) {
         $now = intval( gmdate("U") / 10 );
         $validPasswords = array();
         $validOtps = array();
