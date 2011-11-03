@@ -56,9 +56,12 @@ if ( isset($currentUser) ) {
     echo $wifiSSID=="" ? "" : '        <a href="wifiguest.php">Wifi guest</a>' . "\n";
     if ( $currentUser->isAdmin() ) {
 ?>
+        <br />
         <a href="accountadd.php">Add account</a>
         <a href="accountadmin.php">Account admin</a>
         <a href="syslog.php">System log</a>
+        <br />
+        <a href="yubikey.php">Yubikey</a>
         <br />
 <?php
     }
