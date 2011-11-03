@@ -5,7 +5,7 @@ GRANT SELECT,INSERT,UPDATE,DELETE ON mossad.* TO 'mossad'@'localhost' IDENTIFIED
 
 CREATE TABLE IF NOT EXISTS `User` (
   `userName` char(16) NOT NULL,
-  `secret` varchar(32) NOT NULL,
+  `secret` varchar(64) NOT NULL,
   `pin` char(8),
   `hotpCounter` int(8) NOT NULL default '0',
   `invalidLogins` tinyint(1) not null default 0,

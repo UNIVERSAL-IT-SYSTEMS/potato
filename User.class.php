@@ -221,7 +221,7 @@ class User {
         }
         $bin_counter = implode($cur_counter);
         $bin_counter = str_pad ($bin_counter, 8, chr(0), STR_PAD_LEFT);
-        $hash = hash_hmac ('sha1', $bin_counter, $this->secret);
+        $hash = hash_hmac ('sha1', $bin_counter, pack( 'H*', $this->secret));
         return $hash;
     }
 
