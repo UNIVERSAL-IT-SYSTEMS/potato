@@ -87,23 +87,23 @@ try {
         if ( ! in_array( $userName, $posixGroupUser['members'] ) ) {
             // User not member of access group
             $user->invalidLogin();
-            $user->log("Invalid login. Not member of ${groupUser}. [" . $clientShortName . "]");
+            $user->log("Valid login, but user is not a member of ${groupUser}. [ " . $clientShortName . " ]");
         } elseif ( ! $user->hasPin() ) {
             // Account has no PIN
             $user->invalidLogin();
-            $user->log("Invalid login. No pin registered to this user. [" . $clientShortName . "]");
+            $user->log("Invalid login. No pin registered to this user. [ " . $clientShortName . " ]");
         } elseif ( ! $user->hasToken() ) {
             // Account has no token
             $user->invalidLogin();
-            $user->log("Invalid login. No token registered to this user. [" . $clientShortName . "]");
+            $user->log("Invalid login. No token registered to this user. [ " . $clientShortName . " ]");
         } elseif ( $user->invalidLogins > 4 ) {
             // Account locked out
             $user->invalidLogin();
-            $user->log("Invalid login. Account locked out. [" . $clientShortName . "]");
+            $user->log("Valid login, but account locked out. [ " . $clientShortName . " ]");
         } elseif ( $user->replayAttack()) {
             // Replay attack
             $user->invalidLogin();
-            $user->log("Invalid login. OTP replay. [" . $clientShortName . "]");
+            $user->log("Invalid login. OTP replay. [ " . $clientShortName . " ]");
         } else {
             $user->validLogin($clientShortName);
             if ($mschap) {
