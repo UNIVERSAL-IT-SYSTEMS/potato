@@ -195,11 +195,11 @@ class User {
         $this->secret = str_replace(" ", "", $newSecret);
     }
 
-    function unlock() {
+    function unlock($unlocker) {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = 0 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
-        $this->log("Account unlocked");
+        $this->log("Account unlocked by " . htmlentities($unlocker));
     }
 
     function validLogin() {

@@ -44,7 +44,7 @@ if (isset($_POST['action'])) {
                 break;
 
             case 'unlock':
-                $user->unlock();
+                $user->unlock($currentUser->userName);
                 $_SESSION['msgInfo'] = 'User account "' . htmlentities($user->userName) . '" unlocked.';
                 break;
         }
