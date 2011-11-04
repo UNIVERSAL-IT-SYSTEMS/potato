@@ -61,8 +61,6 @@ if ( isset($currentUser) ) {
         <a href="accountadmin.php">Account admin</a>
         <a href="syslog.php">System log</a>
         <br />
-        <a href="yubikey.php">Yubikey</a>
-        <br />
 <?php
     }
 ?>

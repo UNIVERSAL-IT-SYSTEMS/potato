@@ -153,6 +153,43 @@ Click for detailed instructions for your phone:
               </div>
             </div>
         </li>
+        <li><a href="#" onclick="setVisibility('yubikey', true); return(false);">Yubikey dongle</a>
+            <div class="instructions" id="yubikey">
+              <div class="closebutton" onclick="setVisibility('yubikey', false);"></div>
+              <div class="instructioncontents">
+
+                <h2>Yubikey administration</h2>
+                <p>For users that do not have a mobile phone for use as a token, 
+                  standard HOTP tokens are also supported; for instance the
+                  <a href="http://www.yubico.com/">Yubikey</a>. Here are 
+                  step-by-step instructions for initializing your Yubikey
+                  for first time use.</p>
+
+                <ol>
+                  <li>Download and install the <a href="http://www.yubico.com/personalization-tool">Yubikey personalization tool from the Yubico site</a></li>
+                  <li>Start the tool and select the OATH-HOTP mode</li>
+                  <li>Select the "Quick" programming mode<br />
+                    <a href="images/yubikey.png"><img src="images/yubikey_thumb.jpg"></a>
+                  </li>
+                  <li>Select "Configuration Slot 1"</li>
+                  <li>Deselect the "OATH Token Identifier"</li>
+                  <li>Set "HOTP Length" to "6 Digits"</li>
+                  <li>Deselect "Hide secret"</li>
+                  <li>Click "Regenerate"</li>
+                  <li>Click "Write Configuration"</li>
+                  <li>Copy-paste the "Secret Key (20 bytes Hex)" as your token secret in this web interface</li>
+                </ol>
+
+                <h2>Important</h2>
+                <p>As the HOTP tokens don't have PIN-codes, you need to enter your
+                  PIN as the first part of your passphrase when logging in.
+                  For example: if your PIN-code is <strong>"1234"</strong>, you need to focus
+                  the password field, and enter "1234" before pressing the Yubikey button for a total
+                  password length of 10 characters.
+                </p>
+              </div>
+            </div>
+        </li>
     </ul>
 </p>
 
