@@ -113,7 +113,7 @@ try {
         }
     } else {
         $user->invalidLogin();
-        $user->log("Invalid login");
+        $user->log("Invalid login [ " . $clientShortName . " ]");
     }
 } catch (NoSuchUserException $ignore) {
 }
