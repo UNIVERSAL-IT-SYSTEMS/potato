@@ -30,7 +30,7 @@ include "User.class.php";
 include "Guest.class.php";
 include "mschap.php";
 
-$options = getopt("u:p:d:c:n:q:");
+$options = getopt("u:p:c:n:q:s:");
 
 $userName = strtolower($options["u"]);
 $passPhrase = $options["p"];
@@ -38,6 +38,8 @@ $passPhrase = $options["p"];
 $mschapAuthChallenge = pack( 'H*', substr($options["c"], 2) );
 $mschapPeerChallenge = pack( 'H*', substr($options["n"], 6, 32) );
 $mschapResponse = pack( 'H*', $options["q"] );
+
+$clientShortName = $options["s"];
 
 
 if ( substr( $userName, -6 ) == ".guest" ) {
@@ -85,25 +87,25 @@ try {
         if ( ! in_array( $userName, $posixGroupUser['members'] ) ) {
             // User not member of access group
             $user->invalidLogin();
-            $user->log("Invalid login. Not member of ${groupUser}.");
+            $user->log("Invalid login. Not member of ${groupUser}. [" . $clientShortName . "]");
         } elseif ( ! $user->hasPin() ) {
             // Account has no PIN
             $user->invalidLogin();
-            $user->log("Invalid login. No pin registered to this user.");
+            $user->log("Invalid login. No pin registered to this user. [" . $clientShortName . "]");
         } elseif ( ! $user->hasToken() ) {
             // Account has no token
             $user->invalidLogin();
-            $user->log("Invalid login. No token registered to this user.");
+            $user->log("Invalid login. No token registered to this user. [" . $clientShortName . "]");
         } elseif ( $user->invalidLogins > 4 ) {
             // Account locked out
             $user->invalidLogin();
-            $user->log("Invalid login. Account locked out.");
+            $user->log("Invalid login. Account locked out. [" . $clientShortName . "]");
         } elseif ( $user->replayAttack()) {
             // Replay attack
             $user->invalidLogin();
-            $user->log("Invalid login. OTP replay");
+            $user->log("Invalid login. OTP replay. [" . $clientShortName . "]");
         } else {
-            $user->validLogin();
+            $user->validLogin($clientShortName);
             if ($mschap) {
                 echo "Cleartext-Password := \"" . $user->passPhrase . "\"";
             }

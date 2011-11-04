@@ -174,7 +174,7 @@ class User {
 
     function replayAttack() {
         global $dbh;
-        $ps = $dbh->prepare('SELECT * from Log where time > (now() - ' . $this->maxDrift*2 . ') AND userName=:userName AND passPhrase=:passPhrase AND message="Success"');
+        $ps = $dbh->prepare('SELECT * from Log where time > (now() - ' . $this->maxDrift*2 . ') AND userName=:userName AND passPhrase=:passPhrase AND message like "Success%"');
         $ps->execute(array(":userName"=>$this->userName,
                             ":passPhrase"=>$this->passPhrase));
 
@@ -202,11 +202,11 @@ class User {
         $this->log("Account unlocked by " . htmlentities($unlocker));
     }
 
-    function validLogin() {
+    function validLogin($source = "") {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = 0 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
-        $this->log("Success");
+        $this->log("Success" . ($source=="" ? "" : " [ " . $source . " ]"));
     }
 
 
