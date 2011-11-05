@@ -1,14 +1,13 @@
 <?php
-
-$dadm = posix_getgrnam("dadm");
-echo "<pre>";
-print_r( $dadm );
-echo "</pre>";
-
-if ( in_array( "markus", $dadm[members] ) ) {
-    echo "markus is in \"" . $dadm[name] . "\"";
-} else {
-    echo "nope";
+$timeStart = gmdate("U");
+for ($i=0; $i< 100000; $i++) {
+    $rand = md5(rand());
+    echo $rand . "\n";
 }
+$timeStop = gmdate("U");
+
+$timeDiff = $timeStop - $timeStart;
+
+echo "Diff: " . $timeDiff . "\n";
 
 ?>

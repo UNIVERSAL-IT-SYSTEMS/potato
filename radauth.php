@@ -41,6 +41,7 @@ $mschapResponse = pack( 'H*', $options["q"] );
 
 $clientShortName = $options["s"];
 
+$mschap = empty($passPhrase) ? true : false;
 
 if ( substr( $userName, -6 ) == ".guest" ) {
     // Guest login
@@ -50,20 +51,27 @@ if ( substr( $userName, -6 ) == ".guest" ) {
     try {
         $guest->fetch($guestName);
 
-        if ( empty($passPhrase) ) {
-            # Unknown authentication mechanism. Probably mschapv2.
+        if ( $mschap ) {
             $mschapAuthResponse = GenerateNTResponse($mschapPeerChallenge, $mschapAuthChallenge, $userName, $guest->password);
+
+            # Set cleartext password for mschapv2 module to either pass or fail
+            echo "Cleartext-Password := \"" . $guest->password . "\"";
             if ($mschapAuthResponse == $mschapResponse ) {
-                # User auth checks out. Set cleartext password for mschap module to use
-                echo "Cleartext-Password := \"" . $guest->password . "\"";
                 exit(0);
             }
-            exit(1);
+            // Exit with noop
+            exit(8);
         } else {
             # Cleartext password available; see if it's the correct one
             exit ($guest->password == $passPhrase ? 0 : 1);
         }
     } catch (NoGuestException $ignore) {
+        if ($mschap) {
+            // Set a random dummy password for the mschapv2 module to fail on
+            echo "Cleartext-Password := \"" . md5(rand()) . "\"";
+            // Exit with noop
+            exit(8);
+        }
         exit(1);
     }
 }
@@ -73,13 +81,11 @@ try {
     $user->fetch($userName);
 
     $loginOk = false;
-    $mschap = false;
 
-    if ( !empty($passPhrase) ) {
-        $loginOk = $user->checkOTP($passPhrase);
-    } elseif ( !empty($mschapPeerChallenge) && !empty($mschapAuthChallenge) && !empty($mschapResponse) ) {
+    if ( $mschap ) {
         $loginOk = $user->checkOTPmschap($mschapPeerChallenge, $mschapAuthChallenge, $mschapResponse);
-        $mschap = true;
+    } else {
+        $loginOk = $user->checkOTP($passPhrase);
     }
 
     if ( $loginOk ) {
@@ -118,17 +124,12 @@ try {
 } catch (NoSuchUserException $ignore) {
 }
 
+if ($mschap) {
+    // Set a random dummy password for the mschapv2 module to fail on
+    echo "Cleartext-Password := \"" . md5(rand()) . "\"";
+    // Exit with noop
+    exit(8);
+}
 exit(1);
-
-/*
-
-These are the mschapv2 failure codes as per the spec:
-    646 ERROR_RESTRICTED_LOGON_HOURS
-    647 ERROR_ACCT_DISABLED
-    648 ERROR_PASSWD_EXPIRED
-    649 ERROR_NO_DIALIN_PERMISSION
-    691 ERROR_AUTHENTICATION_FAILURE
-    709 ERROR_CHANGING_PASSWORD
-*/
 
 ?>
