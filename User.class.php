@@ -80,7 +80,7 @@ class User {
         for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
             $otp = $this->oathTruncate($this->oathHotp($c));
             if ( $otp == $passPhrase ) {
-                $this->passPhrase = $this->pin . $otp;
+                $this->passPhrase = "HOTP";
                 $this->hotpCounter = $c+1;
                 $this->save();
                 return true;
