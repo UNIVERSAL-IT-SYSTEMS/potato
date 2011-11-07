@@ -41,7 +41,7 @@ $mschapResponse = pack( 'H*', $options["q"] );
 
 $clientShortName = $options["s"];
 
-$mschap = empty($passPhrase) ? true : false;
+$mschap = (empty($passPhrase) && !empty($mschapAuthChallenge) && !empty($mschapPeerChallenge)) ? true : false;
 
 if ( substr( $userName, -6 ) == ".guest" ) {
     // Guest login

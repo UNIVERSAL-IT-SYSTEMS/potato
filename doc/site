@@ -5,30 +5,31 @@
 #####################################
 authorize {
 	preprocess
-	chap
+#	chap
 	mschap
 	suffix
 	files
 	motp
 #	expiration
 #	logintime
-	pap
+#	pap
 }
  
 #  Authentication.
 #
 authenticate {
-	Auth-Type PAP {
-		pap
+#	Auth-Type PAP {
+#		pap
+#	}
+#	Auth-Type CHAP {
+#		chap
+#	}
+
+	Auth-Type MOTP {
+		motp
 	}
-        Auth-Type CHAP {
-		chap
-	}
- 	Auth-Type MOTP {
- 		motp
-	}
- 	Auth-Type MSCHAP {
- 		mschap
+	Auth-Type MSCHAP {
+		mschap
 	}
 }
  
