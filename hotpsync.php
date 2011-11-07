@@ -45,6 +45,7 @@ try {
             $_SESSION['msgWarning'] = "Unable to sync.";
         } else {
             $_SESSION['msgInfo'] = "Token counter synced by " . $offset;
+            $user->log("Token counter resynced by " . $offset);
         }
     }
 } catch (NoSuchUserException $e) {
