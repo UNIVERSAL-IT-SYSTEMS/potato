@@ -60,6 +60,7 @@ if ( isset($currentUser) ) {
         <a href="accountadd.php">Add account</a>
         <a href="accountadmin.php">Account admin</a>
         <a href="syslog.php">System log</a>
+        <a href="hotpsync.php">HOTP sync</a>
         <br />
 <?php
     }

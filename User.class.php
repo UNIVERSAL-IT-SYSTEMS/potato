@@ -209,6 +209,20 @@ class User {
         $this->log("Success" . ($source=="" ? "" : " [ " . $source . " ]"));
     }
 
+    function hotpResync($passPhrase) {
+        if ($this->hotpCounter == 0) {
+            return 0;
+        }
+        for ($offset=0; $offset<100; $offset++) {
+            $c = $this->hotpCounter + $offset;
+            if ( $this->oathTruncate($this->oathHotp($c)) == $passPhrase ) {
+                $this->hotpCounter = $c+1;
+                $this->save();
+                return $offset+1;
+            }
+        }
+        return 0;
+    }
 
     // This code from http://php.net/manual/en/function.hash-hmac.php
     function oathHotp ($counter) {
