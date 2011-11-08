@@ -102,7 +102,7 @@ try {
             // Account has no token
             $user->invalidLogin();
             $user->log("Invalid login. No token registered to this user. [ " . $clientShortName . " ]");
-        } elseif ( $user->invalidLogins > 4 ) {
+        } elseif ( $user->isLockedOut() ) {
             // Account locked out
             $user->invalidLogin();
             $user->log("Valid login, but account locked out. [ " . $clientShortName . " ]");

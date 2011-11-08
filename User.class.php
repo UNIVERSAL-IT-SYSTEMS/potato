@@ -37,6 +37,7 @@ class User {
     private $maxDrift = 300;
     private $hotpCounter;
     private $hotpLookahead = 5;
+    private $invalidLoginLimit = 7;
 
     function fetch($userName) {
         global $dbh;
@@ -158,6 +159,10 @@ class User {
         global $groupAdmin;
         $groupInfo = posix_getgrnam($groupAdmin);
         return (in_array($this->userName, $groupInfo['members']));
+    }
+
+    function isLockedOut() {
+        return ( $this->invalidLogins > $this->invalidLoginLimit ? true : false );
     }
 
     function log($message) {

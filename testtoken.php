@@ -55,7 +55,7 @@ if ( ! empty($_POST['testPassPhrase']) ) {
                 $_SESSION['msgWarning'] = "FAIL! Account has no token.";
                 $user->invalidLogin();
                 $user->log("Invalid login. Account has no token.");
-            } elseif ( $user->invalidLogins > 4 ) {
+            } elseif ( $user->isLockedOut() ) {
                 $_SESSION['msgWarning'] = "FAIL! Account locked out due to too many incorrect login attempts. Please contact the helpdesk to reset your account.";
                 $user->invalidLogin();
                 $user->log("Invalid login. Account locked out.");
