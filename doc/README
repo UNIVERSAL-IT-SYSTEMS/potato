@@ -21,13 +21,13 @@ When you start mysql for the first time, you're recommended to harden the
 installation by removing the anon users and deleting test tables. Go ahead and
 do that.
 
-Copy the mossad package to /var/www/html
+Copy the potato package to /var/www/html
 
-Make configuration changes in config.php, mossad_schema.sql (change the
+Make configuration changes in config.php, db_schema.sql (change the
 password)
 
 import the database schema by issuing the command:
-mysql -u root -p < mossad_schema.sql
+mysql -u root -p < db_schema.sql
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -48,3 +48,4 @@ The following configuration files need alteration:
 /etc/raddb/radiusd.conf
 /etc/raddb/sites-available/default
 
+copy the file doc/motp.conf to /etc/raddb

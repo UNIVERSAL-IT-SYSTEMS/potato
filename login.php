@@ -1,13 +1,12 @@
 <?php
 /**
- * Mobile OTP self-service station and administration console
+ * Potato
+ * One-time-password self-service and administration
  * Version 1.0
- * 
- * PHP Version 5 with PDO, MySQL, and PAM support
  * 
  * Written by Markus Berg
  *   email: markus@kelvin.nu
- *   http://kelvin.nu/mossad/
+ *   http://kelvin.nu/potato/
  * 
  * Copyright 2011 Markus Berg
  *
@@ -28,12 +27,16 @@
 include "config.php";
 session_start();
 include "User.class.php";
+include "demo.php";
 
 if ( !empty($_POST['loginUserName']) ) {
     $loginUserName = $_POST['loginUserName'];
     $loginPassword = $_POST['loginPassword'];
 
     try {
+#        if ($demo && in_array($loginUserName, array_keys($demoUsers)) && $demoUsers{$loginUserName}==$loginPassword) {
+#            $posixGroupUser = array();
+#            $posixGroupUser['members'] = array_keys($demoUsers);
         if( pam_auth( $loginUserName, $loginPassword ) ) {
             $posixGroupUser = posix_getgrnam($groupUser);
             if ( in_array( $loginUserName, $posixGroupUser['members'] ) ) {
@@ -54,6 +57,16 @@ if ( !empty($_POST['loginUserName']) ) {
 
 include 'header.php';
 
+if ($demo) {
+    echo "<p><strong>DEMO MODE</strong></p>\n";
+    echo "<p>Login with one of the following accounts:\n";
+    echo "<ul>\n";
+    foreach ( array_keys($demoUsers) as $u ) {
+        echo "    <li><strong>" . $u . "</strong>, pw: \"" . $demoUsers[$u] . "\"</li>\n";
+    }
+    echo "</ul>\n";
+    echo "<hr />\n";
+}
 ?>
 <p>Login with your regular Windows username and password.</p>
 <form method="post" action="login.php"> 

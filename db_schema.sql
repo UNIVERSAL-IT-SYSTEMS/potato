@@ -1,7 +1,7 @@
-CREATE DATABASE `mossad` DEFAULT CHARACTER SET utf8 ;
-USE `mossad`;
+CREATE DATABASE `potato` DEFAULT CHARACTER SET utf8 ;
+USE `potato`;
 
-GRANT SELECT,INSERT,UPDATE,DELETE ON mossad.* TO 'mossad'@'localhost' IDENTIFIED BY 'SuperSecret99';
+GRANT SELECT,INSERT,UPDATE,DELETE ON potato.* TO 'potato'@'localhost' IDENTIFIED BY 'SuperSecret99';
 
 CREATE TABLE IF NOT EXISTS `User` (
   `userName` char(16) NOT NULL,

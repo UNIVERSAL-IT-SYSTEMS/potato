@@ -1,13 +1,12 @@
 <?php
 /**
- * Mobile OTP self-service station and administration console
+ * Potato
+ * One-time-password self-service and administration
  * Version 1.0
- *
- * PHP Version 5 with PDO, MySQL, and PAM support
  *
  * Written by Markus Berg
  *   email: markus@kelvin.nu
- *   http://kelvin.nu/mossad/
+ *   http://kelvin.nu/potato/
  *
  * Copyright 2011 Markus Berg
  *

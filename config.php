@@ -1,13 +1,12 @@
 <?php
 /**
- * Mobile OTP self-service station and administration console
+ * Potato
+ * One-time-password self-service and administration
  * Version 1.0
- * 
- * PHP Version 5 with PDO, MySQL, and PAM support
  * 
  * Written by Markus Berg
  *   email: markus@kelvin.nu
- *   http://kelvin.nu/mossad/
+ *   http://kelvin.nu/potato/
  * 
  * Copyright 2011 Markus Berg
  *
@@ -29,19 +28,19 @@
 $groupAdmin = "sysadmins";
 
 // The POSIX group to which users must belong
-$groupUser = "motp-users";
+$groupUser = "potato-users";
 
 // What organization should the UI be branded as
-$orgName = "Kelvin";
+$orgName = "Potato";
 
 // What SSID is the wireless guest account for?
 // Set to empty string to disable wifi guest functionality
-$wifiSSID = "Kelvin-Wifi";
+$wifiSSID = "Potato-Wifi";
 
 // Database configuration
 $dbServer = 'localhost';
-$dbName = 'mossad';
-$dbUser = 'mossad';
+$dbName = 'potato';
+$dbUser = 'potato';
 $dbPassword = 'SuperSecret99';
 
 try {
