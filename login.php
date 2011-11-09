@@ -27,7 +27,7 @@
 include "config.php";
 session_start();
 include "User.class.php";
-include "demo.php";
+# include "demo.php";
 
 if ( !empty($_POST['loginUserName']) ) {
     $loginUserName = $_POST['loginUserName'];
