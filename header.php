@@ -6,7 +6,7 @@
  * 
  * Written by Markus Berg
  *   email: markus@kelvin.nu
- *   http://kelvin.nu/potato/
+ *   http://kelvin.nu/software/potato/
  * 
  * Copyright 2011 Markus Berg
  *
@@ -53,13 +53,15 @@ if ( isset($currentUser) ) {
     echo '        <a href="index.php">Home</a>' . "\n";
     echo '        <a href="testtoken.php">Test token</a>' . "\n";
     echo $wifiSSID=="" ? "" : '        <a href="wifiguest.php">Wifi guest</a>' . "\n";
+    # echo "        <br />\n";
+    echo '        <a href="help.php">Help</a>' . "\n";
     if ( $currentUser->isAdmin() ) {
 ?>
         <br />
         <a href="accountadd.php">Add account</a>
         <a href="accountadmin.php">Account admin</a>
-        <a href="syslog.php">System log</a>
         <a href="hotpsync.php">HOTP sync</a>
+        <a href="syslog.php">System log</a>
         <br />
 <?php
     }
