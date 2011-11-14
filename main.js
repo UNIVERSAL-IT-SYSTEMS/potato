@@ -5,7 +5,7 @@
  * 
  * Written by Markus Berg
  *   email: markus@kelvin.nu
- *   http://kelvin.nu/potato/
+ *   http://kelvin.nu/software/potato/
  * 
  * Copyright 2011 Markus Berg
  *
