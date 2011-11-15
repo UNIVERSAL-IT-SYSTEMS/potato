@@ -30,8 +30,10 @@ include 'header.php';
 ?>
 
 <h1>Help</h1>
-
-<p>How to configure Windows XP for the wireless network: <a href="winxp.php">Windows XP wifi guide</a>.</p>
+<ul>
+    <li><a href="about.php">Basic information about one-time-passwords</a></li>
+    <li><a href="winxp.php">Windows XP wifi guide</a></li>
+</ul>
 
 <?php
 include 'footer.php';
