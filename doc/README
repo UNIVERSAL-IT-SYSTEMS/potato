@@ -45,7 +45,6 @@ enter /etc/raddb/cert and execute "./bootstrap" as the radius user
 
 The following configuration files need alteration:
 /etc/raddb/users
-/etc/raddb/radiusd.conf
 /etc/raddb/sites-available/default
 
-copy the file doc/motp.conf to /etc/raddb
+copy the file doc/potato to /etc/raddb/modules
