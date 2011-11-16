@@ -72,7 +72,7 @@ foreach ($dbh->query($sql) as $row) {
         </td>
         <td>
 <?php
-    if ($row['invalidLogins']>4) {
+    if ($row['invalidLogins']>User::$invalidLoginLimit) {
         echo '<form action="accountadmin.php" method="post">' . "\n";
         echo '<input type="hidden" name="action" value="unlock">' . "\n";
         echo '<input type="hidden" name="userName" value="' . $row['userName'] . '">' . "\n";

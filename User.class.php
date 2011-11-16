@@ -36,7 +36,7 @@ class User {
     private $maxDrift = 300;
     private $hotpCounter;
     private $hotpLookahead = 5;
-    private $invalidLoginLimit = 7;
+    public static $invalidLoginLimit = 7;
 
     function fetch($userName) {
         global $dbh;
