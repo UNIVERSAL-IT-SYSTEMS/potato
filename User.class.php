@@ -161,7 +161,7 @@ class User {
     }
 
     function isLockedOut() {
-        return ( $this->invalidLogins > $this->invalidLoginLimit ? true : false );
+        return ( $this->invalidLogins > self::$invalidLoginLimit ? true : false );
     }
 
     function log($message) {
