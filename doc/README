@@ -43,8 +43,6 @@ FreeRadius
 
 enter /etc/raddb/cert and execute "./bootstrap" as the radius user
 
-The following configuration files need alteration:
-/etc/raddb/users
-/etc/raddb/sites-available/default
+Edit the /etc/raddb/users file to your needs. There's a super-simple sample in doc/users that can be used.
 
-copy the file doc/potato to /etc/raddb/modules
+Copy the file doc/potato to /etc/raddb/modules, and add "potato" to the authorize section of /etc/raddb/sites-available/default
