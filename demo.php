@@ -28,11 +28,9 @@
 $demo = true;
 
 // All demo users
-$demoUsers = array(
-    "alice" => "fu",
-    "bob" => "bar",
-    "charlie" => "fubar",
-);
+$demoUsers = array("alice"   => array(pw=>"fu", admin=>false),
+                   "bob"     => array(pw=>"bar", admin=>false),
+                   "charlie" => array(pw=>"fubar", admin=>true));
 
 
 ?>

@@ -117,6 +117,17 @@ class User {
         return false;
     }
 
+    // Authenticate user
+    function authenticate($password) {
+        global $demo, $demoUsers;
+        if ($demo) {
+            return (in_array($this->userName, array_keys($demoUsers)) && $demoUsers[$this->userName][pw]==$password);
+        }
+        return (pam_auth( $this->userName, $password ) );
+    }
+
+
+    // Save/create the user
     function save() {
         global $dbh;
         $ps = $dbh->prepare("INSERT INTO User (userName, secret, pin, hotpCounter) VALUES (:userName, :secret, :pin, :hotpCounter) ON DUPLICATE KEY UPDATE secret=:secret, pin=:pin, hotpCounter=:hotpCounter");
@@ -153,10 +164,24 @@ class User {
         $ps->execute(array(":userName"=>$this->userName));
     }
 
+    // Is this user an administrator
     function isAdmin() {
-        global $groupAdmin;
+        global $groupAdmin, $demo, $demoUsers;
+        if ($demo) {
+            return ( $demoUsers[$this->userName][admin] );
+        }
         $groupInfo = posix_getgrnam($groupAdmin);
         return (in_array($this->userName, $groupInfo['members']));
+    }
+
+    // Is the user a member of $group?
+    function isMemberOf($group) {
+        global $demo, $demoUsers;
+        if ($demo) {
+            return ( in_array( $this->userName, array_keys($demoUsers) ) );
+        }
+        $groupInfo = posix_getgrnam($group);
+        return ( in_array( $this->userName, $groupInfo['members'] ) );
     }
 
     function isLockedOut() {

@@ -27,31 +27,24 @@
 include "config.php";
 session_start();
 include "User.class.php";
-# include "demo.php";
 
 if ( !empty($_POST['loginUserName']) ) {
     $loginUserName = $_POST['loginUserName'];
     $loginPassword = $_POST['loginPassword'];
 
-    try {
-#        if ($demo && in_array($loginUserName, array_keys($demoUsers)) && $demoUsers{$loginUserName}==$loginPassword) {
-#            $posixGroupUser = array();
-#            $posixGroupUser['members'] = array_keys($demoUsers);
-        if( pam_auth( $loginUserName, $loginPassword ) ) {
-            $posixGroupUser = posix_getgrnam($groupUser);
-            if ( in_array( $loginUserName, $posixGroupUser['members'] ) ) {
-                $_SESSION['currentUser'] = $loginUserName;
-                $_SESSION['timeActivity'] = gmdate( "U" );
-                header("Location: index.php");
-                exit;
-            } else {
-                $_SESSION['msgWarning'] = "Access denied. You are not a member of the access group \"" . $groupUser . "\"";
-            }
+    $user = new User();
+    $user->userName = $loginUserName;
+    if( $user->authenticate($loginPassword) ) {
+        if ( $user->isMemberOf( $groupUser ) ) {
+            $_SESSION['currentUser'] = $loginUserName;
+            $_SESSION['timeActivity'] = gmdate( "U" );
+            header("Location: index.php");
+            exit;
         } else {
-            $_SESSION['msgWarning'] = "Login incorrect.";
+            $_SESSION['msgWarning'] = "Access denied. You are not a member of the access group \"" . $groupUser . "\"";
         }
-    } catch (adLDAPException $e) {
-        $_SESSION['msgCritical'] = "Unable to contact the LDAP server for authentication. Please contact the helpdesk.";
+    } else {
+        $_SESSION['msgWarning'] = "Login incorrect.";
     }
 }
 
@@ -62,7 +55,8 @@ if ($demo) {
     echo "<p>Login with one of the following accounts:\n";
     echo "<ul>\n";
     foreach ( array_keys($demoUsers) as $u ) {
-        echo "    <li><strong>" . $u . "</strong>, pw: \"" . $demoUsers[$u] . "\"</li>\n";
+        echo "    <li><strong>" . $u . "</strong>, password: \"" . $demoUsers[$u][pw] . "\", ";
+        echo ($demoUsers[$u][admin] ? "Admin account" : "User account") . "</li>\n";
     }
     echo "</ul>\n";
     echo "<hr />\n";

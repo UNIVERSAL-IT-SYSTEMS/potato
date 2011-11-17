@@ -58,4 +58,7 @@ try {
     exit();
 }
 
+# Uncomment this to activate demo-mode
+# include "demo.php";
+
 ?>
