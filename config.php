@@ -45,10 +45,6 @@ $wifiSSID = "Potato-Wifi";
 // Set to empty string to disable wifi guest functionality
 $wifiGuestSSID = "Potato-Guest";
 
-// Members of this group are allowed to create more than one guest account
-// This is useful for people manning the front desk.
-$groupWifiGuestAdmin = "Receptionists";
-
 // Database configuration
 $dbServer = 'localhost';
 $dbName = 'potato';
