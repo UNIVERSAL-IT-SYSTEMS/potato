@@ -47,8 +47,13 @@ class Guest {
 
     function generate() {
         global $dbh;
+        // Delete any old guest accounts
         $ps = $dbh->prepare("DELETE FROM Guest where userName=:userName");
         $ps->execute(array( ":userName" => $this->userName));
+        // Make sure that the user entry exists
+        $ps = $dbh->prepare("INSERT INTO User (userName) VALUES (:userName)");
+        $ps->execute(array( ":userName" => $this->userName));
+        // Create the guest account
         $ps = $dbh->prepare("INSERT INTO Guest (userName, password) VALUES (:userName, :password)");
         $ps->execute(array( ":userName" => $this->userName,
                             ":password" => $this->generatePassword()));
