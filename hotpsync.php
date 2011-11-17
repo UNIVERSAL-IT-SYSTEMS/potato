@@ -48,7 +48,9 @@ try {
         }
     }
 } catch (NoSuchUserException $e) {
-    $_SESSION['msgWarning'] = "FAIL! Account doesn't exist.";
+    if (!empty($_POST['passPhrase'])) {
+        $_SESSION['msgWarning'] = "FAIL! No token registered to account.";
+    }
 }
 
 
