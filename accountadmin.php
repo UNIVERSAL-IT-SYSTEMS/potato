@@ -63,6 +63,9 @@ include 'header.php';
 global $dbh;
 $sql = "SELECT userName, invalidLogins from User order by userName";
 foreach ($dbh->query($sql) as $row) {
+    $user = new User();
+    $user->userName = $row['userName'];
+    $user->invalidLogins = $row['invalidLogins'];
 ?>
     <tr>
         <td>
@@ -72,7 +75,7 @@ foreach ($dbh->query($sql) as $row) {
         </td>
         <td>
 <?php
-    if ($row['invalidLogins']>User::$invalidLoginLimit) {
+    if ($user->isLockedOut()) {
         echo '<form action="accountadmin.php" method="post">' . "\n";
         echo '<input type="hidden" name="action" value="unlock">' . "\n";
         echo '<input type="hidden" name="userName" value="' . $row['userName'] . '">' . "\n";

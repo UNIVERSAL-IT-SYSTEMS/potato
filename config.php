@@ -33,9 +33,17 @@ $groupUser = "potato-users";
 // What organization should the UI be branded as
 $orgName = "Potato";
 
+// What't the SSID of the regular wifi network?
+// Set to empty string if you're not going to use otp for wifi access.
+$wifiSSID = "Potato-Wifi";
+
 // What SSID is the wireless guest account for?
 // Set to empty string to disable wifi guest functionality
-$wifiSSID = "Potato-Wifi";
+$wifiGuestSSID = "Potato-Guest";
+
+// Amount of allowed login attempts before the account is locked
+// Set to 0 to disable account locking.
+$invalidLoginLimit = 7;
 
 // Database configuration
 $dbServer = 'localhost';

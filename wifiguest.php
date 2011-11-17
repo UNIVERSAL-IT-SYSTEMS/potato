@@ -27,7 +27,7 @@
 include "config.php";
 include "session.php";
 
-if ($wifiSSID == "") {
+if ($wifiGuestSSID == "") {
     header("Location: index.php");
 }
 
@@ -66,7 +66,7 @@ try {
     $guest->fetch($currentUser->userName);
     echo "The following guest account is active:";
     echo "<ul>\n";
-    echo "<li>SSID: " . $wifiSSID . "</li>\n";
+    echo "<li>SSID: " . $wifiGuestSSID . "</li>\n";
     echo "<li>Username: " . $currentUser->userName . ".guest</li>";
     echo "<li>Password: " . $guest->password . "</li>\n";
     echo "<li>Valid until: " . $guest->dateExpiration . "</li>\n";

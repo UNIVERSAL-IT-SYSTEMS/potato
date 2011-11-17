@@ -36,7 +36,6 @@ class User {
     private $maxDrift = 300;
     private $hotpCounter;
     private $hotpLookahead = 5;
-    public static $invalidLoginLimit = 7;
 
     function fetch($userName) {
         global $dbh;
@@ -161,7 +160,8 @@ class User {
     }
 
     function isLockedOut() {
-        return ( $this->invalidLogins > self::$invalidLoginLimit ? true : false );
+        global $invalidLoginLimit;
+        return ( $invalidLoginLimit==0 ? false : ($this->invalidLogins > $invalidLoginLimit ? true : false ));
     }
 
     function log($message) {
