@@ -32,7 +32,12 @@ include 'header.php';
 <h1>Help</h1>
 <ul>
     <li><a href="about.php">Basic information about one-time-passwords</a></li>
-    <li><a href="winxp.php">Windows XP wifi guide</a></li>
+<?php
+
+if ($wifiSSID != "") {
+    echo "    <li><a href=\"winxp.php\">Windows XP wifi guide</a></li>\n";
+}
+?>
 </ul>
 
 <?php
