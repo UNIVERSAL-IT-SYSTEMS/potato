@@ -33,7 +33,7 @@ if ( !isset( $_SESSION['currentUser'] ) ) {
 }
 
 $currentUser = new User();
-$currentUser->userName = $_SESSION['currentUser'];
+$currentUser->setUserName( $_SESSION['currentUser'] );
 
 if ( isset($_SESSION['timeActivity']) ) {
     if ( ((int) (gmdate("U") - $_SESSION['timeActivity'])) > (30 * 60) ) {

@@ -55,8 +55,8 @@ if ($demo) {
     echo "<p>Login with one of the following accounts:\n";
     echo "<ul>\n";
     foreach ( array_keys($demoUsers) as $u ) {
-        echo "    <li><strong>" . $u . "</strong>, password: \"" . $demoUsers[$u][pw] . "\", ";
-        echo ($demoUsers[$u][admin] ? "Admin account" : "User account") . "</li>\n";
+        echo "    <li><strong>" . $u . "</strong>, password: \"" . $demoUsers[$u]['pw'] . "\", ";
+        echo ($demoUsers[$u]['admin'] ? "Admin account" : "User account") . "</li>\n";
     }
     echo "</ul>\n";
     echo "<hr />\n";

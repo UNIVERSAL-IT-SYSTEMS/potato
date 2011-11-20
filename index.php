@@ -33,12 +33,12 @@ if ( isset($_GET['userName']) ) {
 
     # Only allow edit of oneself, unless you're an admin
     if ( ! $currentUser->isAdmin() 
-         && $userName != $currentUser->userName ) {
+         && $userName != $currentUser->getUserName() ) {
         $_SESSION['msgWarning'] = "You are not an administrator. You are only allowed to edit your own account.";
-        $userName = $currentUser->userName;
+        $userName = $currentUser->getUserName();
     }
 } else {
-    $userName = $currentUser->userName;
+    $userName = $currentUser->getUserName();
 }
 try {
     $user->fetch($userName);
@@ -78,9 +78,9 @@ include 'header.php';
 
 <?php
 
-if ( $currentUser->userName != $userName ) {
+if ( $currentUser->getUserName() != $user->getUserName() ) {
     // Editing someone else. Add some context, and ignore the detailed instructions
-    echo "<h1>User settings: " . htmlentities($userName) . "</h1>";
+    echo "<h1>User settings: " . htmlentities($user->getUserName()) . "</h1>";
 } else {
 
 ?>
@@ -204,7 +204,7 @@ if ( $user->hasToken() ) {
 ?>
 
 <div id="secret" <?php echo $user->hasToken() ? 'style="display: none;"' : '' ?>>
-    <form method="post" action="index.php?userName=<?php echo urlencode($user->userName) ?>"> 
+    <form method="post" action="index.php?userName=<?php echo urlencode($user->getUserName()) ?>"> 
         <table>
             <tr>
                 <th>Secret:</th>
@@ -225,7 +225,7 @@ if ( $user->hasPin() ) {
 }
 ?>
 <div id="pin" <?php echo ($user->hasPin() || !$user->hasToken()) ? 'style="display: none;"' : '' ?>>
-    <form method="post" action="index.php?userName=<?php echo urlencode($user->userName) ?>"> 
+    <form method="post" action="index.php?userName=<?php echo urlencode($user->getUserName()) ?>"> 
         <table>
             <tr>
                 <th>Pin:</th>

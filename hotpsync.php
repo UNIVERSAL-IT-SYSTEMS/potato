@@ -32,7 +32,7 @@ if ( ! $currentUser->isAdmin() ) {
     exit;
 }
 
-$userName = empty($_POST['userName']) ? $currentUser->userName : $_POST['userName'];
+$userName = empty($_POST['userName']) ? $currentUser->getUserName() : $_POST['userName'];
 
 $user = new User();
 
@@ -64,7 +64,7 @@ include 'header.php';
     <table> 
         <tr> 
             <th>Username:</th> 
-            <td><input type="text" name="userName" value="<?php echo htmlentities($user->userName) ?>" size="20" maxlength="16" /></td> 
+            <td><input type="text" name="userName" value="<?php echo htmlentities($user->getUserName()) ?>" size="20" maxlength="16" /></td> 
         </tr> 
         <tr> 
             <th>Passphrase:</th> 

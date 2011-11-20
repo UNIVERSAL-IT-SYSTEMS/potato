@@ -34,7 +34,7 @@ if ($wifiGuestSSID == "") {
 include "Guest.class.php";
 
 $guest = new Guest();
-$guest->userName = $currentUser->userName;
+$guest->setUserName($currentUser->getUserName());
 
 if ( isset($_POST['action']) ) {
     switch ($_POST['action']) {
@@ -63,11 +63,11 @@ guest account which is only granted access to the external network.</p>
 <?php
 
 try {
-    $guest->fetch($currentUser->userName);
+    $guest->fetch($currentUser->getUserName());
     echo "The following guest account is active:";
     echo "<ul>\n";
     echo "<li>SSID: " . $wifiGuestSSID . "</li>\n";
-    echo "<li>Username: " . $currentUser->userName . ".guest</li>";
+    echo "<li>Username: " . htmlentities($guest->getUserName()) . "</li>";
     echo "<li>Password: " . $guest->password . "</li>\n";
     echo "<li>Valid until: " . $guest->dateExpiration . "</li>\n";
     echo "</ul>\n";
@@ -77,7 +77,7 @@ try {
     echo "<input type=\"submit\" value=\"De-activate guest account\" />\n";
 } catch (NoGuestException $e) {
 ?>
-There's no guest account active for your account.
+There's no active guest account for your account.
 <p>
 <input type="hidden" name="action" value="generate" />
 <input type="submit" value="Activate guest account" />

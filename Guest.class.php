@@ -60,6 +60,14 @@ class Guest {
         $this->log("Wifi guest account activated");
     }
 
+    function setUserName($userName) {
+        $this->userName = $userName;
+    }
+
+    function getUserName() {
+        return $this->userName . ".guest";
+    }
+
     function deactivate() {
         global $dbh;
         $ps = $dbh->prepare("DELETE FROM Guest where userName=:userName");

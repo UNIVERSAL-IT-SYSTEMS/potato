@@ -51,13 +51,8 @@ if ( substr( $userName, -6 ) == ".guest" ) {
         $guest->fetch($guestName);
 
         if ( $mschap ) {
-            $mschapAuthResponse = GenerateNTResponse($mschapPeerChallenge, $mschapAuthChallenge, $userName, $guest->password);
-
             # Set cleartext password for mschapv2 module to either pass or fail
             echo "Cleartext-Password := \"" . $guest->password . "\"";
-            if ($mschapAuthResponse == $mschapResponse ) {
-                exit(0);
-            }
             // Exit with noop
             exit(8);
         } else {
@@ -88,8 +83,7 @@ try {
     }
 
     if ( $loginOk ) {
-        $posixGroupUser = posix_getgrnam($groupUser);
-        if ( ! in_array( $userName, $posixGroupUser['members'] ) ) {
+        if ( ! $user->isMemberOf($groupUser) ) {
             // User not member of access group
             $user->invalidLogin();
             $user->log("Valid login, but user is not a member of ${groupUser}. [ " . $clientShortName . " ]");

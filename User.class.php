@@ -121,11 +121,25 @@ class User {
     function authenticate($password) {
         global $demo, $demoUsers;
         if ($demo) {
-            return (in_array($this->userName, array_keys($demoUsers)) && $demoUsers[$this->userName][pw]==$password);
+            return (in_array($this->userName, array_keys($demoUsers)) && $demoUsers[$this->userName]['pw']==$password);
         }
         return (pam_auth( $this->userName, $password ) );
     }
 
+    // Get the fullname of the user
+    function getFullName() {
+        global $demo, $demoUsers;
+        if ($demo) {
+            return $demoUsers[$this->userName]['fullName'];
+        }
+        $userInfo = posix_getpwnam($this->userName);
+        return iconv('UTF-8', 'UTF-16LE', $userInfo['gecos']);
+    }
+
+    // Get the username of the user
+    function getUserName() {
+        return $this->userName;
+    }
 
     // Save/create the user
     function save() {
@@ -137,6 +151,17 @@ class User {
                             ":hotpCounter" => $this->hotpCounter));
     }
 
+    // Set the amount of invalid login attempts performed against this account
+    function setInvalidLogins($invalidLogins) {
+        $this->invalidLogins = $invalidLogins;
+    }
+
+    // Set the username of this user
+    function setUserName($userName) {
+        $this->userName = $userName;
+    }
+
+    // Delete the user from the database
     function delete() {
         global $dbh;
         $ps = $dbh->prepare("DELETE FROM User where `userName`=:userName");
@@ -168,7 +193,7 @@ class User {
     function isAdmin() {
         global $groupAdmin, $demo, $demoUsers;
         if ($demo) {
-            return ( $demoUsers[$this->userName][admin] );
+            return ( $demoUsers[$this->userName]['admin'] );
         }
         $groupInfo = posix_getgrnam($groupAdmin);
         return (in_array($this->userName, $groupInfo['members']));

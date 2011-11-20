@@ -34,18 +34,20 @@ if ( ! $currentUser->isAdmin() ) {
 
 include 'NavigationBar.class.php';
 include 'header.php';
-echo "<h1>Log viewer: " . htmlentities($_GET['userName']) . "</h1>\n";
-$userInfo = posix_getpwnam($_GET['userName']);
-echo "<p><b>User fullname: </b>" . htmlentities(iconv('UTF-8', 'UTF-16LE', $userInfo['gecos'])) . "</p>\n";
+$user = new User();
+$user->setUserName($_GET['userName']);
+
+echo "<h1>Log viewer: " . htmlentities($user->getUserName()) . "</h1>\n";
+echo "<p><b>User fullname: </b>" . htmlentities($user->getFullName()) . "</p>\n";
 
 global $dbh;
 $ps = $dbh->prepare("SELECT COUNT(*) from Log where userName=:userName");
-$ps->execute(array(":userName"=>$_GET['userName']));
+$ps->execute(array(":userName"=>$user->getUserName()));
 $row = $ps->fetch();
 
 $navBar = new NavigationBar();
 $navBar->setNumRows($row[0]);
-$navBar->addGetParam("userName", $_GET['userName']);
+$navBar->addGetParam("userName", $user->getUserName());
 $navBar->setPageCurrent($_GET['page']);
 $navBar->printNavBar();
 
@@ -55,7 +57,7 @@ $navBar->printNavBar();
 <?php
 
 $ps = $dbh->prepare("SELECT time, passPhrase, message from Log where userName=:userName order by time DESC limit :rowsPerPage offset :rowsOffset");
-$ps->bindValue(':userName', $_GET['userName']);
+$ps->bindValue(':userName', $user->getUserName());
 $ps->bindValue(':rowsPerPage', $navBar->getRowsPerPage(), PDO::PARAM_INT);
 $ps->bindValue(':rowsOffset', $navBar->getRowsOffset(), PDO::PARAM_INT);
 $ps->execute();

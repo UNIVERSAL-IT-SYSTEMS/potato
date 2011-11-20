@@ -27,14 +27,14 @@
 include "config.php";
 include "session.php";
 
-$testUserName = empty($_POST['testUserName']) ? $currentUser->userName : strtolower($_POST['testUserName']);
+$testUserName = empty($_POST['testUserName']) ? $currentUser->getUserName() : strtolower($_POST['testUserName']);
 
 if ( ! empty($_POST['testPassPhrase']) ) {
     $testPassPhrase = $_POST['testPassPhrase'];
 
     // Only admins can test other people's tokens
     if ( ! $currentUser->isAdmin() ) {
-        $testUserName = $currentUser->userName;
+        $testUserName = $currentUser->getUserName();
     }
 
     try {

@@ -39,12 +39,12 @@ if (isset($_POST['action'])) {
         switch ($_POST['action']) {
             case 'delete':
                 $user->delete();
-                $_SESSION['msgInfo'] = 'User account "' . htmlentities($user->userName) . '" deleted.';
+                $_SESSION['msgInfo'] = 'User account "' . htmlentities($user->getUserName()) . '" deleted.';
                 break;
 
             case 'unlock':
-                $user->unlock($currentUser->userName);
-                $_SESSION['msgInfo'] = 'User account "' . htmlentities($user->userName) . '" unlocked.';
+                $user->unlock($currentUser->getUserName());
+                $_SESSION['msgInfo'] = 'User account "' . htmlentities($user->getUserName()) . '" unlocked.';
                 break;
         }
 
@@ -64,13 +64,13 @@ global $dbh;
 $sql = "SELECT userName, invalidLogins from User order by userName";
 foreach ($dbh->query($sql) as $row) {
     $user = new User();
-    $user->userName = $row['userName'];
-    $user->invalidLogins = $row['invalidLogins'];
+    $user->setUserName($row['userName']);
+    $user->setInvalidLogins($row['invalidLogins']);
 ?>
     <tr>
         <td>
-            <a href="index.php?userName=<?php echo urlencode($row['userName']) ?>">
-                <?php echo htmlentities($row['userName']) ?>
+            <a href="index.php?userName=<?php echo urlencode($user->getUserName()) ?>">
+                <?php echo htmlentities($user->getUserName()) ?>
             </a>
         </td>
         <td>
@@ -78,14 +78,14 @@ foreach ($dbh->query($sql) as $row) {
     if ($user->isLockedOut()) {
         echo '<form action="accountadmin.php" method="post">' . "\n";
         echo '<input type="hidden" name="action" value="unlock">' . "\n";
-        echo '<input type="hidden" name="userName" value="' . $row['userName'] . '">' . "\n";
+        echo '<input type="hidden" name="userName" value="' . htmlentities($user->getUserName()) . '">' . "\n";
         echo '<input type="image" src="images/lock.png" alt="Unlock account" title="Unlock account" />';
         echo '</form>' . "\n";
     } 
 ?>
         </td>
         <td>
-            <a href="logviewer.php?userName=<?php echo urlencode($row['userName']) ?>">
+            <a href="logviewer.php?userName=<?php echo urlencode($user->getUserName()) ?>">
                 <img src="images/logviewer.png" alt="View logs" title="View logs" />
             </a>
         </td>
@@ -94,7 +94,7 @@ foreach ($dbh->query($sql) as $row) {
 <?php
     echo '<form action="accountadmin.php" method="post" onsubmit="return(confirm(\'Are you sure that you want to delete the user?\'));">' . "\n";
     echo '<input type="hidden" name="action" value="delete">' . "\n";
-    echo '<input type="hidden" name="userName" value="' . $row['userName'] . '">' . "\n";
+    echo '<input type="hidden" name="userName" value="' . htmlentities($user->getUserName()) . '">' . "\n";
     echo '<input type="image" src="images/trashcan_empty.png" alt="Delete account" title="Delete account" />' . "\n";
     echo '</form>' . "\n";
 ?>
