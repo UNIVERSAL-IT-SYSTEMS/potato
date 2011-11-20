@@ -28,7 +28,7 @@
 if ( isset( $currentUser ) ) {
 ?>
     	    <div id="footer">
-                Logged in as: <?php echo htmlentities($currentUser->userName) ?><br />
+                Logged in as: <?php echo htmlentities($currentUser->getUserName()) ?><br />
                 Epoch: <?php echo intval(gmdate("U")/10) ?><br/>
             </div>
 <?php
