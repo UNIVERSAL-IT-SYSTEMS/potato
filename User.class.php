@@ -158,7 +158,7 @@ class User {
 
     // Set the username of this user
     function setUserName($userName) {
-        $this->userName = $userName;
+        $this->userName = strtolower($userName);
     }
 
     // Delete the user from the database
