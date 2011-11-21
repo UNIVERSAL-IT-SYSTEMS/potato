@@ -2,7 +2,7 @@
 # and add "potato" to the authorize section of your site definition
 exec potato {
 	wait = yes
-	program = "/usr/bin/php /var/www/html/radauth.php -u %{User-Name} -p %{User-Password} -c %{MS-CHAP-Challenge} -n %{MS-CHAP2-Response} -q %{mschap:NT-Response:-00} -s %{Client-Shortname}"
+	program = "/usr/bin/php /var/www/html/radauth.php -u %{User-Name} -p %{User-Password} -c %{MS-CHAP-Challenge} -n %{MS-CHAP2-Response} -s %{Client-Shortname}"
 	input_pairs = request
 	output_pairs = config
 }

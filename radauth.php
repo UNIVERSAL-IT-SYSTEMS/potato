@@ -29,14 +29,14 @@ include "User.class.php";
 include "Guest.class.php";
 include "mschap.php";
 
-$options = getopt("u:p:c:n:q:s:");
+$options = getopt("u:p:c:n:s:");
 
 $userName = $options["u"];
 $passPhrase = $options["p"];
 
 $mschapAuthChallenge = pack( 'H*', substr($options["c"], 2) );
 $mschapPeerChallenge = pack( 'H*', substr($options["n"], 6, 32) );
-$mschapResponse = pack( 'H*', $options["q"] );
+$mschapResponse = pack( 'H*', substr($options["n"], -48) );
 
 $clientShortName = $options["s"];
 
@@ -107,6 +107,8 @@ try {
             $user->validLogin($clientShortName);
             if ($mschap) {
                 echo "Cleartext-Password := \"" . $user->passPhrase . "\"";
+                // exit with noop
+                exit(8);
             }
             exit(0);
         }
