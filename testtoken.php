@@ -44,7 +44,7 @@ if ( ! empty($_POST['testPassPhrase']) ) {
             if ( ! $user->isMemberOf($groupUser) ) {
                 $_SESSION['msgWarning'] = "FAIL! User is not a member of the \"${groupUser}\" access group.";
                 $user->invalidLogin();
-                $user->log("Invalid login. User is not a member of ${groupUser}.");
+                $user->log("Valid login, but user is not a member of ${groupUser} [ token testing area ]");
             } elseif ( ! $user->hasPin() ) {
                 $_SESSION['msgWarning'] = "FAIL! Account has no PIN.";
                 $user->invalidLogin();
@@ -54,13 +54,13 @@ if ( ! empty($_POST['testPassPhrase']) ) {
                 $user->invalidLogin();
                 $user->log("Invalid login. Account has no token.");
             } elseif ( $user->isLockedOut() ) {
-                $_SESSION['msgWarning'] = "FAIL! Account locked out due to too many incorrect login attempts. Please contact the helpdesk to reset your account.";
+                $_SESSION['msgWarning'] = "Valid login, but the account is locked out due to too many incorrect login attempts. Please contact the helpdesk to reset your account.";
                 $user->invalidLogin();
-                $user->log("Invalid login. Account locked out.");
+                $user->log("Valid login, but account locked out [ token testing area ]");
             } elseif ( $user->replayAttack($testPassPhrase)) {
                 $_SESSION['msgWarning'] = "FAIL! Passphrase has been used before, and is no longer valid.";
                 $user->invalidLogin();
-                $user->log("Invalid login. OTP replay.");
+                $user->log("Invalid login. OTP replay [ token testing area ]");
             } else {
                 $_SESSION['msgInfo'] = "ACCEPT! Login was successful.";
                 $user->validLogin("token testing area");
@@ -81,7 +81,15 @@ include 'header.php';
 
 ?>
 <h1>Token testing area</h1>
-<p>Use this area to test your token. Please be aware that five consecutive incorrect authentication attempts will result in the account being locked out.</p>
+<p>Use this area to test your token.
+
+<?php
+if ( $invalidLoginLimit != 0 ) {
+    echo "Please be aware that " . $invalidLoginLimit . " consecutive incorrect authentication attempts will result in the account being locked out.";
+}
+?>
+
+</p>
 <form method="post" action="testtoken.php"> 
     <table>
         <tr>
