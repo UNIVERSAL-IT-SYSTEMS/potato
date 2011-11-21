@@ -53,6 +53,13 @@ class User {
         }
     }
 
+    // Verify that the user has both token and pin, else throw an exception
+    function verifySanity() {
+        if ( empty($this->secret) || empty($this->pin) ) {
+            throw new NoSuchUserException();
+        }
+    }
+
     function checkOTP($passPhrase) {
         if ( strlen($passPhrase) > 6 ) {
             $providedPP = substr($passPhrase, -6);

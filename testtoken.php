@@ -40,19 +40,12 @@ if ( ! empty($_POST['testPassPhrase']) ) {
     try {
         $user = new User();
         $user->fetch($testUserName);
+        $user->verifySanity();
         if ( $user->checkOTP($testPassPhrase) ) {
             if ( ! $user->isMemberOf($groupUser) ) {
                 $_SESSION['msgWarning'] = "FAIL! User is not a member of the \"${groupUser}\" access group.";
                 $user->invalidLogin();
                 $user->log("Valid login, but user is not a member of ${groupUser} [ token testing area ]");
-            } elseif ( ! $user->hasPin() ) {
-                $_SESSION['msgWarning'] = "FAIL! Account has no PIN.";
-                $user->invalidLogin();
-                $user->log("Invalid login. Account has no pin.");
-            } elseif ( ! $user->hasToken() ) {
-                $_SESSION['msgWarning'] = "FAIL! Account has no token.";
-                $user->invalidLogin();
-                $user->log("Invalid login. Account has no token.");
             } elseif ( $user->isLockedOut() ) {
                 $_SESSION['msgWarning'] = "Valid login, but the account is locked out due to too many incorrect login attempts. Please contact the helpdesk to reset your account.";
                 $user->invalidLogin();
@@ -71,9 +64,7 @@ if ( ! empty($_POST['testPassPhrase']) ) {
             $user->log("Invalid login");
         }
     } catch (NoSuchUserException $ignore) {
-        $_SESSION['msgWarning'] = "FAIL! No token registered for this user.";
-        $user->invalidLogin();
-        $user->log("Invalid login. Account has no token.");
+        $_SESSION['msgWarning'] = "FAIL! No token and/or PIN registered for this user.";
     }
 }
 

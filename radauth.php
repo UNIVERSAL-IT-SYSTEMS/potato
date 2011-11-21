@@ -73,6 +73,7 @@ if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
 try {
     $user = new User();
     $user->fetch($userName);
+    $user->verifySanity();
 
     $loginOk = false;
 
@@ -87,14 +88,6 @@ try {
             // User not member of access group
             $user->invalidLogin();
             $user->log("Valid login, but user is not a member of ${groupUser}. [ " . $clientShortName . " ]");
-        } elseif ( ! $user->hasPin() ) {
-            // Account has no PIN
-            $user->invalidLogin();
-            $user->log("Invalid login. No pin registered to this user. [ " . $clientShortName . " ]");
-        } elseif ( ! $user->hasToken() ) {
-            // Account has no token
-            $user->invalidLogin();
-            $user->log("Invalid login. No token registered to this user. [ " . $clientShortName . " ]");
         } elseif ( $user->isLockedOut() ) {
             // Account locked out
             $user->invalidLogin();
