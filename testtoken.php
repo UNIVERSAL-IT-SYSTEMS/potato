@@ -88,8 +88,10 @@ if ( $invalidLoginLimit != 0 ) {
     echo "Please be aware that " . $invalidLoginLimit . " consecutive incorrect authentication attempts will result in the account being locked out.";
 }
 ?>
-
 </p>
+<p>If you are using a time-based token, it is imperative that the clock on your mobile device is correct, and in the right time zone. If you are having problems
+getting your token to work, this is the first thing you should check.</p>
+
 <form method="post" action="testtoken.php"> 
     <table>
         <tr>
