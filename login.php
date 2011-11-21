@@ -33,7 +33,7 @@ if ( !empty($_POST['loginUserName']) ) {
     $loginPassword = $_POST['loginPassword'];
 
     $user = new User();
-    $user->userName = $loginUserName;
+    $user->setUserName($loginUserName);
     if( $user->authenticate($loginPassword) ) {
         if ( $user->isMemberOf( $groupUser ) ) {
             $_SESSION['currentUser'] = $loginUserName;

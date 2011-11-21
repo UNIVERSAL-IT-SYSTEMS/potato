@@ -27,7 +27,7 @@
 include "config.php";
 include "session.php";
 
-$testUserName = empty($_POST['testUserName']) ? $currentUser->getUserName() : strtolower($_POST['testUserName']);
+$testUserName = empty($_POST['testUserName']) ? $currentUser->getUserName() : $_POST['testUserName'];
 
 if ( ! empty($_POST['testPassPhrase']) ) {
     $testPassPhrase = $_POST['testPassPhrase'];
@@ -41,8 +41,7 @@ if ( ! empty($_POST['testPassPhrase']) ) {
         $user = new User();
         $user->fetch($testUserName);
         if ( $user->checkOTP($testPassPhrase) ) {
-            $posixGroupUser = posix_getgrnam($groupUser);
-            if ( ! in_array( $testUserName, $posixGroupUser['members'] ) ) {
+            if ( ! $user->isMemberOf($groupUser) ) {
                 $_SESSION['msgWarning'] = "FAIL! User is not a member of the \"${groupUser}\" access group.";
                 $user->invalidLogin();
                 $user->log("Invalid login. User is not a member of ${groupUser}.");

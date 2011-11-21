@@ -59,6 +59,6 @@ try {
 }
 
 # Uncomment this to activate demo-mode
-include "demo.php";
+# include "demo.php";
 
 ?>

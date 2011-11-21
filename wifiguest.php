@@ -68,8 +68,8 @@ try {
     echo "<ul>\n";
     echo "<li>SSID: " . $wifiGuestSSID . "</li>\n";
     echo "<li>Username: " . htmlentities($guest->getUserName()) . "</li>";
-    echo "<li>Password: " . $guest->password . "</li>\n";
-    echo "<li>Valid until: " . $guest->dateExpiration . "</li>\n";
+    echo "<li>Password: " . $guest->getPassword() . "</li>\n";
+    echo "<li>Valid until: " . $guest->getDateExpiration() . "</li>\n";
     echo "</ul>\n";
     echo "</p>\n";
     echo "<p>\n";

@@ -27,9 +27,9 @@
 class NoGuestException extends Exception { }
 
 class Guest {
-    public $userName;
-    public $password;
-    public $dateExpiration;
+    private $userName;
+    private $password;
+    private $dateExpiration;
 
     function fetch($userName) {
         global $dbh;
@@ -60,10 +60,22 @@ class Guest {
         $this->log("Wifi guest account activated");
     }
 
+    // Set the username of this guest. This is the same as the user owning the account
     function setUserName($userName) {
         $this->userName = $userName;
     }
 
+    // Get the expiration date in plain text
+    function getDateExpiration() {
+        return $this->dateExpiration;
+    }
+
+    // Get the password of this guest user in plain text
+    function getPassword() {
+        return $this->password;
+    }
+
+    // Get the full username of this guest
     function getUserName() {
         return $this->userName . ".guest";
     }

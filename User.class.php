@@ -27,10 +27,10 @@
 class NoSuchUserException extends Exception { }
 
 class User {
-    public $userName;
+    private $userName;
     private $secret;
     private $pin;
-    public $invalidLogins;
+    private $invalidLogins;
     public $errors = array();
     public $passPhrase;
     private $maxDrift = 300;

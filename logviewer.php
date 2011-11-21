@@ -48,7 +48,8 @@ $row = $ps->fetch();
 $navBar = new NavigationBar();
 $navBar->setNumRows($row[0]);
 $navBar->addGetParam("userName", $user->getUserName());
-$navBar->setPageCurrent($_GET['page']);
+$pageCurrent = ( empty($_GET['page']) ? 1 : $_GET['page'] );
+$navBar->setPageCurrent($pageCurrent);
 $navBar->printNavBar();
 
 ?>

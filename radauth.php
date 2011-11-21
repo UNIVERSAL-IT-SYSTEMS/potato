@@ -31,7 +31,7 @@ include "mschap.php";
 
 $options = getopt("u:p:c:n:q:s:");
 
-$userName = strtolower($options["u"]);
+$userName = $options["u"];
 $passPhrase = $options["p"];
 
 $mschapAuthChallenge = pack( 'H*', substr($options["c"], 2) );
@@ -42,7 +42,7 @@ $clientShortName = $options["s"];
 
 $mschap = (empty($passPhrase) && !empty($mschapAuthChallenge) && !empty($mschapPeerChallenge)) ? true : false;
 
-if ( substr( $userName, -6 ) == ".guest" ) {
+if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
     // Guest login
     $guestName = substr( $userName, 0, -6 );
     $guest = new Guest();
@@ -52,12 +52,12 @@ if ( substr( $userName, -6 ) == ".guest" ) {
 
         if ( $mschap ) {
             # Set cleartext password for mschapv2 module to either pass or fail
-            echo "Cleartext-Password := \"" . $guest->password . "\"";
+            echo "Cleartext-Password := \"" . $guest->getPassword() . "\"";
             // Exit with noop
             exit(8);
         } else {
             # Cleartext password available; see if it's the correct one
-            exit ($guest->password == $passPhrase ? 0 : 1);
+            exit ($guest->getPassword() == $passPhrase ? 0 : 1);
         }
     } catch (NoGuestException $ignore) {
         if ($mschap) {
