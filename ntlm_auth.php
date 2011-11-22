@@ -50,13 +50,8 @@ if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
         $calcResponse = ChallengeResponse($mschapChallengeHash, $pwHash);
         if ($calcResponse == $mschapResponse) {
             echo "NT_KEY: " . bin2hex(NtPasswordHashHash($guest->getPassword())) . "\n";
-        } else {
-            // force mschap auth to fail
-            echo "NT_KEY: 42" . "\n";
         }
     } catch (NoGuestException $ignore) {
-        // force mschap auth to fail
-        echo "NT_KEY: 42" . "\n";
     }
     exit;
 }
@@ -81,7 +76,6 @@ try {
         } else {
             $user->validLogin("mschap");
             echo "NT_KEY: " . bin2hex(NtPasswordHashHash($user->passPhrase)) . "\n";
-            exit;
         }
     } else {
         $user->invalidLogin();
@@ -90,8 +84,6 @@ try {
 } catch (NoSuchUserException $ignore) {
 }
 
-// Set a dummy password for the mschapv2 module to fail on
-echo "NT_KEY: 42" . "\n";
 exit;
 
 ?>
