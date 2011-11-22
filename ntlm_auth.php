@@ -46,11 +46,17 @@ if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
     
     try {
         $guest->fetch($guestName);
-        # Set "cleartext" password for mschapv2 module to either pass or fail
-        echo "NT_KEY: " . bin2hex(NtPasswordHashHash($guest->getPassword())) . "\n";
+        $pwHash = NtPasswordHash($guest->getPassword());
+        $calcResponse = ChallengeResponse($mschapChallengeHash, $pwHash);
+        if ($calcResponse == $mschapResponse) {
+            echo "NT_KEY: " . bin2hex(NtPasswordHashHash($guest->getPassword())) . "\n";
+        } else {
+            // force mschap auth to fail
+            echo "NT_KEY: 42" . "\n";
+        }
     } catch (NoGuestException $ignore) {
-        // Set a random dummy password for the mschapv2 module to fail on
-        echo "NT_KEY: " . bin2hex(NtPasswordHashHash(md5(rand()))) . "\n";
+        // force mschap auth to fail
+        echo "NT_KEY: 42" . "\n";
     }
     exit;
 }
@@ -84,8 +90,8 @@ try {
 } catch (NoSuchUserException $ignore) {
 }
 
-// Set a random dummy password for the mschapv2 module to fail on
-echo "NT_KEY: " . bin2hex(NtPasswordHashHash(md5(rand()))) . "\n";
+// Set a dummy password for the mschapv2 module to fail on
+echo "NT_KEY: 42" . "\n";
 exit;
 
 ?>
