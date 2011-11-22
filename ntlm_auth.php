@@ -29,28 +29,30 @@ include "User.class.php";
 include "Guest.class.php";
 include "mschap.php";
 
-$options = getopt("u:p:s:");
+$options = getopt("u:c:r:");
 
 $userName = $options["u"];
-$passPhrase = $options["p"];
-$clientShortName = $options["s"];
 
-if (empty($passPhrase)) {
-    exit(8);
-}
+$mschapChallengeHash = pack( 'H*', $options["c"] );
+$mschapResponse = pack( 'H*', $options["r"] );
+
+// $clientShortName = $options["s"];
+
 
 if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
     // Guest login
     $guestName = substr( $userName, 0, -6 );
     $guest = new Guest();
-
+    
     try {
         $guest->fetch($guestName);
-        # Cleartext password available; see if it's the correct one
-        exit ($guest->getPassword() == $passPhrase ? 0 : 1);
+        # Set "cleartext" password for mschapv2 module to either pass or fail
+        echo "NT_KEY: " . bin2hex(NtPasswordHashHash($guest->getPassword())) . "\n";
     } catch (NoGuestException $ignore) {
-        exit(1);
+        // Set a random dummy password for the mschapv2 module to fail on
+        echo "NT_KEY: " . bin2hex(NtPasswordHashHash(md5(rand()))) . "\n";
     }
+    exit;
 }
 
 try {
@@ -58,30 +60,32 @@ try {
     $user->fetch($userName);
     $user->verifySanity();
 
-    if ( $user->checkOTP($passPhrase) ) {
+    if ( $user->checkOTPmschap($mschapChallengeHash, $mschapResponse) ) {
         if ( ! $user->isMemberOf($groupUser) ) {
             // User not member of access group
-            $user->invalidLogin();
-            $user->log("Valid login, but user is not a member of ${groupUser}. [ " . $clientShortName . " ]");
+            $user->log("Valid login, but user is not a member of ${groupUser}.");
         } elseif ( $user->isLockedOut() ) {
             // Account locked out
             $user->invalidLogin();
-            $user->log("Valid login, but account locked out. [ " . $clientShortName . " ]");
+            $user->log("Valid login, but account locked out.");
         } elseif ( $user->replayAttack()) {
             // Replay attack
             $user->invalidLogin();
-            $user->log("Invalid login. OTP replay. [ " . $clientShortName . " ]");
+            $user->log("Invalid login. OTP replay.");
         } else {
-            $user->validLogin($clientShortName);
-            exit(0);
+            $user->validLogin("mschap");
+            echo "NT_KEY: " . bin2hex(NtPasswordHashHash($user->passPhrase)) . "\n";
+            exit;
         }
     } else {
         $user->invalidLogin();
-        $user->log("Invalid login [ " . $clientShortName . " ]");
+        $user->log("Invalid login [ mschap ]");
     }
 } catch (NoSuchUserException $ignore) {
 }
 
-exit(1);
+// Set a random dummy password for the mschapv2 module to fail on
+echo "NT_KEY: " . bin2hex(NtPasswordHashHash(md5(rand()))) . "\n";
+exit;
 
 ?>

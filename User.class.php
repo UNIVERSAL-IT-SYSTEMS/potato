@@ -96,13 +96,16 @@ class User {
     }
 
     // perform mschapv2 authentication
-    function checkOTPmschap ($peerChallenge, $authChallenge, $response) {
+    function checkOTPmschap ($challengeHash, $response) {
         $now = intval( gmdate("U") / 10 );
         $validPasswords = array();
         $validOtps = array();
         for ( $time = $now + ($this->maxDrift/10); $time >= $now - ($this->maxDrift/10) ; $time-- ) {
             $otp = substr( md5($time . $this->secret . $this->pin ), 0, 6);
-            $calcResponse = GenerateNTResponse($peerChallenge, $authChallenge, $this->userName, $otp);
+
+            $pwHash = NtPasswordHash($otp);
+            $calcResponse = ChallengeResponse($challengeHash, $pwHash);
+
             if ( $calcResponse == $response ) {
                 $this->passPhrase = $otp;
                 return true;
@@ -112,7 +115,8 @@ class User {
         // Repeat process for HOTP token
         for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
             $otp = $this->pin . $this->oathTruncate($this->oathHotp($c));
-            $calcResponse = GenerateNTResponse($peerChallenge, $authChallenge, $this->userName, $otp);
+            $pwHash = NtPasswordHash($otp);
+            $calcResponse = ChallengeResponse($challengeHash, $pwHash);
             if ( $calcResponse == $response ) {
                 $this->passPhrase = $otp;
                 $this->hotpCounter = $c+1;

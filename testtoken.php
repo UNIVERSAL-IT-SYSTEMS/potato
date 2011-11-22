@@ -44,7 +44,6 @@ if ( ! empty($_POST['testPassPhrase']) ) {
         if ( $user->checkOTP($testPassPhrase) ) {
             if ( ! $user->isMemberOf($groupUser) ) {
                 $_SESSION['msgWarning'] = "FAIL! User is not a member of the \"${groupUser}\" access group.";
-                $user->invalidLogin();
                 $user->log("Valid login, but user is not a member of ${groupUser} [ token testing area ]");
             } elseif ( $user->isLockedOut() ) {
                 $_SESSION['msgWarning'] = "Valid login, but the account is locked out due to too many incorrect login attempts. Please contact the helpdesk to reset your account.";
