@@ -15,6 +15,9 @@
 
 
 
-# This is the simplest configuration.
-DEFAULT Auth-Type = Accept
+# This is a simple configuration.
+DEFAULT Suffix != ".guest", Auth-Type = Accept
 	Class = "Remoteaccess"
+
+Default Auth-Type := Reject
+
