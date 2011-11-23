@@ -4,5 +4,5 @@ exec potato {
 	wait = yes
 	program = "/usr/bin/php /var/www/html/radauth.php -u %{User-Name} -p %{User-Password} -s %{Client-Shortname}"
 	input_pairs = request
-	output_pairs = config
+	output_pairs = reply
 }

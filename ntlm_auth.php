@@ -49,11 +49,13 @@ if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
         $pwHash = NtPasswordHash($guest->getPassword());
         $calcResponse = ChallengeResponse($mschapChallengeHash, $pwHash);
         if ($calcResponse == $mschapResponse) {
-            echo "NT_KEY: " . bin2hex(NtPasswordHashHash($guest->getPassword())) . "\n";
+            echo "NT_KEY: " . strtoupper(bin2hex(NtPasswordHashHash($guest->getPassword()))) . "\n";
+            exit;
         }
     } catch (NoGuestException $ignore) {
     }
-    exit;
+    echo "Access denied\n";
+    exit(1);
 }
 
 try {
@@ -75,7 +77,8 @@ try {
             $user->log("Invalid login. OTP replay.");
         } else {
             $user->validLogin("mschap");
-            echo "NT_KEY: " . bin2hex(NtPasswordHashHash($user->passPhrase)) . "\n";
+            echo "NT_KEY: " . strtoupper(bin2hex(NtPasswordHashHash($user->passPhrase))) . "\n";
+            exit;
         }
     } else {
         $user->invalidLogin();
@@ -84,6 +87,7 @@ try {
 } catch (NoSuchUserException $ignore) {
 }
 
-exit;
+echo "Access denied\n";
+exit(1);
 
 ?>
