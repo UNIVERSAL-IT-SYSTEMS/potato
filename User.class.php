@@ -222,7 +222,7 @@ class User {
 
     function isLockedOut() {
         global $invalidLoginLimit;
-        return ( isset($invalidLoginLimit) ? false : ($this->invalidLogins > $invalidLoginLimit ? true : false ));
+        return ( !isset($invalidLoginLimit) ? false : ($this->invalidLogins > $invalidLoginLimit ? true : false ));
     }
 
     // Have there been too many failed login attempts in the past $throttleLoginTime seconds?

@@ -50,7 +50,7 @@ if ( ! empty($_POST['testPassPhrase']) ) {
                 $user->invalidLogin();
                 $user->log("FAIL! Valid login, but account locked out [ token testing area ]");
             } elseif ( $user->isThrottled() ) {
-                $_SESSION['msgWarning'] = "Valid login, but there have been too many failed login attempts from this account in the last minute. Please wait 60 seconds before trying again.";
+                $_SESSION['msgWarning'] = "Valid login, but there have been too many failed login attempts from this account in the " . $throttleLimitTime . " seconds. Please wait " . $throttleLoginTime . " seconds before trying again.";
                 $user->invalidLogin();
                 $user->log("FAIL! Valid login, but login denied due to throttling [ token testing area ]");
             } elseif ( $user->replayAttack($testPassPhrase)) {
