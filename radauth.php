@@ -66,22 +66,25 @@ try {
         if ( ! $user->isMemberOf($groupUser) ) {
             // User not member of access group
             $user->invalidLogin();
-            $user->log("Valid login, but user is not a member of ${groupUser}. [ " . $clientShortName . " ]");
+            $user->log("FAIL! Valid login, but user is not a member of ${groupUser}. [ " . $clientShortName . " ]");
         } elseif ( $user->isLockedOut() ) {
             // Account locked out
             $user->invalidLogin();
-            $user->log("Valid login, but account locked out. [ " . $clientShortName . " ]");
+            $user->log("FAIL! Valid login, but account locked out. [ " . $clientShortName . " ]");
+        } elseif ( $user->isThrottled() ) {
+            $user->invalidLogin();
+            $user->log("FAIL! Valid login, but login denied due to throttling [ " . $clientShortName . " ]");
         } elseif ( $user->replayAttack()) {
             // Replay attack
             $user->invalidLogin();
-            $user->log("Invalid login. OTP replay. [ " . $clientShortName . " ]");
+            $user->log("FAIL! OTP replay. [ " . $clientShortName . " ]");
         } else {
             $user->validLogin($clientShortName);
             exit(0);
         }
     } else {
         $user->invalidLogin();
-        $user->log("Invalid login [ " . $clientShortName . " ]");
+        $user->log("FAIL! Invalid login [ " . $clientShortName . " ]");
     }
 } catch (NoSuchUserException $ignore) {
 }

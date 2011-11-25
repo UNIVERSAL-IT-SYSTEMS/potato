@@ -225,6 +225,15 @@ class User {
         return ( $invalidLoginLimit==0 ? false : ($this->invalidLogins > $invalidLoginLimit ? true : false ));
     }
 
+    // Have there been too many failed login attempts in the past minute?
+    function isThrottled() {
+        global $dbh;
+
+        $ps = $dbh->prepare('SELECT userName FROM Log where time > (now() - 60) AND userName=:userName AND message like "FAIL%"');
+        $ps->execute(array( ":userName" => $this->userName ));
+        return ($ps->rowCount() > 2);
+    }
+
     function log($message) {
         global $dbh;
 
@@ -239,7 +248,7 @@ class User {
 
     function replayAttack() {
         global $dbh;
-        $ps = $dbh->prepare('SELECT * from Log where time > (now() - ' . $this->maxDrift*2 . ') AND userName=:userName AND passPhrase=:passPhrase AND message like "Success%"');
+        $ps = $dbh->prepare('SELECT userName from Log where time > (now() - ' . $this->maxDrift*2 . ') AND userName=:userName AND passPhrase=:passPhrase AND message like "Success%"');
         $ps->execute(array(":userName"=>$this->userName,
                             ":passPhrase"=>$this->passPhrase));
 

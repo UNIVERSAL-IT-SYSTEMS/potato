@@ -43,16 +43,20 @@ if ( ! empty($_POST['testPassPhrase']) ) {
         $user->verifySanity();
         if ( $user->checkOTP($testPassPhrase) ) {
             if ( ! $user->isMemberOf($groupUser) ) {
-                $_SESSION['msgWarning'] = "FAIL! User is not a member of the \"${groupUser}\" access group.";
-                $user->log("Valid login, but user is not a member of ${groupUser} [ token testing area ]");
+                $_SESSION['msgWarning'] = "Valid login, but the user is not a member of the \"${groupUser}\" access group.";
+                $user->log("FAIL! Valid login, but user is not a member of ${groupUser} [ token testing area ]");
             } elseif ( $user->isLockedOut() ) {
                 $_SESSION['msgWarning'] = "Valid login, but the account is locked out due to too many incorrect login attempts. Please contact the helpdesk to reset your account.";
                 $user->invalidLogin();
-                $user->log("Valid login, but account locked out [ token testing area ]");
+                $user->log("FAIL! Valid login, but account locked out [ token testing area ]");
+            } elseif ( $user->isThrottled() ) {
+                $_SESSION['msgWarning'] = "Valid login, but there have been too many failed login attempts from this account in the last minute. Please wait 60 seconds before trying again.";
+                $user->invalidLogin();
+                $user->log("FAIL! Valid login, but login denied due to throttling [ token testing area ]");
             } elseif ( $user->replayAttack($testPassPhrase)) {
                 $_SESSION['msgWarning'] = "FAIL! Passphrase has been used before, and is no longer valid.";
                 $user->invalidLogin();
-                $user->log("Invalid login. OTP replay [ token testing area ]");
+                $user->log("FAIL! Invalid login. OTP replay [ token testing area ]");
             } else {
                 $_SESSION['msgInfo'] = "ACCEPT! Login was successful.";
                 $user->validLogin("token testing area");
@@ -60,7 +64,7 @@ if ( ! empty($_POST['testPassPhrase']) ) {
         } else {
             $_SESSION['msgWarning'] = "FAIL! Login was unsuccessful.";
             $user->invalidLogin();
-            $user->log("Invalid login");
+            $user->log("FAIL! Invalid login");
         }
     } catch (NoSuchUserException $ignore) {
         $_SESSION['msgWarning'] = "FAIL! No token and/or PIN registered for this user.";
