@@ -228,7 +228,7 @@ class User {
     // Have there been too many failed login attempts in the past $throttleLoginTime seconds?
     function isThrottled() {
         global $dbh, $throttleLoginTime, $throttleLoginAttempts;
-        if (isset($throttleLoginTime)) {
+        if (!isset($throttleLoginTime)) {
             return false;
         }
 
