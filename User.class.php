@@ -222,16 +222,19 @@ class User {
 
     function isLockedOut() {
         global $invalidLoginLimit;
-        return ( $invalidLoginLimit==0 ? false : ($this->invalidLogins > $invalidLoginLimit ? true : false ));
+        return ( isset($invalidLoginLimit) ? false : ($this->invalidLogins > $invalidLoginLimit ? true : false ));
     }
 
-    // Have there been too many failed login attempts in the past minute?
+    // Have there been too many failed login attempts in the past $throttleLoginTime seconds?
     function isThrottled() {
-        global $dbh;
+        global $dbh, $throttleLoginTime, $throttleLoginAttempts;
+        if (isset($throttleLoginTime)) {
+            return false;
+        }
 
-        $ps = $dbh->prepare('SELECT userName FROM Log where time > (now() - 60) AND userName=:userName AND message like "FAIL%"');
+        $ps = $dbh->prepare('SELECT userName FROM Log where time > (now() - ' . $throttleLoginTime . ') AND userName=:userName AND message like "FAIL%"');
         $ps->execute(array( ":userName" => $this->userName ));
-        return ($ps->rowCount() > 2);
+        return ($ps->rowCount() > $throttleLoginAttempts);
     }
 
     function log($message) {

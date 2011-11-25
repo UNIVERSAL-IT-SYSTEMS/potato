@@ -34,8 +34,15 @@ $groupUser = "potato-users";
 $orgName = "Potato";
 
 // Amount of allowed login attempts before the account is locked
-// Set to 0 to disable account locking.
+// Comment out to disable account locking.
 $invalidLoginLimit = 7;
+
+// Login throttle. If you dislike automatic lockouts, you can use these settings instead
+// In order to slow down brute-force attacks, you can limit the amount of
+// failed logins to $throttleLoginAttempts in $throttleLoginTime seconds.
+// Comment out to disable login throttling.
+$throttleLoginTime = 90;
+$throttleLoginAttempts = 3;
 
 // What's the SSID of the regular wifi network?
 // Set to empty string if you're not going to use potato for regular wifi access.
@@ -59,6 +66,6 @@ try {
 }
 
 # Uncomment this to activate demo-mode
-# include "demo.php";
+include "demo.php";
 
 ?>

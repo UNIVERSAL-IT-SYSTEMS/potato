@@ -78,7 +78,7 @@ include 'header.php';
 <p>Use this area to test your token.
 
 <?php
-if ( $invalidLoginLimit != 0 ) {
+if ( isset($invalidLoginLimit) ) {
     echo "Please be aware that " . $invalidLoginLimit . " consecutive incorrect authentication attempts will result in the account being locked out.";
 }
 ?>
