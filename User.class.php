@@ -35,7 +35,7 @@ class User {
     public $passPhrase;
     private $maxDrift = 300;
     private $hotpCounter;
-    private $hotpLookahead = 5;
+    private $hotpLookahead = 10;
 
     function fetch($userName) {
         global $dbh;
