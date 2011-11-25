@@ -54,6 +54,8 @@ if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
         }
     } catch (NoGuestException $ignore) {
     }
+    // Delay for three seconds before exiting with fail
+    sleep(3);
     echo "Access denied\n";
     exit(1);
 }
@@ -87,6 +89,8 @@ try {
 } catch (NoSuchUserException $ignore) {
 }
 
+// Delay for three seconds before exiting with fail
+sleep(3);
 echo "Access denied\n";
 exit(1);
 

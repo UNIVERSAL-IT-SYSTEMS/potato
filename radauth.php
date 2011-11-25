@@ -47,10 +47,14 @@ if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
     try {
         $guest->fetch($guestName);
         # Cleartext password available; see if it's the correct one
-        exit ($guest->getPassword() == $passPhrase ? 0 : 1);
+        if ($guest->getPassword() == $passPhrase) {
+            exit(0);
+        }
     } catch (NoGuestException $ignore) {
-        exit(1);
     }
+    // Delay for three seconds before exiting with fail
+    sleep(3);
+    exit(1);
 }
 
 try {
@@ -82,6 +86,8 @@ try {
 } catch (NoSuchUserException $ignore) {
 }
 
+// Delay for three seconds before exiting with fail
+sleep(3);
 exit(1);
 
 ?>
