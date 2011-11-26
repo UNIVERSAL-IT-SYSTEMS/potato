@@ -130,18 +130,18 @@ class User {
 
     // Authenticate user
     function authenticate($password) {
-        global $demo, $demoUsers;
-        if ($demo) {
-            return (in_array($this->userName, array_keys($demoUsers)) && $demoUsers[$this->userName]['pw']==$password);
+        global $demo;
+        if (isset($demo)) {
+            return (in_array($this->userName, array_keys($demo)) && $demo[$this->userName]['pw']==$password);
         }
         return (pam_auth( $this->userName, $password ) );
     }
 
     // Get the fullname of the user
     function getFullName() {
-        global $demo, $demoUsers;
-        if ($demo) {
-            return $demoUsers[$this->userName]['fullName'];
+        global $demo;
+        if (isset($demo)) {
+            return $demo[$this->userName]['fullName'];
         }
         $userInfo = posix_getpwnam($this->userName);
         return iconv('UTF-8', 'UTF-16LE', $userInfo['gecos']);
@@ -202,9 +202,9 @@ class User {
 
     // Is this user an administrator
     function isAdmin() {
-        global $groupAdmin, $demo, $demoUsers;
-        if ($demo) {
-            return ( $demoUsers[$this->userName]['admin'] );
+        global $groupAdmin, $demo;
+        if (isset($demo)) {
+            return ( $demo[$this->userName]['admin'] );
         }
         $groupInfo = posix_getgrnam($groupAdmin);
         return (in_array($this->userName, $groupInfo['members']));
@@ -212,9 +212,9 @@ class User {
 
     // Is the user a member of $group?
     function isMemberOf($group) {
-        global $demo, $demoUsers;
-        if ($demo) {
-            return ( in_array( $this->userName, array_keys($demoUsers) ) );
+        global $demo;
+        if (isset($demo)) {
+            return ( in_array( $this->userName, array_keys($demo) ) );
         }
         $groupInfo = posix_getgrnam($group);
         return ( in_array( $this->userName, $groupInfo['members'] ) );

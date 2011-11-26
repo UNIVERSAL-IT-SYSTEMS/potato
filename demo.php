@@ -24,15 +24,12 @@
  * 
  */
 
-// Activate demo mode?
-$demo = true;
-
 // All demo users
-$demoUsers = array("alice" => array('pw'=>"fu",     'admin'=>false, 'fullName'=>"Alice Alpha"),
-                   "bob"   => array('pw'=>"bar",    'admin'=>false, 'fullName'=>"Robert Bravo"),
-                   "carol" => array('pw'=>"fubar",  'admin'=>true,  'fullName'=>"Carol Charlie"),
-                   "dave"  => array('pw'=>"rofl",   'admin'=>false, 'fullName'=>"David Delta"),
-                   "eve"   => array('pw'=>"lolcat", 'admin'=>true,  'fullName'=>"Eve Echo"));
+$demo = array("alice" => array('pw'=>"fu",     'admin'=>false, 'fullName'=>"Alice Alpha"),
+              "bob"   => array('pw'=>"bar",    'admin'=>false, 'fullName'=>"Robert Bravo"),
+              "carol" => array('pw'=>"fubar",  'admin'=>true,  'fullName'=>"Carol Charlie"),
+              "dave"  => array('pw'=>"rofl",   'admin'=>false, 'fullName'=>"David Delta"),
+              "eve"   => array('pw'=>"lolcat", 'admin'=>true,  'fullName'=>"Eve Echo"));
 
 
 ?>
