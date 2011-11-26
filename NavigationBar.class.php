@@ -66,7 +66,7 @@ class NavigationBar {
     }
     
     function printNavBar() {
-        if ( $this->pageTotal == 1 ) {
+        if ( $this->pageTotal < 2 ) {
             return;
         }
         echo "<div class=\"navbarContainer\">\n";
