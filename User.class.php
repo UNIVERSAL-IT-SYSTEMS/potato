@@ -232,9 +232,9 @@ class User {
             return false;
         }
 
-        $ps = $dbh->prepare('SELECT userName FROM Log where time > (now() - ' . $throttleLoginTime . ') AND userName=:userName AND message like "FAIL%"');
+        $ps = $dbh->prepare('SELECT count(*) FROM Log where time > (now() - ' . $throttleLoginTime . ') AND userName=:userName AND message like "FAIL%"');
         $ps->execute(array( ":userName" => $this->userName ));
-        return ($ps->rowCount() > $throttleLoginAttempts);
+        return ($ps->fetch() > $throttleLoginAttempts);
     }
 
     function log($message) {
@@ -251,11 +251,11 @@ class User {
 
     function replayAttack() {
         global $dbh;
-        $ps = $dbh->prepare('SELECT userName from Log where time > (now() - ' . $this->maxDrift*2 . ') AND userName=:userName AND passPhrase=:passPhrase AND message like "Success%"');
+        $ps = $dbh->prepare('SELECT count(*) from Log where time > (now() - ' . $this->maxDrift*2 . ') AND userName=:userName AND passPhrase=:passPhrase AND message like "Success%"');
         $ps->execute(array(":userName"=>$this->userName,
-                            ":passPhrase"=>$this->passPhrase));
+                           ":passPhrase"=>$this->passPhrase));
 
-        return ($ps->rowCount() > 0);
+        return ($ps->fetch() > 0);
     }
 
     function setPin($newPin) {
