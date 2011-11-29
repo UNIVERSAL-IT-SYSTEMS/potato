@@ -234,7 +234,8 @@ class User {
 
         $ps = $dbh->prepare('SELECT count(*) FROM Log where time > (now() - ' . $throttleLoginTime . ') AND userName=:userName AND message like "FAIL%"');
         $ps->execute(array( ":userName" => $this->userName ));
-        return ($ps->fetch() > $throttleLoginAttempts);
+        $result = $ps->fetch();
+        return ($result[0] > $throttleLoginAttempts);
     }
 
     function log($message) {
@@ -254,8 +255,8 @@ class User {
         $ps = $dbh->prepare('SELECT count(*) from Log where time > (now() - ' . $this->maxDrift*2 . ') AND userName=:userName AND passPhrase=:passPhrase AND message like "Success%"');
         $ps->execute(array(":userName"=>$this->userName,
                            ":passPhrase"=>$this->passPhrase));
-
-        return ($ps->fetch() > 0);
+        $result = $ps->fetch();
+        return ($result[0] > 0);
     }
 
     function setPin($newPin) {
