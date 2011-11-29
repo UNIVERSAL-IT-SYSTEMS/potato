@@ -79,14 +79,19 @@ include 'header.php';
 <?php
 
 if ( $currentUser->getUserName() != $user->getUserName() ) {
-    // Editing someone else. Add some context, and ignore the detailed instructions
     echo "<h1>User settings: " . htmlentities($user->getUserName()) . "</h1>";
+    echo "<p><b>User fullname: </b>";
+    echo '<a href="logviewer.php?userName=' . urlencode($user->getUserName()) . '" title="View user log">';
+    echo htmlentities($user->getFullName());
+    echo ' <img src="images/logviewer.png" alt="View logs" title="View logs" /></a>';
+    echo "</p>\n";
 } else {
+    echo "<h1>User settings</h1>";
+}
 
 ?>
 
 
-<h1>User settings</h1>
 <p>In order to use the Mobile OTP service, you must configure your mobile.
 Click for detailed instructions for your phone:
     <ul>
@@ -193,7 +198,6 @@ Click for detailed instructions for your phone:
 </p>
 
 <?php
-}
 
 if ( $user->hasToken() ) {
     echo '<div id="infoSecret">' . "\n";
