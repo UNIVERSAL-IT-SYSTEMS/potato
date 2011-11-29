@@ -30,15 +30,18 @@ include 'header.php';
 ?>
 
 <h1>Help</h1>
-<ul>
-    <li><a href="about.php">Basic information about one-time-passwords</a></li>
+<p><a href="about.php">Click here</a> for basic information about one-time-passwords.</p>
+
 <?php
 
 if ($wifiSSID != "") {
-    echo "    <li><a href=\"winxp.php\">Windows XP wifi guide</a></li>\n";
+    if (file_exists("localsite.php")) {
+        readfile("localsite.php");
+    }
+    echo "<h2>More...</h2>\n";
+    echo "<p>If you require detailed wifi instructions, you can read this <a href=\"winxp.php\">Windows XP wifi guide</a></p>\n";
 }
 ?>
-</ul>
 
 <?php
 include 'footer.php';
