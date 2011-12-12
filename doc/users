@@ -2,9 +2,10 @@
 # You will also need to configure your wifi network to direct users to the
 # proper network based on the "Class="
 # 
-# DEFAULT Suffix == ".guest", Auth-Type = Accept
-# 	Login-IP-Host = wifi-controller.example.com,
+# DEFAULT NAS-IP-Address=="192.168.0.99", Suffix == ".guest", Auth-Type = Accept
 # 	Class = "External-users"
+# 
+# DEFAULT Suffix == ".guest", Auth-Type = Reject
 
 
 # Direct sysadmins to the correct network.
@@ -14,10 +15,7 @@
 # 	Class = "Sysadmin-users"
 
 
-
-# This is a simple configuration.
-DEFAULT Suffix != ".guest", Auth-Type = Accept
+# This is a simple configuration:
+DEFAULT Auth-Type = Accept
 	Class = "Remoteaccess"
-
-Default Auth-Type := Reject
 
