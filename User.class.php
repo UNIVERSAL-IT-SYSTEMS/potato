@@ -217,7 +217,8 @@ class User {
             return ( in_array( $this->userName, array_keys($demo) ) );
         }
         $groupInfo = posix_getgrnam($group);
-        return ( in_array( $this->userName, $groupInfo['members'] ) );
+        $userInfo = posix_getpwnam($this->userName);
+        return ( in_array( $this->userName, $groupInfo['members'] ) || $userInfo['gid'] == $groupInfo['gid'] );
     }
 
     function isLockedOut() {
