@@ -38,8 +38,10 @@ $user = new User();
 
 try {
     $user->fetch($userName);
-    if ( !empty($_POST['passPhrase']) ) {
-        $offset = $user->hotpResync($_POST['passPhrase']);
+    if ( !empty($_POST['passPhrase1']) && 
+         !empty($_POST['passPhrase2']) && 
+         !empty($_POST['passPhrase3']) ) {
+        $offset = $user->hotpResync($_POST['passPhrase1'], $_POST['passPhrase2'], $_POST['passPhrase3']);
         if ( $offset == 0 ) {
             $_SESSION['msgWarning'] = "Unable to sync.";
         } else {
@@ -58,17 +60,28 @@ include 'header.php';
 ?>
 
 <h1>HOTP sync</h1>
-<p>If a HOTP token (such as a yubikey) gets out of sync, you can use this web interface to resync it.</p>
+<p>If a HOTP token (such as a yubikey) gets out of sync, you can use this web interface to resync it. Use
+your HOTP token to generate three consecutive passphrases, and enter them here:</p>
 
-<form method="post" action="hotpsync.php"> 
+<form method="post" action="hotpsync.php" onsubmit="return(sanityCheckForm());"> 
     <table> 
         <tr> 
             <th>Username:</th> 
             <td><input type="text" name="userName" value="<?php echo htmlentities($user->getUserName()) ?>" size="20" maxlength="16" /></td> 
         </tr> 
         <tr> 
-            <th>Passphrase:</th> 
-            <td><input id="focusme" type="text" name="passPhrase" value="" size="20" maxlength="16" /> (do not prefix the passphrase with pin)</td> 
+            <th>Passphrase 1:</th> 
+            <td><input id="passPhrase1" type="text" name="passPhrase1" value="" size="20" maxlength="16" /> (do not prefix the passphrase with pin)</td> 
+        </tr> 
+        <tr>
+        <tr> 
+            <th>Passphrase 2:</th> 
+            <td><input id="passPhrase2" type="text" name="passPhrase2" value="" size="20" maxlength="16" /> (do not prefix the passphrase with pin)</td> 
+        </tr> 
+        <tr>
+        <tr> 
+            <th>Passphrase 3:</th> 
+            <td><input id="passPhrase3" type="text" name="passPhrase3" value="" size="20" maxlength="16" /> (do not prefix the passphrase with pin)</td> 
         </tr> 
         <tr>
             <td></td>
@@ -78,11 +91,31 @@ include 'header.php';
 </form>
 
 <script type="text/javascript">
-    function setfocus() {
-        domUsername = document.getElementById("focusme");
-        domUsername.focus();
+    function sanityCheckForm() {
+        if (domPP1.value == "") {
+            domPP1.focus();
+            return(false);
+        }
+        if (domPP2.value == "") {
+            domPP2.focus();
+            return(false);
+        }
+        if (domPP3.value == "") {
+            domPP3.focus();
+            return(false);
+        }
+        return(true);
     }
-    window.onload=setfocus;
+    function focusOnLoad() {
+        domEle = document.getElementById("passPhrase1");
+        domEle.focus();
+    }
+    window.onload=focusOnLoad;
+
+    domPP1 = document.getElementById("passPhrase1");
+    domPP2 = document.getElementById("passPhrase2");
+    domPP3 = document.getElementById("passPhrase3");
+
 </script>
 
 

@@ -288,16 +288,20 @@ class User {
         $this->log("Success" . ($source=="" ? "" : " [ " . $source . " ]"));
     }
 
-    function hotpResync($passPhrase) {
+    function hotpResync($passPhrase1, $passPhrase2, $passPhrase3) {
         if ($this->hotpCounter == 0) {
             return 0;
         }
-        for ($offset=0; $offset<100; $offset++) {
+        for ($offset=0; $offset<1000; $offset++) {
             $c = $this->hotpCounter + $offset;
-            if ( $this->oathTruncate($this->oathHotp($c)) == $passPhrase ) {
-                $this->hotpCounter = $c+1;
-                $this->save();
-                return $offset+1;
+            if ( $this->oathTruncate($this->oathHotp($c)) == $passPhrase1 ) {
+                // We found a match. Verify the other passPhrases as well.
+                if ( ( $this->oathTruncate($this->oathHotp($c+1)) == $passPhrase2 ) &&
+                     ( $this->oathTruncate($this->oathHotp($c+2)) == $passPhrase3 ) ) {
+                    $this->hotpCounter = $c+3;
+                    $this->save();
+                    return $offset+3;
+                }
             }
         }
         return 0;
