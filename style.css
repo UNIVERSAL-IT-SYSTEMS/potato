@@ -76,22 +76,6 @@ input.iesux {
     border: 1px solid red;
 }
 
-
-.qrcode {
-    float: right;
-    border: 1px solid grey;
-    background: white;
-    width: 84px;
-}
-.qrcode img {
-    width: 82px;
-    height: 82px;
-}
-.qrcode div {
-    font-size: 0.8em;
-    padding: 0px 8px 8px 8px;
-}
-
 h1, h2, h3 {
     font-weight: bold;
     margin: 0.5em 0em;

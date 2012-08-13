@@ -61,6 +61,19 @@ function setVisibility( sName, visibility ) {
     domName.style.display = ( visibility ? "block" : "none" );
 }
 
+var currentlyOpen = "";
+function toggleVisibility( sName ) {
+    if (currentlyOpen != "") {
+        setVisibility( currentlyOpen, false );
+    }
+    if (currentlyOpen == sName) {
+        currentlyOpen = "";
+    } else {
+        currentlyOpen = sName;
+        setVisibility( sName, true );
+    }
+}
+
 function moveToPos( element, parent ) {
     domElement = document.getElementById(element);
     domElement.style.left = parent.pageX;

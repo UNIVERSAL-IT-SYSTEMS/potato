@@ -95,9 +95,9 @@ if ( $currentUser->getUserName() != $user->getUserName() ) {
 <p>In order to use the Mobile OTP service, you must configure your mobile.
 Click for detailed instructions for your phone:
     <ul>
-        <li><a href="#" onclick="setVisibility('android', true); return(false);">Android</a>
+        <li><a href="#" onclick="toggleVisibility('android'); return(false);">Android</a>
             <div class="instructions" id="android">
-              <div class="closebutton" onclick="setVisibility('android', false);"></div>
+              <div class="closebutton" onclick="toggleVisibility('android');"></div>
               <div class="instructioncontents">
                 <h2>Android</h2>
                 <p>Install the <a href="https://play.google.com/store/apps/details?id=net.marinits.android.droidotp">DroidOTP</a> app from Google play, and follow these steps:</p>
@@ -115,9 +115,9 @@ Click for detailed instructions for your phone:
             </div>
         </li>
 
-        <li><a href="#" onclick="setVisibility('iphone', true); return(false);">iPhone</a>
+        <li><a href="#" onclick="toggleVisibility('iphone'); return(false);">iPhone</a>
             <div class="instructions" id="iphone">
-              <div class="closebutton" onclick="setVisibility('iphone', false);"></div>
+              <div class="closebutton" onclick="toggleVisibility('iphone');"></div>
               <div class="instructioncontents">
                 <h2>iPhone</h2>
                 <p>Install the <a href="http://itunes.apple.com/us/app/mobile-otp/id328973960&mt=8">iOTP</a> app from app store, and follow these steps:</p>
@@ -133,9 +133,9 @@ Click for detailed instructions for your phone:
             </div>
         </li>
 
-        <li><a href="#" onclick="setVisibility('midlet', true); return(false);">JAVA MIDlet compatible phone</a> (such as older non-smartphone SonyEricsson or Nokias)
+        <li><a href="#" onclick="toggleVisibility('midlet'); return(false);">JAVA MIDlet compatible phone</a> (such as older non-smartphone SonyEricsson or Nokias)
             <div class="instructions" id="midlet">
-              <div class="closebutton" onclick="setVisibility('midlet', false);"></div>
+              <div class="closebutton" onclick="toggleVisibility('midlet');"></div>
               <div class="instructioncontents">
                 <h2>Java MIDlet</h2>
                 <p>Start the web browser on your phone, and enter the following address:<br />
@@ -153,9 +153,9 @@ Click for detailed instructions for your phone:
               </div>
             </div>
         </li>
-        <li><a href="#" onclick="setVisibility('yubikey', true); return(false);">Yubikey dongle</a>
+        <li><a href="#" onclick="toggleVisibility('yubikey'); return(false);">Yubikey dongle</a>
             <div class="instructions" id="yubikey">
-              <div class="closebutton" onclick="setVisibility('yubikey', false);"></div>
+              <div class="closebutton" onclick="toggleVisibility('yubikey');"></div>
               <div class="instructioncontents">
 
                 <h2>Yubikey administration</h2>
@@ -191,9 +191,9 @@ Click for detailed instructions for your phone:
             </div>
         </li>
 
-        <li><a href="#" onclick="setVisibility('winphone', true); return(false);">Windows Phone</a>
+        <li><a href="#" onclick="toggleVisibility('winphone'); return(false);">Windows Phone</a>
             <div class="instructions" id="winphone">
-              <div class="closebutton" onclick="setVisibility('winphone', false);"></div>
+              <div class="closebutton" onclick="toggleVisibility('winphone');"></div>
               <div class="instructioncontents">
                 <h2>Windows Phone</h2>
                 <p>Install the <a href="http://www.windowsphone.com/en-US/apps/4eca404c-4936-4295-819a-8b4b85bcd592">Yamotp</a> app from the Windows Phone Marketplace, and follow these steps:</p>
