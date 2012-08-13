@@ -52,6 +52,18 @@ input.iesux {
     width: 10em;
 }
 
+.photobox {
+    position: absolute; 
+    top: 30px; 
+    left:30px; 
+    display: none;
+    border: 1px solid grey;
+    padding: 1em;
+    background: rgb(0,0,0);
+    background: rgba(0,0,0,0.5);
+    box-shadow: 5px 5px 5px #aaa;
+}
+
 .msgInfo, .msgWarning, .msgCritical {
     border-radius: 0em 2em 0em 0em;
     padding: 1em;

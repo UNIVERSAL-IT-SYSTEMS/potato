@@ -169,7 +169,11 @@ Click for detailed instructions for your phone:
                   <li>Download and install the <a href="http://www.yubico.com/personalization-tool">Yubikey personalization tool from the Yubico site</a></li>
                   <li>Start the tool and select the OATH-HOTP mode</li>
                   <li>Select the "Quick" programming mode<br />
-                    <a href="images/yubikey.png"><img src="images/yubikey_thumb.jpg"></a>
+                    <div id="yubikeyDetail" class="photobox" onclick="setVisibility('yubikeyDetail', false);">
+                      <img src="images/yubikey.png" />
+                    </div>
+                    <a href="images/yubikey.png" onclick="setVisibility('yubikeyDetail', true); return(false);"><img src="images/yubikey_thumb.jpg"><br />
+                    (click for larger picture)</a>
                   </li>
                   <li>Select "Configuration Slot 1"</li>
                   <li>Deselect the "OATH Token Identifier"</li>
