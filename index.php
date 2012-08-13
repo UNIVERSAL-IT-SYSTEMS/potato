@@ -100,11 +100,7 @@ Click for detailed instructions for your phone:
               <div class="closebutton" onclick="setVisibility('android', false);"></div>
               <div class="instructioncontents">
                 <h2>Android</h2>
-                <div class="qrcode">
-                  <img src="images/droidotp-qr.png" />
-                  <div>QR link to this app at the Android market.</div>
-                </div>
-                <p>Install the <a href="http://www.androidpit.com/en/android/market/apps/app/net.marinits.android.droidotp/DroidOTP">DroidOTP</a> app from Google Market, and follow these steps:</p>
+                <p>Install the <a href="https://play.google.com/store/apps/details?id=net.marinits.android.droidotp">DroidOTP</a> app from Google play, and follow these steps:</p>
                 <ol>
                   <li>Click the menu button, and select "Settings"</li>
                   <li>Click add, and choose a memorable name for your token. For example: "Work"</li>
@@ -194,6 +190,25 @@ Click for detailed instructions for your phone:
               </div>
             </div>
         </li>
+
+        <li><a href="#" onclick="setVisibility('winphone', true); return(false);">Windows Phone</a>
+            <div class="instructions" id="winphone">
+              <div class="closebutton" onclick="setVisibility('winphone', false);"></div>
+              <div class="instructioncontents">
+                <h2>Windows Phone</h2>
+                <p>Install the <a href="http://www.windowsphone.com/en-US/apps/4eca404c-4936-4295-819a-8b4b85bcd592">Yamotp</a> app from the Windows Phone Marketplace, and follow these steps:</p>
+                <ol>
+                  <li>Select "add profile"</li>
+                  <li>Select a memorable name for your token. For example: "Work"</li>
+                  <li>Your phone will auto-initialize the 16 character "Secret Key". Enter the secret in this web interface. Do not write this secret down anywhere else.</li>
+                  <li>Once your secret is safely registered here, click the "Save" button" on your phone.</li>
+                  <li>Register a PIN in this web interface</li>
+                </ol>
+                <p>Setup is now complete. Proceed to the <a href="testtoken.php">token testing area</a> to test your new token</p>
+              </div>
+            </div>
+        </li>
+
     </ul>
 </p>
 
