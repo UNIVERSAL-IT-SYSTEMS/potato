@@ -155,6 +155,7 @@ class User {
     // Save/create the user
     function save() {
         global $dbh;
+
         $ps = $dbh->prepare("INSERT INTO User (userName, secret, pin, hotpCounter) VALUES (:userName, :secret, :pin, :hotpCounter) ON DUPLICATE KEY UPDATE secret=:secret, pin=:pin, hotpCounter=:hotpCounter");
         $ps->execute(array( ":userName" => $this->userName,
                             ":secret" => $this->secret,
@@ -183,7 +184,7 @@ class User {
         if (count($this->errors) == 1) {
             return $this->errors[0];
         }
-        return "<ul><li>" . array_join("</li>\n<li>", $this->errors) . "</li></ul>\n";
+        return "<ul><li>" . implode("</li>\n<li>", $this->errors) . "</li></ul>\n";
     }
 
     function hasToken() {
@@ -270,8 +271,17 @@ class User {
     }
 
     function setSecret($newSecret) {
-        $this->hotpCounter = 0;
-        $this->secret = str_replace(" ", "", $newSecret);
+        $s = str_replace(" ", "", $newSecret);
+        if (strlen($s)%8 != 0) {
+            array_push($this->errors, "Secrets are typically 16, 24, or 32 characters in length (excluding spaces).");
+        }
+        if (!ctype_xdigit($s)) {
+            array_push($this->errors, "Secrets only contain hexadecimal digits (numbers and the letters a-f)");
+        }
+        if (empty($this->errors)) {
+            $this->hotpCounter = 0;
+            $this->secret = str_replace(" ", "", $s);
+        }
     }
 
     function unlock($unlocker) {
