@@ -164,6 +164,7 @@ div.navbarContainer {
 }
 .navbar td {
     text-align: center;
+    white-space: nowrap;
     padding: 0em;
     margin: 0em;
 }
