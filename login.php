@@ -25,6 +25,14 @@
  */
 
 include "config.php";
+
+try {
+    $dbh = new PDO("mysql:host=${dbServer};dbname=${dbName}", $dbUser, $dbPassword);
+} catch (Exception $ignore) {
+    echo "Database error.";
+    exit();
+}
+
 session_start();
 include "User.class.php";
 

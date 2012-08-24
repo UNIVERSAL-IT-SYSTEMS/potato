@@ -58,14 +58,7 @@ $dbName = 'potato';
 $dbUser = 'potato';
 $dbPassword = 'SuperSecret99';
 
-try {
-    $dbh = new PDO("mysql:host=${dbServer};dbname=${dbName}", $dbUser, $dbPassword);
-} catch (Exception $ignore) {
-    echo "Database error.";
-    exit();
-}
-
 # Uncomment this to activate demo-mode
-include "demo.php";
+# include "demo.php";
 
 ?>

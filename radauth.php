@@ -29,6 +29,13 @@ include "User.class.php";
 include "Guest.class.php";
 include "mschap.php";
 
+try {
+    $dbh = new PDO("mysql:host=${dbServer};dbname=${dbName}", $dbUser, $dbPassword);
+} catch (Exception $ignore) {
+    echo "Database error.";
+    exit();
+}
+
 $options = getopt("u:p:s:");
 
 $userName = $options["u"];
