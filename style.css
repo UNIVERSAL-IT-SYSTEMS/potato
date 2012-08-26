@@ -1,7 +1,7 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8em;
-    background: #eef;
+    background: #efefef;
     color: black;
     padding: 1em 2em;
 }
@@ -54,14 +54,15 @@ input.iesux {
 
 .photobox {
     position: absolute; 
-    top: 30px; 
-    left:30px; 
+    top: 0px; 
+    left: 0px;
+    width: 100%;
+    height: 100%;
     display: none;
-    border: 1px solid grey;
-    padding: 1em;
+    padding-top: 1em;
+    text-align: center;
     background: rgb(0,0,0);
     background: rgba(0,0,0,0.5);
-    box-shadow: 5px 5px 5px #aaa;
 }
 
 .msgInfo, .msgWarning, .msgCritical {
@@ -74,18 +75,18 @@ input.iesux {
 }
 
 .msgInfo {
-    background: #eee url(images/msgInfo.png) no-repeat 1em 1em;
+    background: #efefef url(images/msgInfo.png) no-repeat 1em 1em;
     border: 1px solid grey;
 }
 
 .msgWarning {
-    background: #fcc url(images/msgWarning.png) no-repeat 1em 1em;
-    border: 1px solid red;
+    background: #fdd url(images/msgWarning.png) no-repeat 1em 1em;
+    border: 1px solid #c88;
 }
 
 .msgCritical {
-    background: #fcc url(images/msgCritical.png) no-repeat 1em 1em;
-    border: 1px solid red;
+    background: #fdd url(images/msgCritical.png) no-repeat 1em 1em;
+    border: 1px solid #c88;
 }
 
 h1, h2, h3 {
