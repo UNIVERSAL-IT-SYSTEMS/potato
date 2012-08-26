@@ -9,7 +9,15 @@ body {
 a:link, a:visited, a:active, a:hover {
     text-decoration: none;
 }
-
+a:link {
+    color: #33a;
+}
+a:visited {
+    color: #939;
+}
+a:hover {
+    text-decoration: underline;
+}
 div#footer {
     font-size: 0.8em;
     margin-top: 1em;
@@ -35,8 +43,9 @@ div#menu a {
     padding: 0em 1em;
 }
 div#menu a:hover {
-    background: #77f;
+    background: #55f;
     color: white;
+    text-decoration: none;
 }
 
 div#content {
@@ -110,7 +119,7 @@ th {
 }
 
 table.userlist tr:nth-child(2n-1) {
-	background-color: #f4f4f4;
+	background-color: #efefef;
 }
 
 table.userlist td {
