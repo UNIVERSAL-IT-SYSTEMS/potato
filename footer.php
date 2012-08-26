@@ -30,6 +30,7 @@ if ( isset( $currentUser ) ) {
     	    <div id="footer">
                 Logged in as: <?php echo htmlentities($currentUser->getUserName()) ?><br />
                 Epoch: <?php echo intval(gmdate("U")/10) ?><br/>
+                <a href="http://kelvin.nu/software/potato/">Server side potato</a> is free software.
             </div>
 <?php
 }
