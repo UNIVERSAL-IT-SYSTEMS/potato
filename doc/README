@@ -13,7 +13,7 @@ mysql-server
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-Unless you like tinkering, begin by deactivating SELinux.
+SELinux is unsupported. There's a custom policy that needs to be written for SELinux to work properly with potato. It's on my todo list.
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -26,8 +26,14 @@ Copy the potato package to /var/www/html
 Make configuration changes in config.php, db_schema.sql (change the
 password)
 
-import the database schema by issuing the command:
-mysql -u root -p < db_schema.sql
+Create the potato database by issuing the following commands at the mysql prompt:
+> create database `potato` DEFAULT CHARACTER SET utf8;
+> grant ALL on potato.* to potato@localhost identified by "SuperSecret99";
+> flush privileges;
+
+Update your config.php with the appropriate database name, username, and password. 
+Next, visit the page install.php in your potato installation, and follow any on-screen
+instructions.
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 

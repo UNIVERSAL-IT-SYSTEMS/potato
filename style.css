@@ -194,4 +194,13 @@ div.navbarContainer {
 .navbar td.spacer {
     width: 3em;
 }
-
+span.failure {
+    color: red;
+    font-weight: bold;
+    font-size: 120%;
+}
+span.success {
+    color: green;
+    font-weight: bold;
+    font-size: 120%;
+}
