@@ -240,15 +240,17 @@ class User {
         return ($result[0] > $throttleLoginAttempts);
     }
 
-    function log($message) {
+    function log($message, $idNAS="", $idClient="") {
         global $dbh;
 
-        // Don't log the pin...
+        // Strip the PIN from the passPhrase in case of HOTP logins
         $pp = strlen($this->passPhrase) > 6 ? substr($this->passPhrase, -6) : $this->passPhrase;
 
-        $ps = $dbh->prepare("INSERT INTO Log (userName, passPhrase, message) VALUES (:userName, :passPhrase, :message)");
+        $ps = $dbh->prepare("INSERT INTO Log (userName, passPhrase, idNAS, idClient, message) VALUES (:userName, :passPhrase, :idNAS, :idClient, :message)");
         $ps->execute(array( ":userName" => $this->userName,
                             ":passPhrase" => $pp,
+                            ":idNAS" => ($idNAS=="" ? null : $idNAS),
+                            ":idClient" => ($idClient=="" ? null : $idClient),
                             ":message" => $message));
     }
 
@@ -291,11 +293,11 @@ class User {
         $this->log("Account unlocked by " . htmlentities($unlocker));
     }
 
-    function validLogin($source = "") {
+    function validLogin($idNAS = "") {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = 0 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
-        $this->log("Success" . ($source=="" ? "" : " [ " . $source . " ]"));
+        $this->log("Success", ($idNAS=="" ? "" : $idNAS ));
     }
 
     function hotpResync($passPhrase1, $passPhrase2, $passPhrase3) {

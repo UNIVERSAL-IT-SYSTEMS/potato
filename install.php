@@ -31,7 +31,7 @@ include "header.php";
 
 <h1>Potato installation</h1>
 <ul>
-    <li>Attempting to connect to database <strong>"<?php echo ${dbName}; ?>"</strong>... 
+    <li>Attempting to connect to database <strong>"<?php echo $dbName; ?>"</strong>... 
 <?php
 // Make sure we have a database handle
 try {
@@ -47,7 +47,7 @@ print "    </li>\n";
 print "    <li>Creating User table...";
 
 $sql = <<<____SQL
-CREATE TABLE IF NOT EXISTS `User` (
+CREATE TABLE `User` (
   `userName` char(16) NOT NULL,
   `secret` varchar(64) NULL DEFAULT NULL,
   `pin` char(8) NULL DEFAULT NULL,
@@ -58,16 +58,19 @@ CREATE TABLE IF NOT EXISTS `User` (
 ____SQL;
 $return = $dbh->exec($sql);
 if ($dbh->errorCode() == "00000") {
-    echo "<span class=\"success\">Success!</span>";
+    print "<span class=\"success\">Success!</span>";
+} elseif ($dbh->errorCode() == "42S01") {
+    echo "<span class=\"success\">Table already exists!</span>";
 } else {
-    echo "<span class=\"failure\">Fail!</span>";
+    print "<span class=\"failure\">Fail!</span><br />";
+    $error = $dbh->errorInfo();
+    print $error[2];
 }
 print "    </li>\n";
 
-
 print "    <li>Creating Guest table...";
 $sql = <<<____SQL
-CREATE TABLE IF NOT EXISTS `Guest` (
+CREATE TABLE `Guest` (
   `userName` char(16) NOT NULL,
   `password` varchar(32) NOT NULL,
   `dateCreation` timestamp default CURRENT_TIMESTAMP,
@@ -78,14 +81,18 @@ ____SQL;
 $return = $dbh->exec($sql);
 if ($dbh->errorCode() == "00000") {
     echo "<span class=\"success\">Success!</span>";
+} elseif ($dbh->errorCode() == "42S01") {
+    echo "<span class=\"success\">Table already exists!</span>";
 } else {
-    echo "<span class=\"failure\">Fail!</span>";
+    print "<span class=\"failure\">Fail!</span><br />";
+    $error = $dbh->errorInfo();
+    print $error[2];
 }
 print "    </li>\n";
 
 print "    <li>Creating Log table...";
 $sql = <<<____SQL
-CREATE TABLE IF NOT EXISTS `Log` (
+CREATE TABLE `Log` (
   `time` timestamp default CURRENT_TIMESTAMP,
   `userName` char(16) NOT NULL,
   `passPhrase` char(12),
@@ -95,15 +102,52 @@ CREATE TABLE IF NOT EXISTS `Log` (
   CONSTRAINT `fkUserName` FOREIGN KEY (`userName`) references `User` (`userName`) on delete cascade
 ) ENGINE=InnoDB CHARSET=utf8;
 ____SQL;
+$return = $dbh->exec($sql);
 
 if ($dbh->errorCode() == "00000") {
     echo "<span class=\"success\">Success!</span>";
+} elseif ($dbh->errorCode() == "42S01") {
+    echo "<span class=\"success\">Table already exists!</span>";
 } else {
-    echo "<span class=\"failure\">Fail!</span>";
+    echo "<span class=\"failure\">Fail!</span><br />";
+    $error = $dbh->errorInfo();
+    print $error[2];
 }
+print "    </li>\n";
+# print "<pre>";
+# print_r($dbh->errorInfo());
+# print "</pre>";
+
+# Updating log table
+print "<li>Inserting idClient column in Log-table...";
+$dbh->exec( "ALTER TABLE `Log` ADD COLUMN `idClient` char(32) NULL DEFAULT NULL AFTER `passPhrase`" );
+if ($dbh->errorCode() == "00000") {
+    echo "<span class=\"success\">Success!</span>";
+} elseif ($dbh->errorCode() == "42S21") {
+    echo "<span class=\"success\">Column already exists!</span>";
+} else {
+    echo "<span class=\"failure\">Fail!</span><br />";
+    $error = $dbh->errorInfo();
+    print $error[2];
+}
+print "    </li>\n";
+
+
+print "<li>Inserting idNAS column in Log-table...";
+$dbh->exec( "ALTER TABLE `Log` ADD COLUMN `idNAS` char(32) NULL DEFAULT NULL AFTER `idClient`" );
+if ($dbh->errorCode() == "00000") {
+    echo "<span class=\"success\">Success!</span>";
+} elseif ($dbh->errorCode() == "42S21") {
+    echo "<span class=\"success\">Column already exists!</span>";
+} else {
+    echo "<span class=\"failure\">Fail!</span><br />";
+    $error = $dbh->errorInfo();
+    print $error[2];
+}
+print "    </li>\n";
+
+
 ?>
-</li>
-</li>
 </ul>
 
 <p>If everything installed correctly, you can delete this file (install.php) and 

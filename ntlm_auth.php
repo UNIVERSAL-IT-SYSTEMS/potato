@@ -75,18 +75,18 @@ try {
     if ( $user->checkOTPmschap($mschapChallengeHash, $mschapResponse) ) {
         if ( ! $user->isMemberOf($groupUser) ) {
             // User not member of access group
-            $user->log("FAIL! Valid login, but user is not a member of ${groupUser}.");
+            $user->log("FAIL! Valid login, but user is not a member of ${groupUser}.", "mschap");
         } elseif ( $user->isLockedOut() ) {
             // Account locked out
             $user->invalidLogin();
-            $user->log("FAIL! Valid login, but account locked out.");
+            $user->log("FAIL! Valid login, but account locked out.", "mschap");
         } elseif ( $user->isThrottled() ) {
             $user->invalidLogin();
-            $user->log("FAIL! Valid login, but login denied due to throttling [ mschap ]");
+            $user->log("FAIL! Valid login, but login denied due to throttling", "mschap");
         } elseif ( $user->replayAttack()) {
             // Replay attack
             $user->invalidLogin();
-            $user->log("FAIL! OTP replay.");
+            $user->log("FAIL! OTP replay.", "mschap");
         } else {
             $user->validLogin("mschap");
             echo "NT_KEY: " . strtoupper(bin2hex(NtPasswordHashHash($user->passPhrase))) . "\n";
@@ -94,7 +94,7 @@ try {
         }
     } else {
         $user->invalidLogin();
-        $user->log("FAIL! Invalid login [ mschap ]");
+        $user->log("FAIL! Invalid login", "mschap");
     }
 } catch (NoSuchUserException $ignore) {
 }
