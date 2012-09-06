@@ -51,7 +51,7 @@ $navBar->printNavBar();
 
 <?php
 
-$ps = $dbh->prepare("SELECT time, userName, passPhrase, idNAS, status, message from Log order by time DESC limit :rowsPerPage offset :rowsOffset");
+$ps = $dbh->prepare("SELECT time, userName, passPhrase, idClient, idNAS, status, message from Log order by time DESC limit :rowsPerPage offset :rowsOffset");
 $ps->bindValue(':rowsPerPage', $navBar->getRowsPerPage(), PDO::PARAM_INT);
 $ps->bindValue(':rowsOffset', $navBar->getRowsOffset(), PDO::PARAM_INT);
 $ps->execute();
@@ -62,6 +62,7 @@ while ($row = $ps->fetch()) {
         <td><?php echo $row['time'] ?></td>
         <td><a href="logviewer.php?userName=<?php echo urlencode($row['userName']) ?>"><?php echo htmlentities($row['userName']) ?></a></td>
         <td><?php echo $row['passPhrase'] ?></td>
+        <td><?php echo $row['idClient'] ?></td>
         <td><?php echo $row['idNAS'] ?></td>
         <td><?php echo $row['status'] ?></td>
         <td><?php echo $row['message'] ?></td>

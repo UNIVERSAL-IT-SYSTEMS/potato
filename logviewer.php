@@ -57,7 +57,7 @@ $navBar->printNavBar();
 
 <?php
 
-$ps = $dbh->prepare("SELECT time, passPhrase, message from Log where userName=:userName order by time DESC limit :rowsPerPage offset :rowsOffset");
+$ps = $dbh->prepare("SELECT time, passPhrase, idClient, idNAS, status, message from Log where userName=:userName order by time DESC limit :rowsPerPage offset :rowsOffset");
 $ps->bindValue(':userName', $user->getUserName());
 $ps->bindValue(':rowsPerPage', $navBar->getRowsPerPage(), PDO::PARAM_INT);
 $ps->bindValue(':rowsOffset', $navBar->getRowsOffset(), PDO::PARAM_INT);
@@ -68,6 +68,9 @@ while ($row = $ps->fetch()) {
     <tr>
         <td><?php echo $row['time'] ?></td>
         <td><?php echo $row['passPhrase'] ?></td>
+        <td><?php echo $row['idClient'] ?></td>
+        <td><?php echo $row['idNAS'] ?></td>
+        <td><?php echo $row['status'] ?></td>
         <td><?php echo $row['message'] ?></td>
     </tr> 
 <?php
