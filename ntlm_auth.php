@@ -61,8 +61,7 @@ if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
         }
     } catch (NoGuestException $ignore) {
     }
-    // Delay for three seconds before exiting with fail
-    sleep(3);
+    // Exit with fail
     echo "Access denied\n";
     exit(1);
 }
@@ -75,32 +74,27 @@ try {
     if ( $user->checkOTPmschap($mschapChallengeHash, $mschapResponse) ) {
         if ( ! $user->isMemberOf($groupUser) ) {
             // User not member of access group
-            $user->log("FAIL! Valid login, but user is not a member of ${groupUser}.", "mschap");
+            $user->invalidLogin( array("message"=>"Valid login, but user is not a member of ${groupUser}", "idNAS"=>"mschap"));
         } elseif ( $user->isLockedOut() ) {
             // Account locked out
-            $user->invalidLogin();
-            $user->log("FAIL! Valid login, but account locked out.", "mschap");
+            $user->invalidLogin( array("message"=>"Valid login, but account locked out", "idNAS"=>"mschap"));
         } elseif ( $user->isThrottled() ) {
-            $user->invalidLogin();
-            $user->log("FAIL! Valid login, but login denied due to throttling", "mschap");
+            $user->invalidLogin( array("message"=>"Valid login, but login denied due to throttling", "idNAS"=>"mschap"));
         } elseif ( $user->replayAttack()) {
             // Replay attack
-            $user->invalidLogin();
-            $user->log("FAIL! OTP replay.", "mschap");
+            $user->invalidLogin( array("message"=>"OTP replay", "idNAS"=>"mschap"));
         } else {
-            $user->validLogin("mschap");
+            $user->validLogin( array("idNAS"=>"mschap"));
             echo "NT_KEY: " . strtoupper(bin2hex(NtPasswordHashHash($user->passPhrase))) . "\n";
             exit;
         }
     } else {
-        $user->invalidLogin();
-        $user->log("FAIL! Invalid login", "mschap");
+        $user->invalidLogin(array( "message"=>"Invalid login", "idNAS"=>"mschap"));
     }
 } catch (NoSuchUserException $ignore) {
 }
 
-// Delay for three seconds before exiting with fail
-sleep(3);
+// Exit with fail
 echo "Access denied\n";
 exit(1);
 

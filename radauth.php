@@ -36,7 +36,7 @@ try {
     exit();
 }
 
-$options = getopt("u:p:s:");
+$options = getopt("u:p:s:c:");
 
 $userName = $options["u"];
 $passPhrase = $options["p"];
@@ -60,8 +60,7 @@ if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
         }
     } catch (NoGuestException $ignore) {
     }
-    // Delay for three seconds before exiting with fail
-    sleep(3);
+    // Exiting with fail
     exit(1);
 }
 
@@ -73,32 +72,26 @@ try {
     if ( $user->checkOTP($passPhrase) ) {
         if ( ! $user->isMemberOf($groupUser) ) {
             // User not member of access group
-            $user->invalidLogin();
-            $user->log("FAIL! Valid login, but user is not a member of ${groupUser}", $idNAS, $idClient);
+            $user->invalidLogin( array( "message"=>"Valid login, but user is not a member of ${groupUser}", "idNAS"=>$idNAS, "idClient"=>$idClient));
         } elseif ( $user->isLockedOut() ) {
             // Account locked out
-            $user->invalidLogin();
-            $user->log("FAIL! Valid login, but account locked out.", $idNAS, $idClient);
+            $user->invalidLogin( array( "message"=>"Valid login, but account locked out", "idNAS"=>$idNAS, "idClient"=>$idClient));
         } elseif ( $user->isThrottled() ) {
-            $user->invalidLogin();
-            $user->log("FAIL! Valid login, but login denied due to throttling", $idNAS, $idClient);
+            $user->invalidLogin( array( "message"=>"Valid login, but login denied due to throttling", "idNAS"=>$idNAS, "idClient"=>$idClient));
         } elseif ( $user->replayAttack()) {
             // Replay attack
-            $user->invalidLogin();
-            $user->log("FAIL! OTP replay.", $idNAS, $idClient);
+            $user->invalidLogin( array( "message"=>"OTP replay", "idNAS"=>$idNAS, "idClient"=>$idClient));
         } else {
-            $user->validLogin($idNAS, $idClient);
+            $user->validLogin( array("idNAS"=>$idNAS, "idClient"=>$idClient));
             exit(0);
         }
     } else {
-        $user->invalidLogin();
-        $user->log("FAIL! Invalid login", $idNAS, $idClient);
+        $user->invalidLogin( array( "message"=>"Invalid login", "idNAS"=>$idNAS, "idClient"=>$idClient));
     }
 } catch (NoSuchUserException $ignore) {
 }
 
-// Delay for three seconds before exiting with fail
-sleep(3);
+// Exiting with fail
 exit(1);
 
 ?>

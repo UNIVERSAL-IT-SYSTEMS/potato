@@ -101,6 +101,7 @@ CREATE TABLE `Log` (
   `passPhrase` char(12),
   `idClient` char(32),
   `idNAS` char(32),
+  `status` char(8),
   `message` varchar(256),
   CONSTRAINT `fkUserName` FOREIGN KEY (`userName`) references `User` (`userName`) on delete cascade
 ) ENGINE=InnoDB CHARSET=utf8;
@@ -142,6 +143,41 @@ ____SQL;
         echo "<span class=\"success\">Success!</span>";
     } elseif ($dbh->errorCode() == "42S21") {
         echo "<span class=\"success\">Column already exists!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
+
+    print "<li>Inserting status column in Log-table...";
+    $dbh->exec( "ALTER TABLE `Log` ADD COLUMN `status` char(8) NULL DEFAULT NULL AFTER `idClient`" );
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } elseif ($dbh->errorCode() == "42S21") {
+        echo "<span class=\"success\">Column already exists!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
+
+    print "<li>Restructuring pre-existing data in Log table...";
+    $dbh->exec( "UPDATE `Log` SET status='Fail' where message like 'FAIL%'" );
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
+
+    print "<li>Restructuring pre-existing data in Log table...";
+    $dbh->exec( "UPDATE `Log` SET status='Success' where message like 'Success%'" );
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
     } else {
         echo "<span class=\"failure\">Fail!</span><br />";
         $error = $dbh->errorInfo();

@@ -60,11 +60,11 @@ if ( isset($_POST['action']) ) {
         switch ($_POST['action']) {
             case "updatePin":
                 $_SESSION['msgInfo'] = "New PIN saved";
-                $user->log("PIN initialized");
+                $user->log( array("message"=>"PIN initialized"));
                 break;
             case "updateSecret":
                 $_SESSION['msgInfo'] = "New token secret saved";
-                $user->log("Token initialized");
+                $user->log( array("message"=>"Token initialized"));
                 break;
         }
     } else {

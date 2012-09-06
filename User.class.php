@@ -196,10 +196,12 @@ class User {
         return ( !empty($this->pin) );
     }
 
-    function invalidLogin() {
+    function invalidLogin( $aLog=array()) {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = invalidLogins+1 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
+        $aLog["status"]="Fail";
+        $this->log( $aLog );
     }
 
     // Is this user an administrator
@@ -235,29 +237,30 @@ class User {
             return false;
         }
 
-        $ps = $dbh->prepare('SELECT count(*) FROM Log where time > (now() - ' . $throttleLoginTime . ') AND userName=:userName AND message like "FAIL%"');
+        $ps = $dbh->prepare('SELECT count(*) FROM Log where time > (now() - ' . $throttleLoginTime . ') AND userName=:userName AND status="Fail"');
         $ps->execute(array( ":userName" => $this->userName ));
         $result = $ps->fetch();
         return ($result[0] > $throttleLoginAttempts);
     }
 
-    function log($message, $idNAS="", $idClient="") {
+    function log( $aLog ) {
         global $dbh;
 
         // Strip the PIN from the passPhrase in case of HOTP logins
         $pp = strlen($this->passPhrase) > 6 ? substr($this->passPhrase, -6) : $this->passPhrase;
 
-        $ps = $dbh->prepare("INSERT INTO Log (userName, passPhrase, idNAS, idClient, message) VALUES (:userName, :passPhrase, :idNAS, :idClient, :message)");
+        $ps = $dbh->prepare("INSERT INTO Log (userName, passPhrase, idNAS, idClient, status, message) VALUES (:userName, :passPhrase, :idNAS, :idClient, :status, :message)");
         $ps->execute(array( ":userName" => $this->userName,
                             ":passPhrase" => $pp,
-                            ":idNAS" => ($idNAS=="" ? null : $idNAS),
-                            ":idClient" => ($idClient=="" ? null : $idClient),
-                            ":message" => $message));
+                            ":idNAS" => (isset($aLog['idNAS']) ? $aLog['idNAS'] : null),
+                            ":idClient" => (isset($aLog['idClient']) ? $aLog['idClient'] : null),
+                            ":status" => (isset($aLog['status']) ? $aLog['status'] : null),
+                            ":message" => (isset($aLog['message']) ? $aLog['message'] : null)));
     }
 
     function replayAttack() {
         global $dbh;
-        $ps = $dbh->prepare('SELECT count(*) from Log where time > (now() - ' . $this->maxDrift*2 . ') AND userName=:userName AND passPhrase=:passPhrase AND message like "Success%"');
+        $ps = $dbh->prepare('SELECT count(*) from Log where time > (now() - ' . $this->maxDrift*2 . ') AND userName=:userName AND passPhrase=:passPhrase AND status="Success"');
         $ps->execute(array(":userName"=>$this->userName,
                            ":passPhrase"=>$this->passPhrase));
         $result = $ps->fetch();
@@ -291,14 +294,15 @@ class User {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = 0 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
-        $this->log("Account unlocked by " . htmlentities($unlocker));
+        $this->log( array("message"=>"Account unlocked by " . htmlentities($unlocker)));
     }
 
-    function validLogin($idNAS="", $idClient="") {
+    function validLogin($aLog=array()) {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = 0 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
-        $this->log("Success", $idNAS, $idClient);
+        $aLog["status"]="Success";
+        $this->log( $aLog );
     }
 
     function hotpResync($passPhrase1, $passPhrase2, $passPhrase3) {
