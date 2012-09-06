@@ -97,31 +97,32 @@ class User {
 
     // perform mschapv2 authentication
     function checkOTPmschap ($challengeHash, $response) {
-        $now = intval( gmdate("U") / 10 );
-        $validPasswords = array();
-        $validOtps = array();
-        for ( $time = $now + ($this->maxDrift/10); $time >= $now - ($this->maxDrift/10) ; $time-- ) {
-            $otp = substr( md5($time . $this->secret . $this->pin ), 0, 6);
-
-            $pwHash = NtPasswordHash($otp);
-            $calcResponse = ChallengeResponse($challengeHash, $pwHash);
-
-            if ( $calcResponse == $response ) {
-                $this->passPhrase = $otp;
-                return true;
+        if (strlen($this->secret)==40) {
+            // only HOTP tokens have 20 byte long secrets
+            for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
+                $otp = $this->pin . $this->oathTruncate($this->oathHotp($c));
+                $pwHash = NtPasswordHash($otp);
+                $calcResponse = ChallengeResponse($challengeHash, $pwHash);
+                if ( $calcResponse == $response ) {
+                    $this->passPhrase = $otp;
+                    $this->hotpCounter = $c+1;
+                    $this->save();
+                    return true;
+                }
             }
-        }
+        } else {
+            // mOTP algorithm
+            $now = intval( gmdate("U") / 10 );
+            for ( $time = $now + ($this->maxDrift/10); $time >= $now - ($this->maxDrift/10) ; $time-- ) {
+                $otp = substr( md5($time . $this->secret . $this->pin ), 0, 6);
 
-        // Repeat process for HOTP token
-        for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
-            $otp = $this->pin . $this->oathTruncate($this->oathHotp($c));
-            $pwHash = NtPasswordHash($otp);
-            $calcResponse = ChallengeResponse($challengeHash, $pwHash);
-            if ( $calcResponse == $response ) {
-                $this->passPhrase = $otp;
-                $this->hotpCounter = $c+1;
-                $this->save();
-                return true;
+                $pwHash = NtPasswordHash($otp);
+                $calcResponse = ChallengeResponse($challengeHash, $pwHash);
+
+                if ( $calcResponse == $response ) {
+                    $this->passPhrase = $otp;
+                    return true;
+                }
             }
         }
 
