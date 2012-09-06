@@ -59,7 +59,7 @@ if ( ! empty($_POST['testPassPhrase']) ) {
                 $user->log("FAIL! Invalid login. OTP replay", "token testing area");
             } else {
                 $_SESSION['msgInfo'] = "ACCEPT! Login was successful.";
-                $user->validLogin("token testing area");
+                $user->validLogin("token testing area", "web");
             }
         } else {
             $_SESSION['msgWarning'] = "FAIL! Login was unsuccessful.";

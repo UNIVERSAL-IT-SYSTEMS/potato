@@ -293,11 +293,11 @@ class User {
         $this->log("Account unlocked by " . htmlentities($unlocker));
     }
 
-    function validLogin($idNAS = "") {
+    function validLogin($idNAS="", $idClient="") {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = 0 where userName=:userName");
         $ps->execute(array(":userName"=>$this->userName));
-        $this->log("Success", ($idNAS=="" ? "" : $idNAS ));
+        $this->log("Success", $idNAS, $idClient);
     }
 
     function hotpResync($passPhrase1, $passPhrase2, $passPhrase3) {

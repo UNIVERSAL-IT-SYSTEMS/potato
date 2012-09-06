@@ -44,9 +44,10 @@ try {
 
 print "    </li>\n";
 
-print "    <li>Creating User table...";
+if (isset($dbh)) {
+    print "    <li>Creating User table...";
 
-$sql = <<<____SQL
+    $sql = <<<____SQL
 CREATE TABLE `User` (
   `userName` char(16) NOT NULL,
   `secret` varchar(64) NULL DEFAULT NULL,
@@ -56,20 +57,21 @@ CREATE TABLE `User` (
   PRIMARY KEY  (`userName`)
 ) ENGINE=InnoDB CHARSET=utf8;
 ____SQL;
-$return = $dbh->exec($sql);
-if ($dbh->errorCode() == "00000") {
-    print "<span class=\"success\">Success!</span>";
-} elseif ($dbh->errorCode() == "42S01") {
-    echo "<span class=\"success\">Table already exists!</span>";
-} else {
-    print "<span class=\"failure\">Fail!</span><br />";
-    $error = $dbh->errorInfo();
-    print $error[2];
-}
-print "    </li>\n";
 
-print "    <li>Creating Guest table...";
-$sql = <<<____SQL
+    $return = $dbh->exec($sql);
+    if ($dbh->errorCode() == "00000") {
+        print "<span class=\"success\">Success!</span>";
+    } elseif ($dbh->errorCode() == "42S01") {
+        echo "<span class=\"success\">Table already exists!</span>";
+    } else {
+        print "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
+
+    print "    <li>Creating Guest table...";
+    $sql = <<<____SQL
 CREATE TABLE `Guest` (
   `userName` char(16) NOT NULL,
   `password` varchar(32) NOT NULL,
@@ -78,20 +80,21 @@ CREATE TABLE `Guest` (
   CONSTRAINT `fkUserNameGuest` FOREIGN KEY (`userName`) references `User` (`userName`) on delete cascade
 ) ENGINE=InnoDB CHARSET=utf8;
 ____SQL;
-$return = $dbh->exec($sql);
-if ($dbh->errorCode() == "00000") {
-    echo "<span class=\"success\">Success!</span>";
-} elseif ($dbh->errorCode() == "42S01") {
-    echo "<span class=\"success\">Table already exists!</span>";
-} else {
-    print "<span class=\"failure\">Fail!</span><br />";
-    $error = $dbh->errorInfo();
-    print $error[2];
-}
-print "    </li>\n";
 
-print "    <li>Creating Log table...";
-$sql = <<<____SQL
+    $return = $dbh->exec($sql);
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } elseif ($dbh->errorCode() == "42S01") {
+        echo "<span class=\"success\">Table already exists!</span>";
+    } else {
+        print "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
+
+    print "    <li>Creating Log table...";
+    $sql = <<<____SQL
 CREATE TABLE `Log` (
   `time` timestamp default CURRENT_TIMESTAMP,
   `userName` char(16) NOT NULL,
@@ -102,53 +105,74 @@ CREATE TABLE `Log` (
   CONSTRAINT `fkUserName` FOREIGN KEY (`userName`) references `User` (`userName`) on delete cascade
 ) ENGINE=InnoDB CHARSET=utf8;
 ____SQL;
-$return = $dbh->exec($sql);
+    $return = $dbh->exec($sql);
 
-if ($dbh->errorCode() == "00000") {
-    echo "<span class=\"success\">Success!</span>";
-} elseif ($dbh->errorCode() == "42S01") {
-    echo "<span class=\"success\">Table already exists!</span>";
-} else {
-    echo "<span class=\"failure\">Fail!</span><br />";
-    $error = $dbh->errorInfo();
-    print $error[2];
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } elseif ($dbh->errorCode() == "42S01") {
+        echo "<span class=\"success\">Table already exists!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
+    # print "<pre>";
+    # print_r($dbh->errorInfo());
+    # print "</pre>";
+
+    # Updating log table
+    print "<li>Inserting idClient column in Log-table...";
+    $dbh->exec( "ALTER TABLE `Log` ADD COLUMN `idClient` char(32) NULL DEFAULT NULL AFTER `passPhrase`" );
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } elseif ($dbh->errorCode() == "42S21") {
+        echo "<span class=\"success\">Column already exists!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
+
+
+    print "<li>Inserting idNAS column in Log-table...";
+    $dbh->exec( "ALTER TABLE `Log` ADD COLUMN `idNAS` char(32) NULL DEFAULT NULL AFTER `idClient`" );
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } elseif ($dbh->errorCode() == "42S21") {
+        echo "<span class=\"success\">Column already exists!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
 }
-print "    </li>\n";
-# print "<pre>";
-# print_r($dbh->errorInfo());
-# print "</pre>";
-
-# Updating log table
-print "<li>Inserting idClient column in Log-table...";
-$dbh->exec( "ALTER TABLE `Log` ADD COLUMN `idClient` char(32) NULL DEFAULT NULL AFTER `passPhrase`" );
-if ($dbh->errorCode() == "00000") {
-    echo "<span class=\"success\">Success!</span>";
-} elseif ($dbh->errorCode() == "42S21") {
-    echo "<span class=\"success\">Column already exists!</span>";
-} else {
-    echo "<span class=\"failure\">Fail!</span><br />";
-    $error = $dbh->errorInfo();
-    print $error[2];
-}
-print "    </li>\n";
-
-
-print "<li>Inserting idNAS column in Log-table...";
-$dbh->exec( "ALTER TABLE `Log` ADD COLUMN `idNAS` char(32) NULL DEFAULT NULL AFTER `idClient`" );
-if ($dbh->errorCode() == "00000") {
-    echo "<span class=\"success\">Success!</span>";
-} elseif ($dbh->errorCode() == "42S21") {
-    echo "<span class=\"success\">Column already exists!</span>";
-} else {
-    echo "<span class=\"failure\">Fail!</span><br />";
-    $error = $dbh->errorInfo();
-    print $error[2];
-}
-print "    </li>\n";
-
-
 ?>
 </ul>
+
+<p>If there are access problems, you might need to grant the database user <strong><?php echo $dbUser; ?></strong>
+more access rights:</p>
+<?php
+print <<<____PRE
+<pre class="code">
+grant all on `${dbName}`.* to '${dbUser}'@'${dbServer}';
+flush privileges;
+</pre>
+____PRE;
+?>
+
+<p>In order to restore more restricted access rights to the dbUser, execute these commands:
+<?php
+print <<<____PRE
+<pre class="code">
+revoke all privileges, grant option from 'potato'@'localhost';
+GRANT SELECT,INSERT,UPDATE,DELETE ON `${dbName}`.* TO '${dbUser}'@'${dbServer}';
+flush privileges;
+</pre>
+____PRE;
+?>
 
 <p>If everything installed correctly, you can delete this file (install.php) and 
 proceed to the <a href="login.php">Login page</a>, 

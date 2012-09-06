@@ -40,7 +40,8 @@ $options = getopt("u:p:s:");
 
 $userName = $options["u"];
 $passPhrase = $options["p"];
-$clientShortName = $options["s"];
+$idNAS = $options["s"];
+$idClient = $options["c"];
 
 if (empty($passPhrase)) {
     exit(8);
@@ -73,25 +74,25 @@ try {
         if ( ! $user->isMemberOf($groupUser) ) {
             // User not member of access group
             $user->invalidLogin();
-            $user->log("FAIL! Valid login, but user is not a member of ${groupUser}", $clientShortName);
+            $user->log("FAIL! Valid login, but user is not a member of ${groupUser}", $idNAS, $idClient);
         } elseif ( $user->isLockedOut() ) {
             // Account locked out
             $user->invalidLogin();
-            $user->log("FAIL! Valid login, but account locked out.", $clientShortName);
+            $user->log("FAIL! Valid login, but account locked out.", $idNAS, $idClient);
         } elseif ( $user->isThrottled() ) {
             $user->invalidLogin();
-            $user->log("FAIL! Valid login, but login denied due to throttling", $clientShortName);
+            $user->log("FAIL! Valid login, but login denied due to throttling", $idNAS, $idClient);
         } elseif ( $user->replayAttack()) {
             // Replay attack
             $user->invalidLogin();
-            $user->log("FAIL! OTP replay.", $clientShortName);
+            $user->log("FAIL! OTP replay.", $idNAS, $idClient);
         } else {
-            $user->validLogin($clientShortName);
+            $user->validLogin($idNAS, $idClient);
             exit(0);
         }
     } else {
         $user->invalidLogin();
-        $user->log("FAIL! Invalid login", $clientShortName);
+        $user->log("FAIL! Invalid login", $idNAS, $idClient);
     }
 } catch (NoSuchUserException $ignore) {
 }
