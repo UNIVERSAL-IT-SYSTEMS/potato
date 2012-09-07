@@ -49,7 +49,7 @@ Select which NAS's to show logs from:<br />
 
 <?php
 # Retrieve list of all NAS
-$ps = $dbh->query("SELECT DISTINCT idNAS from Log where idNAS is not null");
+$ps = $dbh->query("SELECT DISTINCT idNAS from Log where idNAS is not null order by idNAS");
 while ($row = $ps->fetch()) {
     print( '<label><input type="checkbox" name="filter[]" value="' . $row[0] . '"');
     print( in_array($row[0], $aFilter) || empty($aFilter) ? ' checked="checked"' : '' );
