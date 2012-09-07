@@ -44,7 +44,7 @@ class NavigationBar {
     }
 
     function addGetParam($key, $value) {
-        $this->getParams[] = "${key}=" . urlencode( $value );
+        $this->getParams[] = urlencode( $key ) . "=" . urlencode( $value );
     }
 
     function setNumRows($rows) {
