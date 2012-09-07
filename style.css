@@ -138,7 +138,7 @@ table.userlist a img {
     /* position: absolute; */
     display: none;
     width: 35em;
-    box-shadow: 5px 5px 5px #aaa;
+    box-shadow: 5px 5px 0px #aaa;
 }
 .instructioncontents {
     padding: 0em 1em 1em 1em;
@@ -210,4 +210,11 @@ pre.code {
     padding: 0.5em;
     font-size: 120%;
 }
-
+div.popup {
+    position: absolute;
+    display: none;
+    background: white;
+    padding: 1em;
+    box-shadow: 5px 5px 0px #aaa;
+    border: 1px solid grey;
+}

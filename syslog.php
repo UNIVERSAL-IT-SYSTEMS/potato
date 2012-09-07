@@ -32,18 +32,59 @@ if ( ! $currentUser->isAdmin() ) {
     exit;
 }
 
+$aFilter = empty($_GET['filter']) ? array() : $_GET['filter'];
+
 include 'NavigationBar.class.php';
 include 'header.php';
-echo "<h1>System log</h1>\n";
-
 global $dbh;
-$ps = $dbh->query("SELECT COUNT(*) from Log");
-$row = $ps->fetch();
+
+?>
+
+<h1>System log</h1>
+
+<a href="#" onclick="toggleVisibility('filterNAS'); return(false);">Filter on NAS</a>
+<div class="popup" id="filterNAS">
+Select which NAS's to show logs from:<br />
+<form action="syslog.php">
+
+<?php
+# Retrieve list of all NAS
+$ps = $dbh->query("SELECT DISTINCT idNAS from Log where idNAS is not null");
+while ($row = $ps->fetch()) {
+    print( '<label><input type="checkbox" name="filter[]" value="' . $row[0] . '"');
+    print( in_array($row[0], $aFilter) || empty($aFilter) ? ' checked="checked"' : '' );
+    print( '/> ' . $row[0] . "</label><br />\n");
+}
+print '<br/>';
+print '<input type="submit" value="Apply filter">';
+print "</form>";
+print "</div>";
 
 $navBar = new NavigationBar();
+if (empty($aFilter)) {
+    // View everything
+    $filterCondition = " ";
+    $ps = $dbh->query("SELECT COUNT(*) from Log");
+} else {
+    # Filter log view
+    # Generate an array of question marks to be used as placeholders
+    $psPlaceholder = array_fill(0, count($aFilter), '?');
+    $filterCondition = "WHERE idNAS in (" . implode(',', $psPlaceholder) . ") or idNAS is null";
+    $ps = $dbh->prepare("SELECT COUNT(*) FROM Log " . $filterCondition);
+    $ps->execute($aFilter);
+
+    foreach($aFilter as $getAttr) {
+        $navBar->addGetParam("filter[]", $getAttr);
+    }
+}
+$row = $ps->fetch();
+
+$navBar->setRowsPerPage(10);
 $navBar->setNumRows($row[0]);
-$pageCurrent = ( empty($_GET['page']) ? 1 : $_GET['page'] );
-$navBar->setPageCurrent($pageCurrent);
+$navBar->setPageCurrent( empty($_GET['page']) ? 1 : $_GET['page'] );
+
+
+
 $navBar->printNavBar();
 
 ?>
@@ -51,10 +92,13 @@ $navBar->printNavBar();
 
 <?php
 
-$ps = $dbh->prepare("SELECT time, userName, passPhrase, idClient, idNAS, status, message from Log order by time DESC limit :rowsPerPage offset :rowsOffset");
-$ps->bindValue(':rowsPerPage', $navBar->getRowsPerPage(), PDO::PARAM_INT);
-$ps->bindValue(':rowsOffset', $navBar->getRowsOffset(), PDO::PARAM_INT);
-$ps->execute();
+if(empty($aFilter)) {
+    $ps = $dbh->prepare("SELECT time, userName, passPhrase, idClient, idNAS, status, message from Log order by time DESC limit " . $navBar->getRowsPerPage() . " offset " . $navBar->getRowsOffset());
+    $ps->execute();
+} else {
+    $ps = $dbh->prepare("SELECT time, userName, passPhrase, idClient, idNAS, status, message from Log " . $filterCondition . " order by time DESC limit " . $navBar->getRowsPerPage() . " offset " . $navBar->getRowsOffset());
+    $ps->execute($aFilter);
+}
 
 while ($row = $ps->fetch()) {
 ?>
