@@ -60,7 +60,7 @@ if ( ! empty($_POST['testPassPhrase']) ) {
             }
         } else {
             $_SESSION['msgWarning'] = "FAIL! Login was unsuccessful.";
-            $user->invalidLogin( array( "message"=>"Invalid login", "idNAS"=>"token testing area"));
+            $user->invalidLogin( array( "idNAS"=>"token testing area"));
         }
     } catch (NoSuchUserException $ignore) {
         $_SESSION['msgWarning'] = "FAIL! No token and/or PIN registered for this user.";

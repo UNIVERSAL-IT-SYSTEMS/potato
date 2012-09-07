@@ -89,7 +89,7 @@ try {
             exit;
         }
     } else {
-        $user->invalidLogin(array( "message"=>"Invalid login", "idNAS"=>"mschap"));
+        $user->invalidLogin(array("idNAS"=>"mschap"));
     }
 } catch (NoSuchUserException $ignore) {
 }

@@ -86,7 +86,7 @@ try {
             exit(0);
         }
     } else {
-        $user->invalidLogin( array( "message"=>"Invalid login", "idNAS"=>$idNAS, "idClient"=>$idClient));
+        $user->invalidLogin( array("idNAS"=>$idNAS, "idClient"=>$idClient));
     }
 } catch (NoSuchUserException $ignore) {
 }
