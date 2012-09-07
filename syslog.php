@@ -83,8 +83,6 @@ if (empty($aFilter)) {
     }
 }
 $row = $ps->fetch();
-
-$navBar->setRowsPerPage(10);
 $navBar->setNumRows($row[0]);
 $navBar->setPageCurrent( empty($_GET['page']) ? 1 : $_GET['page'] );
 
