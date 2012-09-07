@@ -35,6 +35,10 @@ class NavigationBar {
         return ($this->pageCurrent - 1 )*$this->rowsPerPage;
     }
 
+    function setRowsPerPage($rows=100) {
+        $this->rowsPerPage=$rows;
+    }
+
     function getRowsPerPage() {
         return $this->rowsPerPage;
     }
