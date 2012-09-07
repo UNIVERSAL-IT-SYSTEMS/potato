@@ -42,7 +42,7 @@ global $dbh;
 
 <h1>System log</h1>
 
-<a href="#" onclick="toggleVisibility('filterNAS'); return(false);">Filter on NAS</a>
+<p><a href="#" onclick="toggleVisibility('filterNAS'); return(false);">Filter on NAS</a></p>
 <div class="popup" id="filterNAS">
 Select which NAS's to show logs from:<br />
 <form action="syslog.php">
@@ -59,6 +59,11 @@ print '<br/>';
 print '<input type="submit" value="Apply filter">';
 print "</form>";
 print "</div>";
+
+# If all idNAS are checked, set $aFilter to empty array
+if ($ps->rowCount() == count($aFilter)) {
+    $aFilter=array();
+}
 
 $navBar = new NavigationBar();
 if (empty($aFilter)) {
