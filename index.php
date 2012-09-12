@@ -101,12 +101,12 @@ Click for detailed instructions for your phone:
               <div class="instructioncontents">
                 <h2>Android</h2>
                 <p>Install the <a href="https://play.google.com/store/apps/details?id=nu.kelvin.potato">Potato</a> 
-                  client app from Google play. If you're unable to locate the 
+                  client app from Google play (previously Android Market). If you're unable to locate the 
                   app, simply input this link <a href="http://bit.ly/NZo8dK">bit.ly/NZo8dK</a> 
                   in your Android web browser, and you'll be redirected to the 
                   app. Once installed, follow these steps:</p>
                 <ol>
-                  <li>Click add, and choose a memorable name for your token. For example: "Work"</li>
+                  <li>Click the "Add profile" button, and choose a memorable name for your token. For example: "Work"</li>
                   <li>Your phone will also display a 16 character "Secret". Enter the secret in this web interface. Do not write this secret down anywhere else.</li>
                   <li>Click "Save profile"</li>
                   <li>Register a PIN in this web interface</li>
