@@ -122,6 +122,36 @@ ____SQL;
     # print_r($dbh->errorInfo());
     # print "</pre>";
 
+    print "    <li>Creating TokenCache table...";
+    $sql = <<<____SQL
+CREATE TABLE `TokenCache` (
+  `time` timestamp default CURRENT_TIMESTAMP,
+  `userName` char(16) NOT NULL,
+  `passPhrase` char(12),
+  `idClient` char(32),
+  `idNAS` char(32),
+  CONSTRAINT `fkUserNameTokenCache` FOREIGN KEY (`userName`) references `User` (`userName`) on delete cascade
+) ENGINE=InnoDB CHARSET=utf8;
+____SQL;
+    $return = $dbh->exec($sql);
+
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } elseif ($dbh->errorCode() == "42S01") {
+        echo "<span class=\"success\">Table already exists!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
+    # print "<pre>";
+    # print_r($dbh->errorInfo());
+    # print "</pre>";
+
+
+
+
     # Updating log table
     print "<li>Inserting idClient column in Log-table...";
     $dbh->exec( "ALTER TABLE `Log` ADD COLUMN `idClient` char(32) NULL DEFAULT NULL AFTER `passPhrase`" );
