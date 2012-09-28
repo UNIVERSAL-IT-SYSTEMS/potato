@@ -106,7 +106,7 @@ Click for detailed instructions for your phone:
                   in your Android web browser, and you'll be redirected to the 
                   app. Once installed, follow these steps:</p>
                 <ol>
-                  <li>Click the "Add profile" button (in Android 2.x, begin by clicking the menu button), and choose a memorable name for your token. For example: "Work"</li>
+                  <li>Click the "Add profile" button (in Android 2.x, begin by clicking the menu button), and choose a memorable name for your token. For example: "<?php echo $orgName ?>"</li>
                   <li>Your phone will also display a 16 character "Secret". Enter the secret in this web interface. Do not write this secret down anywhere else.</li>
                   <li>Click "Save profile"</li>
                   <li>Register a PIN in this web interface</li>
@@ -124,7 +124,7 @@ Click for detailed instructions for your phone:
                 <p>Install the <a href="http://itunes.apple.com/us/app/mobile-otp/id328973960&mt=8">iOTP</a> app from app store, and follow these steps:</p>
                 <ol>
                   <li>On first start of the app, you will be prompted to create an account</li>
-                  <li>Select a memorable name for your account; for example "Work"</li>
+                  <li>Select a memorable name for your account; for example "<?php echo $orgName ?>"</li>
                   <li>Click "Generate secret", and select either 16 or 32 characters</li>
                   <li>Your phone will now display a 16 (or 32) character "Secret". Enter the secret in this web interface. Do not write this secret down anywhere else.</li>
                   <li>Register a PIN in this web interface</li>
@@ -204,7 +204,7 @@ Click for detailed instructions for your phone:
                 <p>Install the <a href="http://www.windowsphone.com/en-US/apps/4eca404c-4936-4295-819a-8b4b85bcd592">Yamotp</a> app from the Windows Phone Marketplace, and follow these steps:</p>
                 <ol>
                   <li>Select "add profile"</li>
-                  <li>Select a memorable name for your token. For example: "Work"</li>
+                  <li>Select a memorable name for your token. For example: "<?php echo $orgName ?>"</li>
                   <li>Your phone will auto-initialize the 16 character "Secret Key". Enter the secret in this web interface. Do not write this secret down anywhere else.</li>
                   <li>Once your secret is safely registered here, click the "Save" button" on your phone.</li>
                   <li>Register a PIN in this web interface</li>
