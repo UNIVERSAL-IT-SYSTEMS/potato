@@ -249,7 +249,7 @@ if ( $user->hasPin() ) {
 }
 ?>
 <div id="pin" <?php echo ($user->hasPin() || !$user->hasToken()) ? 'style="display: none;"' : '' ?>>
-    <form method="post" action="index.php?userName=<?php echo urlencode($user->getUserName()) ?>"> 
+    <form method="post" action="index.php?userName=<?php echo urlencode($user->getUserName()) ?>" autocomplete="off"> 
         <table>
             <tr>
                 <th>Pin:</th>

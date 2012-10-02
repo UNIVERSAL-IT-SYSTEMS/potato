@@ -82,7 +82,7 @@ if ( isset($invalidLoginLimit) ) {
 <p>If you are using a time-based token, it is imperative that the clock on your mobile device is correct, and in the right time zone. If you are having problems
 getting your token to work, this is the first thing you should check.</p>
 
-<form method="post" action="testtoken.php"> 
+<form method="post" action="testtoken.php" autocomplete="off"> 
     <table>
         <tr>
             <th>Username:</th> 
