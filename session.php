@@ -34,6 +34,8 @@ try {
 
 session_start();
 include "User.class.php";
+include "Page.class.php";
+$page = new Page();
 
 if ( !isset( $_SESSION['currentUser'] ) ) {
     header("Location: login.php");

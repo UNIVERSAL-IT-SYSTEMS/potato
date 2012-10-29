@@ -56,7 +56,7 @@ try {
 }
 
 
-include 'header.php';
+$page->printHeader();
 ?>
 
 <h1>HOTP sync</h1>
@@ -120,5 +120,5 @@ your HOTP token to generate three consecutive passphrases, and enter them here:<
 
 
 <?php
-include 'footer.php';
+$page->printFooter();
 ?>

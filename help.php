@@ -26,7 +26,7 @@
 
 include 'config.php';
 include 'session.php';
-include 'header.php';
+$page->printHeader();
 ?>
 
 <h1>Help</h1>
@@ -34,15 +34,13 @@ include 'header.php';
 
 <?php
 
-if (!isset($wifiSSID)) {
+if (isset($wifiSSID)) {
     if (file_exists("localsite.php")) {
         readfile("localsite.php");
     }
     echo "<h2>More...</h2>\n";
     echo "<p>If you require detailed wifi instructions, you can read this <a href=\"winxp.php\">Windows XP wifi guide</a></p>\n";
 }
-?>
 
-<?php
-include 'footer.php';
+$page->printFooter();
 ?>

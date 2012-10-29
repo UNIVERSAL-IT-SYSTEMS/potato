@@ -53,7 +53,7 @@ if (isset($_POST['action'])) {
     }
 }
 
-include 'header.php';
+$page->printHeader();
 
 ?>
 <h1>Account administration</h1>
@@ -108,5 +108,5 @@ foreach ($dbh->query($sql) as $row) {
 
 
 <?php
-include 'footer.php';
+$page->printFooter();
 ?>

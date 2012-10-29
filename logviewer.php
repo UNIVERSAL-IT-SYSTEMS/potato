@@ -33,7 +33,7 @@ if ( ! $currentUser->isAdmin() ) {
 }
 
 include 'NavigationBar.class.php';
-include 'header.php';
+$page->printHeader();
 $user = new User();
 $user->setUserName($_GET['userName']);
 
@@ -81,5 +81,5 @@ while ($row = $ps->fetch()) {
 <?php
 $navBar->printNavBar();
 
-include 'footer.php';
+$page->printFooter();
 ?>

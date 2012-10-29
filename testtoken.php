@@ -67,7 +67,7 @@ if ( ! empty($_POST['testPassPhrase']) ) {
     }
 }
 
-include 'header.php';
+$page->printHeader();
 
 ?>
 <h1>Token testing area</h1>
@@ -109,6 +109,5 @@ getting your token to work, this is the first thing you should check.</p>
 </script>
 
 <?php
-
-include 'footer.php';
+$page->printFooter();
 ?>

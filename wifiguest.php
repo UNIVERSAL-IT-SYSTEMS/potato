@@ -47,11 +47,7 @@ if ( isset($_POST['action']) ) {
     }
 }
 
-include 'header.php';
-?>
-
-
-<?php
+$page->printHeader();
 
 ?>
 <h1>Wifi guest account</h1>
@@ -88,5 +84,5 @@ There's no active guest account for your account.
 </p>
 </form>
 <?php
-include 'footer.php';
+$page->printFooter();
 ?>

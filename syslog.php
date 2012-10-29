@@ -35,7 +35,7 @@ if ( ! $currentUser->isAdmin() ) {
 $aFilter = empty($_GET['filter']) ? array() : $_GET['filter'];
 
 include 'NavigationBar.class.php';
-include 'header.php';
+$page->printHeader();
 global $dbh;
 
 ?>
@@ -122,5 +122,5 @@ while ($row = $ps->fetch()) {
 <?php
 $navBar->printNavBar();
 
-include 'footer.php';
+$page->printFooter();
 ?>

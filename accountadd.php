@@ -32,8 +32,7 @@ if ( ! $currentUser->isAdmin() ) {
     exit;
 }
 
-include 'header.php';
-
+$page->printHeader();
 print "<h1>Add account</h1>\n";
 ?>
 
@@ -57,5 +56,5 @@ print "<h1>Add account</h1>\n";
 
 
 <?php
-include 'footer.php';
+$page->printFooter();
 ?>

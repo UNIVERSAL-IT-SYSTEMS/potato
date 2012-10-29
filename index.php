@@ -26,7 +26,6 @@
 
 include "config.php";
 include "session.php";
-
 $user = new User();
 if ( isset($_GET['userName']) ) {
     $userName = $_GET['userName'];
@@ -72,7 +71,7 @@ if ( isset($_POST['action']) ) {
     }
 }
 
-include 'header.php';
+$page->printHeader();
 ?>
 
 
@@ -270,5 +269,5 @@ if ( $user->hasPin() ) {
     window.onload=setfocus;
 </script>
 <?php
-include 'footer.php';
+$page->printFooter();
 ?>

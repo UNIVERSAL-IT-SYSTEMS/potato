@@ -25,8 +25,9 @@
  */
 
 include "config.php";
-include "header.php";
-
+include "Page.class.php";
+$page=new Page();
+$page->printHeader();
 ?>
 
 <h1>Potato installation</h1>
@@ -245,5 +246,5 @@ proceed to the <a href="login.php">Login page</a>,
 and start using Potato.</p>
 
 <?php
-include 'footer.php';
+$page->printFooter();
 ?>

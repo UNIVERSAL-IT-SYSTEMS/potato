@@ -26,7 +26,7 @@
 
 include 'config.php';
 include 'session.php';
-include 'header.php';
+$page->printHeader();
 ?>
 
 <h1>Wifi instructions for Windows XP</h1>
@@ -97,5 +97,5 @@ Reboot after installation, even if you're not prompted to do so.</li>
 
 
 <?php
-include 'footer.php';
+$page->printFooter();
 ?>

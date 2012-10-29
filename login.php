@@ -35,6 +35,8 @@ try {
 
 session_start();
 include "User.class.php";
+include "Page.class.php";
+$page=new Page();
 
 if ( !empty($_POST['loginUserName']) ) {
     $loginUserName = $_POST['loginUserName'];
@@ -56,7 +58,7 @@ if ( !empty($_POST['loginUserName']) ) {
     }
 }
 
-include 'header.php';
+$page->printHeader();
 
 if (isset($demo)) {
     echo "<p><strong>DEMO MODE</strong></p>\n";
@@ -98,5 +100,5 @@ if (isset($demo)) {
 
 <?php
 
-include 'footer.php';
+$page->printFooter();
 ?>

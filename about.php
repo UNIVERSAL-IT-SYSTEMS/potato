@@ -26,7 +26,8 @@
 
 include 'config.php';
 include 'session.php';
-include 'header.php';
+
+$page->printHeader();
 ?>
 
 <h1>About</h1>
@@ -71,5 +72,5 @@ of entropy it can easily generate a corresponding password to authenticate the c
 </p>
 
 <?php
-include 'footer.php';
+$page->printFooter();
 ?>
