@@ -45,11 +45,12 @@ $throttleLoginTime = 90;
 $throttleLoginAttempts = 3;
 
 // What's the SSID of the regular wifi network?
-// Set to empty string if you're not going to use potato for regular wifi access.
+// This is only used in the help-section
+// Comment out if you're not going to use potato for regular wifi access.
 $wifiSSID = "Potato-Wifi";
 
 // What SSID is the wireless guest account for?
-// Set to empty string to disable wifi guest functionality
+// Comment out to disable wifi guest functionality
 $wifiGuestSSID = "Potato-Guest";
 
 // Database configuration

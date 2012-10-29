@@ -27,7 +27,7 @@
 include "config.php";
 include "session.php";
 
-if ($wifiGuestSSID == "") {
+if (!isset($wifiGuestSSID)) {
     header("Location: index.php");
 }
 

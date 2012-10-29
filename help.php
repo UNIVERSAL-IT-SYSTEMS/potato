@@ -34,7 +34,7 @@ include 'header.php';
 
 <?php
 
-if ($wifiSSID != "") {
+if (!isset($wifiSSID)) {
     if (file_exists("localsite.php")) {
         readfile("localsite.php");
     }

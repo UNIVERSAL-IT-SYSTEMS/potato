@@ -52,7 +52,7 @@ LOGOUTTIMER;
 if ( isset($currentUser) ) {
     echo '        <a href="index.php">Home</a>' . "\n";
     echo '        <a href="testtoken.php">Test token</a>' . "\n";
-    echo $wifiSSID=="" ? "" : '        <a href="wifiguest.php">Wifi guest</a>' . "\n";
+    echo isset($wifiGuestSSID) ? '        <a href="wifiguest.php">Wifi guest</a>' . "\n" : "";
     # echo "        <br />\n";
     echo '        <a href="help.php">Help</a>' . "\n";
     if ( $currentUser->isAdmin() ) {
