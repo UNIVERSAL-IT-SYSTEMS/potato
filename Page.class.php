@@ -28,6 +28,9 @@
 class Page {
     public $bMenu = true;
 
+    /**
+     * print the html page header
+     */
     function printHeader() {
         global $currentUser;
 ?>
@@ -58,8 +61,11 @@ class Page {
        
     }
 
+    /**
+     * print the page menu
+     */
     private function printMenu() {
-        global $currentUser;
+        global $currentUser, $wifiGuestSSID;
         echo '    <div id="menu">';
         if ( isset($currentUser) ) {
             echo '<a href="index.php">Home</a>' . "\n";
