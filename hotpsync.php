@@ -106,15 +106,12 @@ your HOTP token to generate three consecutive passphrases, and enter them here:<
         }
         return(true);
     }
-    function focusOnLoad() {
-        domEle = document.getElementById("passPhrase1");
-        domEle.focus();
-    }
-    window.onload=focusOnLoad;
 
     domPP1 = document.getElementById("passPhrase1");
     domPP2 = document.getElementById("passPhrase2");
     domPP3 = document.getElementById("passPhrase3");
+
+    domPP1.focus();
 
 </script>
 

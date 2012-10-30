@@ -47,13 +47,8 @@ print "<h1>Add account</h1>\n";
 </form>
 
 <script type="text/javascript">
-    function setfocus() {
-        domUsername = document.getElementById("focusme");
-        domUsername.focus();
-    }
-    window.onload=setfocus;
+    document.getElementById("focusme").focus();
 </script>
-
 
 <?php
 $page->printFooter();

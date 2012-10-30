@@ -101,11 +101,7 @@ getting your token to work, this is the first thing you should check.</p>
 </form>
 
 <script type="text/javascript">
-    function setfocus() {
-        domUsername = document.getElementById("focusme");
-        domUsername.focus();
-    }
-    window.onload=setfocus;
+    document.getElementById("focusme").focus();
 </script>
 
 <?php

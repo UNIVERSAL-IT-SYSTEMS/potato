@@ -260,14 +260,12 @@ if ( $user->hasPin() ) {
     </form>
 </div>
 
-<script type="text/javascript">
-    function setfocus() {
-        idToFocus = "<?php echo $user->hasToken() ? 'focusPin' : 'focusSecret' ?>";
-        domUsername = document.getElementById(idToFocus);
-        domUsername.focus();
-    }
-    window.onload=setfocus;
-</script>
 <?php
+if (!$user->hasToken() || !$user->hasPin()) {
+    echo '<script type="text/javascript">' . "\n";
+    echo '    document.getElementById("' . ($user->hasToken() ? 'focusPin' : 'focusSecret') . '").focus();' . "\n";
+    echo "</script>\n";
+}
+
 $page->printFooter();
 ?>

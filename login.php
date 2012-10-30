@@ -91,11 +91,7 @@ if (isset($demo)) {
 </form>
 
 <script type="text/javascript">
-    function setfocus() {
-        domUserName = document.getElementById("<?php echo isset($loginUserName) ? "focusPassword" : "focusUserName" ?>");
-        domUserName.focus();
-    }
-    window.onload=setfocus;
+    document.getElementById("<?php echo isset($loginUserName) ? "focusPassword" : "focusUserName" ?>").focus();
 </script>
 
 <?php
