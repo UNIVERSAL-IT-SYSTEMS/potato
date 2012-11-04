@@ -27,22 +27,7 @@
 include "config.php";
 include "session.php";
 $user = new User();
-if ( isset($_GET['userName']) ) {
-    $userName = $_GET['userName'];
-
-    # Only allow edit of oneself, unless you're an admin
-    if ( ! $currentUser->isAdmin() 
-         && $userName != $currentUser->getUserName() ) {
-        $_SESSION['msgWarning'] = "You are not an administrator. You are only allowed to edit your own account.";
-        $userName = $currentUser->getUserName();
-    }
-} else {
-    $userName = $currentUser->getUserName();
-}
-try {
-    $user->fetch($userName);
-} catch ( NoSuchUserException $ignore ) {
-}
+$page->prepTabBar();
 
 if ( isset($_POST['action']) ) {
     switch ($_POST['action']) {
@@ -73,23 +58,6 @@ if ( isset($_POST['action']) ) {
 
 $page->printHeader();
 ?>
-
-
-<?php
-
-if ( $currentUser->getUserName() != $user->getUserName() ) {
-    echo "<h1>User settings: " . htmlentities($user->getUserName()) . "</h1>";
-    echo "<p><b>User fullname: </b>";
-    echo '<a href="logviewer.php?userName=' . urlencode($user->getUserName()) . '" title="View user log">';
-    echo htmlentities($user->getFullName());
-    echo ' <img src="images/logviewer.png" alt="View logs" title="View logs" /></a>';
-    echo "</p>\n";
-} else {
-    echo "<h1>User settings</h1>";
-}
-
-?>
-
 
 <p>In order to use the Mobile OTP service, you must configure your mobile.
 Click for detailed instructions for your phone:

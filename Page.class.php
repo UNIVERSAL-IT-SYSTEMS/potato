@@ -27,6 +27,7 @@
 
 class Page {
     public $bMenu = true;
+    public $bTabBar = false;
 
     /**
      * print the html page header
@@ -38,51 +39,121 @@ class Page {
     "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
  
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
-        <meta http-equiv="X-UA-Compatible" content="IE=9" /> 
-        <link href="style.css?version=11" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="main.js?version=7"></script>
-        <title>One-time password configuration</title>
-    </head>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=9" /> 
+    <link href="style.css?version=12" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="main.js?version=7"></script>
+    <title>One-time password configuration</title>
+  </head>
 
-    <body>
+  <body>
 <?php
         if ( isset($currentUser) ) {
-            echo '    <script type="text/javascript">LogoutTimer.start();</script>';
+            echo '    <script type="text/javascript">LogoutTimer.start();</script>' . "\n";
         }
 
+        $this->printSideBar();
+
+        # The main content area starts here. Everything is wrapped in a div#metacontent
+        echo '<div id="metacontent">' . "\n";
+        if ( $this->bTabBar ) {
+            $this->printTabBar();
+        }
+
+        echo '<div id="content">' . "\n";
+        $this->printMessageBox();
+       
+    }
+
+    /**
+     * prepTabBar()
+     * retrieve userName from request and do sanity checking
+     */
+    public function prepTabBar() {
+        global $user, $currentUser;
+        $this->bTabBar=true;
+        $user = new User();
+        if ( isset($_GET['userName']) ) {
+            $userName = $_GET['userName'];
+
+            # Only allow edit of oneself, unless you're an admin
+            if ( ! $currentUser->isAdmin()
+                && $userName != $currentUser->getUserName() ) {
+                $_SESSION['msgWarning'] = "You are not an administrator. You are only allowed to edit your own account.";
+                $userName = $currentUser->getUserName();
+            }
+        } else {
+            $userName = $currentUser->getUserName();
+        }
+        try {
+            $user->fetch($userName);
+        } catch ( NoSuchUserException $ignore ) {
+        }
+    }
+
+    /**
+     * print the user tabs
+     */
+    private function printTabBar() {
+        global $user, $wifiGuestSSID;
+        echo "<h1>User settings: " . htmlentities($user->getUserName()) . "</h1>\n";
+        echo "<p><b>User fullname: </b>";
+        echo htmlentities($user->getFullName());
+        echo "</p>\n";
+
+        echo '<div id="tabs">' . "\n";
+        $this->printTab('index.php', 'Home');
+        $this->printTab('testtoken.php', 'Test token');
+        $this->printTab('logviewer.php', 'Logs');
+        if (isset($wifiGuestSSID)) {
+            $this->printTab('wifiguest.php', 'Wifi guest');
+        }
+        echo '</div>' . "\n";
+    }
+
+    private function printTab($url, $title) {
+        echo '  <a href="' . $this->getUrl($url) . '"';
+        echo ( $url==substr($_SERVER["PHP_SELF"], -strlen($url)) ? ' class="tabSelected">' : '>');
+        echo $title . "</a>\n";
+    }
+
+    /**
+     * Return a proper url with or without userName attached
+     * depending on whether we're looking at ourselves or not
+     */
+    public function getUrl($url) {
+        global $user, $currentUser;
+        return $url . ($user->getUserName()==$currentUser->getUserName() ? '' : '?userName=' . urlencode($user->getUserName()));
+    }
+
+    private function printSideBar() {
+        echo '<div id="sidebar">' . "\n";
+        echo '<a href="index.php"><img src="images/server-side-potato.png" alt="Server side potato logo" id="logo"></a>' . "\n";
         if ( $this->bMenu ) {
             $this->printMenu();
         }
-
-        echo '    <div id="content">';
-        $this->printMessageBox();
-       
+        echo "</div>\n";
     }
 
     /**
      * print the page menu
      */
     private function printMenu() {
-        global $currentUser, $wifiGuestSSID;
-        echo '    <div id="menu">';
-        if ( isset($currentUser) ) {
-            echo '<a href="index.php">Home</a>' . "\n";
-            echo '<a href="testtoken.php">Test token</a>' . "\n";
-            echo isset($wifiGuestSSID) ? '<a href="wifiguest.php">Wifi guest</a>' . "\n" : "";
-            echo '<a href="help.php">Help</a>' . "\n";
-            if ( $currentUser->isAdmin() ) {
-                echo '<br />';
-                echo '<a href="accountadd.php">Add account</a>';
-                echo '<a href="accountadmin.php">Account admin</a>';
-                echo '<a href="hotpsync.php">HOTP sync</a>';
-                echo '<a href="syslog.php">System log</a>';
-                echo '<br />';
-            }
-            echo '<a href="logout.php">Logout</a>';
+        global $currentUser;
+        echo '<div id="menu">' . "\n";
+        echo '  <a href="index.php">Home</a>' . "\n";
+        echo "  <br />\n";
+        if ( $currentUser->isAdmin() ) {
+            echo '  <a href="accountadd.php">Add account</a>' . "\n";
+            echo '  <a href="accountadmin.php">Account admin</a>' . "\n";
+            echo '  <a href="hotpsync.php">HOTP sync</a>' . "\n";
+            echo '  <a href="syslog.php">System log</a>' . "\n";
+            echo '  <br />';
         }
-        echo '    </div>';
+        echo '  <a href="help.php">Help</a>' . "\n";
+        echo '  <a href="logout.php">Logout</a>' . "\n";
+        echo "</div>\n";
     }
 
 
@@ -104,16 +175,17 @@ class Page {
         global $currentUser;
         if ( isset( $currentUser ) ) {
 ?>
-    	    <div id="footer">
-                Logged in as: <?php echo htmlentities($currentUser->getUserName()) ?><br />
-                Server epoch: <?php echo intval(gmdate("U")/10) ?><br/>
-                <a href="http://kelvin.nu/software/potato/">Server side potato</a> is free software.
-            </div>
+        <div id="footer">
+          Logged in as: <?php echo htmlentities($currentUser->getUserName()) ?><br />
+          Server epoch: <?php echo intval(gmdate("U")/10) ?><br/>
+          <a href="http://kelvin.nu/software/potato/">Server side potato</a> is free software.
+        </div>
 <?php
         }
 ?>
-        </div>
-    </body>
+      </div>
+    </div>
+  </body>
 </html>
 <?php
     }

@@ -1,9 +1,9 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.8em;
+    font-size: 0.9em;
     background: #efefef;
     color: black;
-    padding: 1em 2em;
+    padding: 1em;
 }
 
 a:link, a:visited, a:active, a:hover {
@@ -26,17 +26,24 @@ div#footer {
     padding-top: 1em;
 }
 
-div#menu {
-    border-radius: 2em 0em 0em 0em;
-    background: white url(images/padlock2.png) no-repeat 1em 1em;
+div#sidebar {
     float: left;
     width: 10em;
-    border: 1px solid grey;
-    padding: 10em 0em 1em 0em;
-    margin-bottom: 1em;
     font-size: 0.9em;
+    position: absolute;
 }
-
+#logo {
+    display: block;
+    margin: 0em auto 1.5em auto;
+}
+a img#logo {
+    border: 0px;
+}
+div#menu {
+    background: white;
+    padding: 0.5em 0em;
+    border: 1px solid grey;
+}
 div#menu a {
     display: block;
     font-weight: bold;
@@ -50,10 +57,10 @@ div#menu a:hover {
 
 div#content {
     border-radius: 0em 3em 0em 0em;
-    margin-left: 10em;
     border: 1px solid grey;
-    padding: 0.5em 2em;
+    padding: 0.5em 2em 2em 1.5em;
     background: white;
+    clear: left;
 }
 
 input.iesux {
@@ -117,8 +124,11 @@ th {
     text-align: right;
 }
 
+table.userlist {
+    padding-top: 1em;
+}
 table.userlist tr:nth-child(2n-1) {
-	background-color: #efefef;
+    background-color: #efefef;
 }
 
 table.userlist td {
@@ -217,3 +227,37 @@ div.popup {
     box-shadow: 5px 5px 0px #aaa;
     border: 1px solid grey;
 }
+
+div#metacontent {
+    margin-left: 10em;
+}
+/**
+ * Tabbar
+ */
+#tabs {
+    border: 0px solid red;
+}
+#tabs a {
+    text-decoration: none;
+    float: left;
+    display: block;
+    font-weight: bold;
+    color: #555;
+    background: #eee;
+    border: 1px solid grey;
+    border-bottom: 0px solid grey;
+    border-radius: 0.5em 0.5em 0em 0em;
+    padding: 0.3em 1em 0.2em 1em;
+    margin: 0em 0.3em;
+}
+#tabs a:hover {
+    background: #f7f7f7;
+    text-decoration: none;
+}
+#tabs a.tabSelected {
+    color: black;
+    background: white;
+    position: relative;
+    top: 1px;
+}
+

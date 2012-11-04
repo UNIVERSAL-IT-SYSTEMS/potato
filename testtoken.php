@@ -26,20 +26,12 @@
 
 include "config.php";
 include "session.php";
-
-$testUserName = empty($_POST['testUserName']) ? $currentUser->getUserName() : $_POST['testUserName'];
+$page->prepTabBar();
 
 if ( ! empty($_POST['testPassPhrase']) ) {
     $testPassPhrase = $_POST['testPassPhrase'];
 
-    // Only admins can test other people's tokens
-    if ( ! $currentUser->isAdmin() ) {
-        $testUserName = $currentUser->getUserName();
-    }
-
     try {
-        $user = new User();
-        $user->fetch($testUserName);
         $user->verifySanity();
         if ( $user->checkOTP($testPassPhrase) ) {
             if ( ! $user->isMemberOf($groupUser) ) {
@@ -69,11 +61,8 @@ if ( ! empty($_POST['testPassPhrase']) ) {
 
 $page->printHeader();
 
-?>
-<h1>Token testing area</h1>
-<p>Use this area to test your token.
+echo "<p>Use this area to test your token.\n";
 
-<?php
 if ( isset($invalidLoginLimit) ) {
     echo "Please be aware that " . $invalidLoginLimit . " consecutive incorrect authentication attempts will result in the account being locked out.";
 }
@@ -82,11 +71,11 @@ if ( isset($invalidLoginLimit) ) {
 <p>If you are using a time-based token, it is imperative that the clock on your mobile device is correct, and in the right time zone. If you are having problems
 getting your token to work, this is the first thing you should check.</p>
 
-<form method="post" action="testtoken.php" autocomplete="off"> 
+<form method="post" action="<?php echo $page->getUrl("testtoken.php")  ?>" autocomplete="off"> 
     <table>
         <tr>
             <th>Username:</th> 
-            <td><?php echo $currentUser->isAdmin() ? '<input type="text" name="testUserName" size="10" value="' . htmlentities($testUserName) . '" class="iesux" />' : htmlentities($testUserName) ?></td> 
+            <td><?php echo htmlentities($user->getUserName()) ?></td> 
         </tr>
 
         <tr>

@@ -26,6 +26,7 @@
 
 include "config.php";
 include "session.php";
+$page->prepTabBar();
 
 if (!isset($wifiGuestSSID)) {
     header("Location: index.php");
@@ -34,7 +35,7 @@ if (!isset($wifiGuestSSID)) {
 include "Guest.class.php";
 
 $guest = new Guest();
-$guest->setUserName($currentUser->getUserName());
+$guest->setUserName($user->getUserName());
 
 if ( isset($_POST['action']) ) {
     switch ($_POST['action']) {
@@ -50,16 +51,14 @@ if ( isset($_POST['action']) ) {
 $page->printHeader();
 
 ?>
-<h1>Wifi guest account</h1>
 <p>In order to provide wifi access to <?php echo $orgName; ?> guests, you can activate a
 guest account which is only granted access to the external network.</p>
-
-<form method="POST" action="wifiguest.php">
-<p>
 <?php
+echo '<form method="POST" action="' . $page->getUrl("wifiguest.php") . '">';
+echo "<p>\n";
 
 try {
-    $guest->fetch($currentUser->getUserName());
+    $guest->fetch($user->getUserName());
     echo "The following guest account is active:";
     echo "<ul>\n";
     echo "<li>SSID: " . $wifiGuestSSID . "</li>\n";

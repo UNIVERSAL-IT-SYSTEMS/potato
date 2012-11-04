@@ -58,6 +58,7 @@ if ( !empty($_POST['loginUserName']) ) {
     }
 }
 
+$page->bMenu=false;
 $page->printHeader();
 
 if (isset($demo)) {

@@ -74,6 +74,11 @@ foreach ($dbh->query($sql) as $row) {
             </a>
         </td>
         <td>
+            <a href="logviewer.php?userName=<?php echo urlencode($user->getUserName()) ?>">
+                <img src="images/logviewer.png" alt="View logs" title="View logs" />
+            </a>
+        </td>
+        <td>
 <?php
     if ($user->isLockedOut()) {
         echo '<form action="accountadmin.php" method="post">' . "\n";
@@ -83,11 +88,6 @@ foreach ($dbh->query($sql) as $row) {
         echo '</form>' . "\n";
     } 
 ?>
-        </td>
-        <td>
-            <a href="logviewer.php?userName=<?php echo urlencode($user->getUserName()) ?>">
-                <img src="images/logviewer.png" alt="View logs" title="View logs" />
-            </a>
         </td>
 
         <td>

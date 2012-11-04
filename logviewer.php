@@ -26,19 +26,10 @@
 
 include "config.php";
 include "session.php";
-
-if ( ! $currentUser->isAdmin() ) {
-    header("Location: index.php");
-    exit;
-}
-
 include 'NavigationBar.class.php';
-$page->printHeader();
-$user = new User();
-$user->setUserName($_GET['userName']);
 
-echo "<h1>Log viewer: " . htmlentities($user->getUserName()) . "</h1>\n";
-echo "<p><b>User fullname: </b>" . htmlentities($user->getFullName()) . "</p>\n";
+$page->prepTabBar();
+$page->printHeader();
 
 global $dbh;
 $ps = $dbh->prepare("SELECT COUNT(*) from Log where userName=:userName");
@@ -67,7 +58,7 @@ while ($row = $ps->fetch()) {
 ?>
     <tr>
         <td><?php echo $row['time'] ?></td>
-        <td><?php echo $row['passPhrase'] ?></td>
+        <?php echo $currentUser->isAdmin() ? '<td>' . $row['passPhrase'] . '</td>' : '' ?>
         <td><?php echo $row['idClient'] ?></td>
         <td><?php echo $row['idNAS'] ?></td>
         <td><?php echo $row['status'] ?></td>
