@@ -97,10 +97,18 @@ class Page {
      */
     private function printTabBar() {
         global $user, $wifiGuestSSID;
-        echo "<h1>User settings: " . htmlentities($user->getUserName()) . "</h1>\n";
-        echo "<p><b>User fullname: </b>";
+        echo "<h1>User settings</h1>\n";
+        echo "<table>\n";
+        echo "  <tr>\n";
+        echo "    <th>Username: </th><td>" . htmlentities($user->getUserName()) . "</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <th>Full name: </th><td>";
         echo htmlentities($user->getFullName());
-        echo "</p>\n";
+        echo "</td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+        echo "<br />\n";
 
         echo '<div id="tabs">' . "\n";
         $this->printTab('index.php', 'Home');
