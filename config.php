@@ -55,11 +55,11 @@ $wifiGuestSSID = "Potato-Guest";
 
 // Database configuration
 $dbServer = 'localhost';
-$dbName = 'potato_dev';
-$dbUser = 'asdf';
-$dbPassword = 'asdf';
+$dbName = 'potato';
+$dbUser = 'potato';
+$dbPassword = 'SuperSecret99';
 
 # Uncomment this to activate demo-mode
-include "demo.php";
+# include "demo.php";
 
 ?>
