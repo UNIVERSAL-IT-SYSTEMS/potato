@@ -126,9 +126,6 @@ th {
     text-align: right;
 }
 
-table.userlist {
-    padding-top: 1em;
-}
 table.userlist tr:nth-child(2n-1) {
     background-color: #efefef;
 }
