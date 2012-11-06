@@ -42,7 +42,7 @@ class User {
         $ps = $dbh->prepare("SELECT * FROM User where userName=:userName");
         $ps->execute(array(":userName"=>$userName));
 
-        $this->userName=$userName;
+        $this->setUserName($userName);
         if ( $row = $ps->fetch() ) {
             $this->secret=$row['secret'];
             $this->pin=$row['pin'];
