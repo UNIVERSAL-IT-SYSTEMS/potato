@@ -36,7 +36,7 @@ class Guest {
         $ps = $dbh->prepare("SELECT userName, password, dateCreation + interval 7 day as dateExpiration FROM Guest where userName=:userName and dateCreation>(now() - interval 7 day)" );
         $ps->execute(array(":userName"=>$userName));
 
-        $this->userName = $userName;
+        $this->setUserName($userName);
         if ( $row = $ps->fetch() ) {
             $this->password=$row['password'];
             $this->dateExpiration=$row['dateExpiration'];
@@ -62,7 +62,7 @@ class Guest {
 
     // Set the username of this guest. This is the same as the user owning the account
     function setUserName($userName) {
-        $this->userName = $userName;
+        $this->userName = strtolower($userName);
     }
 
     // Get the expiration date in plain text
