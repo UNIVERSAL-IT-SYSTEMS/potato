@@ -60,6 +60,14 @@ class User {
         }
     }
 
+    /**
+     *  Return true if this is an OATH HOTP token
+     */
+    function isHOTP() {
+        // only HOTP tokens have 20 byte long secrets
+        return (strlen($this->secret)==40 ? true : false);
+    }
+
     function checkOTP($passPhrase) {
         if ( strlen($passPhrase) > 6 ) {
             $providedPP = substr($passPhrase, -6);
@@ -97,8 +105,8 @@ class User {
 
     // perform mschapv2 authentication
     function checkOTPmschap ($challengeHash, $response) {
-        if (strlen($this->secret)==40) {
-            // only HOTP tokens have 20 byte long secrets
+        if ($this->isHOTP()) {
+            // OATH HOTP algorithm
             for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
                 $otp = $this->pin . $this->oathTruncate($this->oathHotp($c));
                 $pwHash = NtPasswordHash($otp);
@@ -306,18 +314,17 @@ class User {
     }
 
     function hotpResync($passPhrase1, $passPhrase2, $passPhrase3) {
-        if ($this->hotpCounter == 0) {
-            return 0;
-        }
-        for ($offset=0; $offset<1000; $offset++) {
-            $c = $this->hotpCounter + $offset;
-            if ( $this->oathTruncate($this->oathHotp($c)) == $passPhrase1 ) {
-                // We found a match. Verify the other passPhrases as well.
-                if ( ( $this->oathTruncate($this->oathHotp($c+1)) == $passPhrase2 ) &&
-                     ( $this->oathTruncate($this->oathHotp($c+2)) == $passPhrase3 ) ) {
-                    $this->hotpCounter = $c+3;
-                    $this->save();
-                    return $offset+3;
+        if ($this->isHOTP()) {
+            for ($offset=0; $offset<1000; $offset++) {
+                $c = $this->hotpCounter + $offset;
+                if ( $this->oathTruncate($this->oathHotp($c)) == $passPhrase1 ) {
+                    // We found a match. Verify the other passPhrases as well.
+                    if ( ( $this->oathTruncate($this->oathHotp($c+1)) == $passPhrase2 ) &&
+                         ( $this->oathTruncate($this->oathHotp($c+2)) == $passPhrase3 ) ) {
+                        $this->hotpCounter = $c+3;
+                        $this->save();
+                        return $offset+3;
+                    }
                 }
             }
         }
