@@ -36,15 +36,24 @@ try {
     exit();
 }
 
-$options = getopt("u:p:s:c:");
+$options = getopt("u:p:h:r:s:c:");
 
 $userName = $options["u"];
 $passPhrase = $options["p"];
+
+$mschapChallengeHash = pack( 'H*', $options["h"] );
+$mschapResponse = pack( 'H*', $options["r"] );
+
 $idNAS = $options["s"];
 $idClient = $options["c"];
 
+$mschap = false;
 if (empty($passPhrase)) {
-    exit();
+    if (empty($mschapChallengeHash) && empty($mschapResponse)) {
+        exit();
+    } else {
+        $mschap=true;
+    }
 }
 
 if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
@@ -54,9 +63,18 @@ if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
 
     try {
         $guest->fetch($guestName);
-        # Cleartext password available; see if it's the correct one
-        if ($guest->getPassword() == $passPhrase) {
-            echo $passPhrase;
+
+        if ($mschap) {
+            $pwHash = NtPasswordHash($guest->getPassword());
+            $calcResponse = ChallengeResponse($mschapChallengeHash, $pwHash);
+            if ($calcResponse == $mschapResponse) {
+                echo $guest->getPassword();
+            }
+        } else {
+            # Cleartext password available; see if it's the correct one
+            if ($guest->getPassword() == $passPhrase) {
+                echo $guest->getPassword();
+            }
         }
     } catch (NoGuestException $ignore) {
     }
@@ -68,7 +86,7 @@ try {
     $user->fetch($userName);
     $user->verifySanity();
 
-    if ( $user->checkOTP($passPhrase) ) {
+    if ( $mschap ? $user->checkOTPmschap($mschapChallengeHash, $mschapResponse) : $user->checkOTP($passPhrase) ) {
         if ( ! $user->isMemberOf($groupUser) ) {
             // User not member of access group
             $user->invalidLogin( array( "message"=>"Valid login, but user is not a member of ${groupUser}", "idNAS"=>$idNAS, "idClient"=>$idClient));
@@ -82,7 +100,7 @@ try {
             $user->invalidLogin( array( "message"=>"OTP replay", "idNAS"=>$idNAS, "idClient"=>$idClient));
         } else {
             $user->validLogin( array("idNAS"=>$idNAS, "idClient"=>$idClient));
-            echo $passPhrase;
+            echo $user->passPhrase;
         }
     } else {
         $user->invalidLogin( array("idNAS"=>$idNAS, "idClient"=>$idClient));

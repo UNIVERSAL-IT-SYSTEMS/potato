@@ -45,10 +45,8 @@ Edit the /etc/raddb/users file to your needs. There's a super-simple sample in d
 
 Add the following section to the authorize section (just after the "files" directive) of /etc/raddb/sites-available/default:
 
-	if (!"%{control:Cleartext-Password}") {
-		update control {
-			Cleartext-Password := `/usr/bin/php /var/www/html/potato/radauth.php -u %{User-Name} -p %{User-Password} -s %{Client-Shortname} -c %{Calling-Station-Id}`
-		}
+	update control {
+		 Cleartext-Password = `/usr/bin/php /var/www/html/potato/radauth.php -u %{User-Name} -p %{User-Password} -h %{mschap:Challenge} -r %{mschap:NT-Response} -s %{Client-Shortname} -c %{Calling-Station-Id}`
 	}
 
 
