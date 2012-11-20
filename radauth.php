@@ -44,7 +44,7 @@ $idNAS = $options["s"];
 $idClient = $options["c"];
 
 if (empty($passPhrase)) {
-    exit(8);
+    exit();
 }
 
 if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
@@ -56,12 +56,11 @@ if ( strtolower(substr( $userName, -6 )) == ".guest" ) {
         $guest->fetch($guestName);
         # Cleartext password available; see if it's the correct one
         if ($guest->getPassword() == $passPhrase) {
-            exit(0);
+            echo $passPhrase;
         }
     } catch (NoGuestException $ignore) {
     }
-    // Exiting with fail
-    exit(1);
+    exit();
 }
 
 try {
@@ -83,15 +82,12 @@ try {
             $user->invalidLogin( array( "message"=>"OTP replay", "idNAS"=>$idNAS, "idClient"=>$idClient));
         } else {
             $user->validLogin( array("idNAS"=>$idNAS, "idClient"=>$idClient));
-            exit(0);
+            echo $passPhrase;
         }
     } else {
         $user->invalidLogin( array("idNAS"=>$idNAS, "idClient"=>$idClient));
     }
 } catch (NoSuchUserException $ignore) {
 }
-
-// Exiting with fail
-exit(1);
 
 ?>

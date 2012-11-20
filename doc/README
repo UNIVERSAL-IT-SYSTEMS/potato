@@ -21,19 +21,11 @@ When you start mysql for the first time, you're recommended to harden the
 installation by removing the anon users and deleting test tables. Go ahead and
 do that.
 
-Copy the potato package to /var/www/html
+Unpack the potato package in /var/www/html
 
-Make configuration changes in config.php, db_schema.sql (change the
-password)
-
-Create the potato database by issuing the following commands at the mysql prompt:
-> create database `potato` DEFAULT CHARACTER SET utf8;
-> grant ALL on potato.* to potato@localhost identified by "SuperSecret99";
-> flush privileges;
-
-Update your config.php with the appropriate database name, username, and password. 
-Next, visit the page install.php in your potato installation, and follow any on-screen
-instructions.
+Update your config.php with the appropriate database name, username, and password, 
+along with any other relevant configuration. Next, using a web browser, visit the 
+page install.php in your potato installation, and follow any on-screen instructions.
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -51,4 +43,12 @@ enter /etc/raddb/cert and execute "./bootstrap" as the radius user
 
 Edit the /etc/raddb/users file to your needs. There's a super-simple sample in doc/users that can be used.
 
-Copy the file doc/potato to /etc/raddb/modules, and add "potato" to the authorize section of /etc/raddb/sites-available/default
+Add the following section to the authorize section (just after the "files" directive) of /etc/raddb/sites-available/default:
+
+	if (!"%{control:Cleartext-Password}") {
+		update control {
+			Cleartext-Password := `/usr/bin/php /var/www/html/potato/radauth.php -u %{User-Name} -p %{User-Password} -s %{Client-Shortname} -c %{Calling-Station-Id}`
+		}
+	}
+
+

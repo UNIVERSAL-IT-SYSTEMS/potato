@@ -2,20 +2,18 @@
 # You will also need to configure your wifi network to direct users to the
 # proper network based on the "Class="
 # 
-# DEFAULT NAS-IP-Address=="192.168.0.99", Suffix == ".guest", Auth-Type = Accept
-# 	Class = "External-users"
+# DEFAULT NAS-IP-Address=="192.168.0.99", Suffix == ".guest"
+# 	Class = "Guest-users"
 # 
-# DEFAULT Suffix == ".guest", Auth-Type = Reject
-
-
+# 
 # Direct sysadmins to the correct network.
 # This needs to be configured in your wifi network or vpn gateway as well.
 # 
-# DEFAULT Group == "sysadmin", Auth-Type = Accept
+# DEFAULT Group == "sysadmin"
 # 	Class = "Sysadmin-users"
 
 
-# This is a simple configuration:
-DEFAULT Auth-Type = Accept
-	Class = "Remoteaccess"
+# This is a simple default configuration:
+DEFAULT Group == "potato-users"
+	Class = "Regular-users"
 
