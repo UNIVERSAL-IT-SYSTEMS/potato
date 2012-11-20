@@ -94,6 +94,7 @@ class User {
         for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
             $otp = $this->oathTruncate($this->oathHotp($c));
             if ( $otp == $passPhrase ) {
+                // php is weakly typed, so we need to make sure to zero-pad our otp
                 $this->passPhrase = $this->pin . str_pad($otp, 6, "0", STR_PAD_LEFT);
                 $this->hotpCounter = $c+1;
                 $this->save();
@@ -108,11 +109,12 @@ class User {
         if ($this->isHOTP()) {
             // OATH HOTP algorithm
             for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
-                $otp = $this->pin . $this->oathTruncate($this->oathHotp($c));
+                // php is weakly typed, so we need to make sure to zero-pad our otp
+                $otp = $this->pin . str_pad($this->oathTruncate($this->oathHotp($c)), 6, "0", STR_PAD_LEFT);
                 $pwHash = NtPasswordHash($otp);
                 $calcResponse = ChallengeResponse($challengeHash, $pwHash);
                 if ( $calcResponse == $response ) {
-                    $this->passPhrase = $this->pin . str_pad($otp, 6, "0", STR_PAD_LEFT);
+                    $this->passPhrase = $otp;
                     $this->hotpCounter = $c+1;
                     $this->save();
                     return true;
