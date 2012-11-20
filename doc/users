@@ -4,6 +4,9 @@
 # 
 # DEFAULT NAS-IP-Address=="192.168.0.99", Suffix == ".guest"
 # 	Class = "Guest-users"
+#
+# Deny all other .guest-access
+# DEFAULT Suffix == ".guest", Auth-Type := Reject
 # 
 # 
 # Direct sysadmins to the correct network.
@@ -13,7 +16,8 @@
 # 	Class = "Sysadmin-users"
 
 
-# This is a simple default configuration:
+# This is a simple default configuration which allows members of the posix
+# group "potato-users" access
 DEFAULT Group == "potato-users"
 	Class = "Regular-users"
 
