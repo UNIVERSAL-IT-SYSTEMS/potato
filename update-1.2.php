@@ -2,7 +2,7 @@
 /**
  * Potato
  * One-time-password self-service and administration
- * Version 1.0
+ * Version 1.2
  * 
  * Written by Markus Berg
  *   email: markus@kelvin.nu
@@ -30,7 +30,8 @@ $page=new Page();
 $page->printHeader();
 ?>
 
-<h1>Potato installation</h1>
+<h1>Potato database updater</h1>
+<p>Updating database from pre-1.0 to 1.2 level.</p>
 <ul>
     <li>Attempting to connect to database <strong>"<?php echo $dbName; ?>"</strong>... 
 <?php
@@ -46,111 +47,80 @@ try {
 print "    </li>\n";
 
 if (isset($dbh)) {
-    print "    <li>Creating User table...";
 
-    $sql = <<<____SQL
-CREATE TABLE `User` (
-  `userName` char(16) NOT NULL,
-  `secret` varchar(64) NULL DEFAULT NULL,
-  `pin` char(8) NULL DEFAULT NULL,
-  `hotpCounter` int(8) NOT NULL default '0',
-  `invalidLogins` tinyint(1) NOT NULL default 0,
-  PRIMARY KEY  (`userName`)
-) ENGINE=InnoDB CHARSET=utf8;
-____SQL;
-
-    $return = $dbh->exec($sql);
-    if ($dbh->errorCode() == "00000") {
-        print "<span class=\"success\">Success!</span>";
-    } elseif ($dbh->errorCode() == "42S01") {
-        echo "<span class=\"success\">Table already exists!</span>";
-    } else {
-        print "<span class=\"failure\">Fail!</span><br />";
-        $error = $dbh->errorInfo();
-        print $error[2];
-    }
-    print "    </li>\n";
-
-    print "    <li>Creating Guest table...";
-    $sql = <<<____SQL
-CREATE TABLE `Guest` (
-  `userName` char(16) NOT NULL,
-  `password` varchar(32) NOT NULL,
-  `dateCreation` timestamp default CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`userName`),
-  CONSTRAINT `fkUserNameGuest` FOREIGN KEY (`userName`) references `User` (`userName`) on delete cascade
-) ENGINE=InnoDB CHARSET=utf8;
-____SQL;
-
-    $return = $dbh->exec($sql);
+    # Updating log table
+    print "<li>Inserting idClient column in Log-table...";
+    $dbh->exec( "ALTER TABLE `Log` ADD COLUMN `idClient` char(32) NULL DEFAULT NULL AFTER `passPhrase`" );
     if ($dbh->errorCode() == "00000") {
         echo "<span class=\"success\">Success!</span>";
-    } elseif ($dbh->errorCode() == "42S01") {
-        echo "<span class=\"success\">Table already exists!</span>";
-    } else {
-        print "<span class=\"failure\">Fail!</span><br />";
-        $error = $dbh->errorInfo();
-        print $error[2];
-    }
-    print "    </li>\n";
-
-    print "    <li>Creating Log table...";
-    $sql = <<<____SQL
-CREATE TABLE `Log` (
-  `time` timestamp default CURRENT_TIMESTAMP,
-  `userName` char(16) NOT NULL,
-  `passPhrase` char(12),
-  `idClient` char(32),
-  `idNAS` char(32),
-  `status` char(8),
-  `message` varchar(256),
-  KEY `idNAS_index` (`idNAS`),
-  CONSTRAINT `fkUserName` FOREIGN KEY (`userName`) references `User` (`userName`) on delete cascade
-) ENGINE=InnoDB CHARSET=utf8;
-____SQL;
-    $return = $dbh->exec($sql);
-
-    if ($dbh->errorCode() == "00000") {
-        echo "<span class=\"success\">Success!</span>";
-    } elseif ($dbh->errorCode() == "42S01") {
-        echo "<span class=\"success\">Table already exists!</span>";
+    } elseif ($dbh->errorCode() == "42S21") {
+        echo "<span class=\"success\">Column already exists!</span>";
     } else {
         echo "<span class=\"failure\">Fail!</span><br />";
         $error = $dbh->errorInfo();
         print $error[2];
     }
     print "    </li>\n";
-    # print "<pre>";
-    # print_r($dbh->errorInfo());
-    # print "</pre>";
 
-    print "    <li>Creating TokenCache table...";
-    $sql = <<<____SQL
-CREATE TABLE `TokenCache` (
-  `time` timestamp default CURRENT_TIMESTAMP,
-  `userName` char(16) NOT NULL,
-  `passPhrase` char(12),
-  `idClient` char(32),
-  `idNAS` char(32),
-  CONSTRAINT `fkUserNameTokenCache` FOREIGN KEY (`userName`) references `User` (`userName`) on delete cascade
-) ENGINE=InnoDB CHARSET=utf8;
-____SQL;
-    $return = $dbh->exec($sql);
 
+    print "<li>Inserting idNAS column in Log-table...";
+    $dbh->exec( "ALTER TABLE `Log` ADD COLUMN `idNAS` char(32) NULL DEFAULT NULL AFTER `idClient`" );
     if ($dbh->errorCode() == "00000") {
         echo "<span class=\"success\">Success!</span>";
-    } elseif ($dbh->errorCode() == "42S01") {
-        echo "<span class=\"success\">Table already exists!</span>";
+    } elseif ($dbh->errorCode() == "42S21") {
+        echo "<span class=\"success\">Column already exists!</span>";
     } else {
         echo "<span class=\"failure\">Fail!</span><br />";
         $error = $dbh->errorInfo();
         print $error[2];
     }
     print "    </li>\n";
-    # print "<pre>";
-    # print_r($dbh->errorInfo());
-    # print "</pre>";
 
+    print "<li>Inserting status column in Log-table...";
+    $dbh->exec( "ALTER TABLE `Log` ADD COLUMN `status` char(8) NULL DEFAULT NULL AFTER `idClient`" );
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } elseif ($dbh->errorCode() == "42S21") {
+        echo "<span class=\"success\">Column already exists!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
+
+    print "<li>Restructuring pre-existing data in Log table...";
+    $dbh->exec( "UPDATE `Log` SET status='Fail' where message like 'FAIL%'" );
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
+
+    print "<li>Restructuring pre-existing data in Log table...";
+    $dbh->exec( "UPDATE `Log` SET status='Success' where message like 'Success%'" );
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
+
+    print "<li>Adding idNAS index to Log table...";
+    $dbh->exec( "create index  idNAS_index on `Log` (idNAS)" );
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
 }
 ?>
 </ul>
