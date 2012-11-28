@@ -27,6 +27,7 @@
 include "config.php";
 include "Page.class.php";
 $page=new Page();
+$page->bMenu = false;
 $page->printHeader();
 ?>
 
@@ -129,7 +130,7 @@ ____SQL;
 CREATE TABLE `TokenCache` (
   `time` timestamp default CURRENT_TIMESTAMP,
   `userName` char(16) NOT NULL,
-  `passPhrase` char(12),
+  `token` char(14),
   `idClient` char(32),
   `idNAS` char(32),
   CONSTRAINT `fkUserNameTokenCache` FOREIGN KEY (`userName`) references `User` (`userName`) on delete cascade

@@ -27,6 +27,7 @@
 include "config.php";
 include "Page.class.php";
 $page=new Page();
+$page->bMenu = false;
 $page->printHeader();
 ?>
 
@@ -121,6 +122,17 @@ if (isset($dbh)) {
         print $error[2];
     }
     print "    </li>\n";
+
+    print "<li>Renaming TokenCache &quot;passPhrase&quot; column to &quot;token&quot;...";
+    $dbh->exec( "alter table TokenCache CHANGE COLUMN `passPhrase` `token` char(14) not NULL" );
+    if ($dbh->errorCode() == "00000") {
+        echo "<span class=\"success\">Success!</span>";
+    } else {
+        echo "<span class=\"failure\">Fail!</span><br />";
+        $error = $dbh->errorInfo();
+        print $error[2];
+    }
+    print "    </li>\n";
 }
 ?>
 </ul>
@@ -147,9 +159,10 @@ flush privileges;
 ____PRE;
 ?>
 
-<p>If everything installed correctly, you can delete this file (install.php) and 
+<p>If everything installed correctly, you can delete this file and 
 proceed to the <a href="login.php">Login page</a>, 
-and start using Potato.</p>
+and start using Potato. Leaving this file in place shouldn't hurt anything as it doesn't make
+changes to the database if those changes have already been performed.</p>
 
 <?php
 $page->printFooter();
