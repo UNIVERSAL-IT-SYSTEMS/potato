@@ -26,6 +26,7 @@
 
 class Token {
     private $userName;
+    private $token;
     private $idClient;
     private $idNAS;
     private $tokenLife = "1 DAY";
@@ -33,6 +34,11 @@ class Token {
     // Set the username
     function setUserName($userName) {
         $this->userName = strtolower($userName);
+    }
+
+    // Set the token
+    function setToken($token) {
+        $this->token = $userName;
     }
 
     // Set the idClient
@@ -45,9 +51,14 @@ class Token {
         $this->idNAS = $idNAS;
     }
 
+    // Fetch token from database if one exists
+    // Return true if successful
+    function fetch($userName, $idClient, $idNAS) {
+        $this->setUserName($userName);
+        $this->setIdClient($idClient);
+        $this->setIdNAS($idNAS);
 
-    function valid($token) {
-        // Immediately return false if any required fields are empty
+        // Return if any required properties are empty
         if (empty($this->userName) || empty($this->idClient) || empty($this->idNAS)) {
             return(false);
         }
@@ -58,10 +69,28 @@ class Token {
                            ":idNAS"    => $this->idNAS, 
                            ":idClient" => $this->idClient));
 
-        if ( $row = $ps->fetch() ) {
-            if ($row['token'] == $token) {
-                return true;
-            }
+        $this->setToken($ps->fetchColumn());
+        return(!empty($this->token));
+    }
+
+    // Verify that the provided mschapv2 handshake is correct
+    function checkTokenMschap($mschapChallengeHash, $mschapResponse) {
+        $pwHash = NtPasswordHash($this->token);
+        $calcResponse = ChallengeResponse($mschapChallengeHash, $pwHash);
+        if ($calcResponse == $mschapResponse) {
+            return(true);
+        } else {
+            // Incorrect token attempted
+            $this->delete();
+        }
+        return(false);
+    }
+
+    // Verify that the provided token is valid
+    function checkToken($token) {
+        if ($this->token == $token) {
+            return(true);
+        } else {
             // Incorrect token attempted
             $this->delete();
         }
@@ -70,10 +99,6 @@ class Token {
 
     // Save/create the token
     function save($token) {
-        // Immediately return false if any required fields are empty
-        if (empty($this->userName) || empty($this->idClient) || empty($this->idNAS)) {
-            return;
-        }
         global $dbh;
 
         $ps = $dbh->prepare("INSERT INTO `TokenCache` (`userName`, `token`, `idClient`, `idNAS`) VALUES (:userName, :token, :idClient, :idNAS)");
