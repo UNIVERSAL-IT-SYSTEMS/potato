@@ -59,6 +59,13 @@ $dbName = 'potato';
 $dbUser = 'potato';
 $dbPassword = 'SuperSecret99';
 
+// Token caching
+// This allows a NAS (for instance a wifi access point) to cache one-time-passwords
+// for a period of 24 hours. Any incorrect login attempts will cause the token to be
+// deleted. Valid values are what mysql accepts as "INTERVAL", for example "1 DAY".
+// Comment out to disable token caching.
+$tokenCache['potato-wifi'] = "1 DAY";
+
 # Uncomment this to activate demo-mode
 # include "demo.php";
 

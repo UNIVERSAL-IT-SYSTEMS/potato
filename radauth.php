@@ -88,8 +88,9 @@ try {
     $user->verifySanity();
 
     // See if token caching is enabled for this NAS
-    if(isset($tokenCache[$idNAS])) {
+    if(isset($tokenCache) && isset($tokenCache[$idNAS])) {
         $token = new Token();
+        $token->setTokenLife($tokenCache[$idNAS]);
         if($token->fetch($userName, $idClient, $idNAS)) {
             // A token exists for this user, client, and NAS
             if( $mschap ? $token->checkTokenMschap($mschapChallengeHash, $mschapResponse) : $token->checkToken($passPhrase) ) {

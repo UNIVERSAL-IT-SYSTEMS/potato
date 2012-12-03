@@ -29,7 +29,12 @@ class Token {
     private $token;
     private $idClient;
     private $idNAS;
-    private $tokenLife = "1 DAY";
+    private $tokenLife;
+
+    // Set the token lifetime
+    function setTokenLife($tokenLife) {
+        $this->tokenLife = $tokenLife;
+    }
 
     // Set the username
     function setUserName($userName) {
