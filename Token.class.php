@@ -73,42 +73,43 @@ class Token {
         return(!empty($this->token));
     }
 
-    // Verify that the provided mschapv2 handshake is correct
+    /**
+     * Verify the validity of the mschapv2 handshake
+     *
+     * @param string $mschapChallengeHash
+     * @param string $mschapResponse
+     */
     function checkTokenMschap($mschapChallengeHash, $mschapResponse) {
         $pwHash = NtPasswordHash($this->token);
         $calcResponse = ChallengeResponse($mschapChallengeHash, $pwHash);
-        if ($calcResponse == $mschapResponse) {
-            return(true);
-        } else {
-            // Incorrect token attempted
-            $this->delete();
-        }
-        return(false);
+        return($calcResponse == $mschapResponse);
     }
 
-    // Verify that the provided token is valid
+    /**
+     * Verify that the provided token is valid
+     *
+     * @param string $token Token to check for validity
+     */
     function checkToken($token) {
-        if ($this->token == $token) {
-            return(true);
-        } else {
-            // Incorrect token attempted
-            $this->delete();
-        }
-        return(false);
+        return($this->token == $token);
     }
 
-    // Save/create the token
-    function save($token) {
+    /**
+     * Save the token
+     */
+    function save() {
         global $dbh;
 
         $ps = $dbh->prepare("INSERT INTO `TokenCache` (`userName`, `token`, `idClient`, `idNAS`) VALUES (:userName, :token, :idClient, :idNAS)");
         $ps->execute(array( ":userName" => $this->userName,
-                            ":token"    => $token,
+                            ":token"    => $this->token,
                             ":idClient" => $this->idClient,
                             ":idNAS"    => $this->idNAS));
     }
 
-    // Delete the token from the database
+    /**
+     * Delete the token from the database
+     */
     function delete() {
         global $dbh;
         $ps = $dbh->prepare("DELETE FROM `TokenCache` where `userName`=:userName AND `idClient`=:idClient AND `idNAS`=:idNAS");
@@ -117,7 +118,9 @@ class Token {
                             ":idNAS"    => $this->idNAS));
     }
 
-    // Vacuum expired entries from TokenCache
+    /**
+     * Vacuum expired entries from TokenCache
+     */
     function vacuum() {
         global $dbh;
         $dbh->exec("DELETE FROM `TokenCache` where `time`<DATE_SUB(now(), INTERVAL " . $this->tokenLife . ")");
