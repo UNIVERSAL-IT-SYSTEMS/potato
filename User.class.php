@@ -32,7 +32,7 @@ class User {
     private $pin;
     private $invalidLogins;
     public $errors = array();
-    public $passPhrase;
+    private $passPhrase;
     private $maxDrift = 300;
     private $hotpCounter;
     private $hotpLookahead = 10;
@@ -68,6 +68,18 @@ class User {
         return (strlen($this->secret)==40 ? true : false);
     }
 
+    /**
+     * Return the passphrase
+     */
+    function getPassPhrase() {
+        return($this->passPhrase);
+    }
+
+    /**
+     * Check if the passphrase is valid
+     *
+     * @param string $passPhrase the passphrase to be tested
+     */
     function checkOTP($passPhrase) {
         if ( strlen($passPhrase) > 6 ) {
             $providedPP = substr($passPhrase, -6);
@@ -78,6 +90,11 @@ class User {
         }
     }
 
+    /**
+     * Perform motp standard authentication
+     * 
+     * @param string $passPhrase the passphrase to be tested
+     */
     function checkMOTP ($passPhrase) {
         $now = intval( gmdate("U") / 10 );
         for ( $time = $now + ($this->maxDrift/10) ; $time >= $now - ($this->maxDrift/10) ; $time-- ) {
@@ -90,6 +107,11 @@ class User {
         return false;
     }
 
+    /**
+     * Perform standard HOTP authentication
+     * 
+     * @param string $passPhrase the passphrase to be tested
+     */
     function checkHOTP ($passPhrase) {
         for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
             $otp = $this->oathTruncate($this->oathHotp($c));

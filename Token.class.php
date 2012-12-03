@@ -36,9 +36,14 @@ class Token {
         $this->userName = strtolower($userName);
     }
 
+    // Get the token
+    function getToken() {
+        return $this->token;
+    }
+
     // Set the token
     function setToken($token) {
-        $this->token = $userName;
+        $this->token = $token;
     }
 
     // Set the idClient

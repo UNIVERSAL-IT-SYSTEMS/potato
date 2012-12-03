@@ -27,6 +27,7 @@
 include "config.php";
 include "User.class.php";
 include "Guest.class.php";
+include "Token.class.php";
 include "mschap.php";
 
 try {
@@ -86,6 +87,22 @@ try {
     $user->fetch($userName);
     $user->verifySanity();
 
+    // See if token caching is enabled for this NAS
+    if(isset($tokenCache[$idNAS])) {
+        $token = new Token();
+        if($token->fetch($userName, $idClient, $idNAS)) {
+            // A token exists for this user, client, and NAS
+            if( $mschap ? $token->checkTokenMschap($mschapChallengeHash, $mschapResponse) : $token->checkToken($passPhrase) ) {
+                // The token is valid
+                echo $token->getToken();
+                exit();
+            } else {
+                // Invalid token attempted. Delete it.
+                $token->delete();
+            }
+        }
+    }
+
     if ( $mschap ? $user->checkOTPmschap($mschapChallengeHash, $mschapResponse) : $user->checkOTP($passPhrase) ) {
         if ( ! $user->isMemberOf($groupUser) ) {
             // User not member of access group
@@ -100,7 +117,13 @@ try {
             $user->invalidLogin( array( "message"=>"OTP replay", "idNAS"=>$idNAS, "idClient"=>$idClient));
         } else {
             $user->validLogin( array("idNAS"=>$idNAS, "idClient"=>$idClient));
-            echo $user->passPhrase;
+            echo $user->getPassPhrase();
+
+            // Save the token if token caching is enabled for this NAS
+            if(isset($tokenCache[$idNAS])) {
+                $token->setToken($user->getPassPhrase());
+                $token->save();
+            }
         }
     } else {
         $user->invalidLogin( array("idNAS"=>$idNAS, "idClient"=>$idClient));
