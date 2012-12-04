@@ -40,10 +40,10 @@ try {
 $options = getopt("u:p:h:r:s:c:");
 
 $userName = $options["u"];
-$passPhrase = $options["p"];
+$passPhrase = isset($options["p"]) ? $options["p"] : "";
 
-$mschapChallengeHash = pack( 'H*', $options["h"] );
-$mschapResponse = pack( 'H*', $options["r"] );
+$mschapChallengeHash = isset($options["h"]) ? pack( 'H*', $options["h"] ) : "";
+$mschapResponse = isset($options["r"]) ? pack( 'H*', $options["r"] ) : "";
 
 $idNAS = $options["s"];
 $idClient = $options["c"];
@@ -96,12 +96,12 @@ try {
             if( $mschap ? $token->checkTokenMschap($mschapChallengeHash, $mschapResponse) : $token->checkToken($passPhrase) ) {
                 // The token is valid
                 echo $token->getToken();
-                $user->log( array("message"=>"Accepted cached token", "idNAS"=>$idNAS, "idClient"=>$idClient));
+                $user->log( array("message"=>"Accepting cached token", "idNAS"=>$idNAS, "idClient"=>$idClient));
                 exit();
             } else {
                 // Invalid token attempted. Delete it.
                 $token->delete();
-                $user->log( array("message"=>"Cached token deleted", "idNAS"=>$idNAS, "idClient"=>$idClient));
+                $user->log( array("message"=>"Deleting cached token", "idNAS"=>$idNAS, "idClient"=>$idClient));
             }
         }
     }
@@ -126,7 +126,7 @@ try {
             if(isset($token)) {
                 $token->setToken($user->getPassPhrase());
                 $token->save();
-                $user->log( array("message"=>"Caching token", "idNAS"=>$idNAS, "idClient"=>$idClient));
+                $user->log( array("message"=>"Adding token to cache", "idNAS"=>$idNAS, "idClient"=>$idClient));
             }
         }
     } else {
