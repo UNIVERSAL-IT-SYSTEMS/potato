@@ -96,10 +96,12 @@ try {
             if( $mschap ? $token->checkTokenMschap($mschapChallengeHash, $mschapResponse) : $token->checkToken($passPhrase) ) {
                 // The token is valid
                 echo $token->getToken();
+                $user->log( array("message"=>"Accepted cached token", "idNAS"=>$idNAS, "idClient"=>$idClient));
                 exit();
             } else {
                 // Invalid token attempted. Delete it.
                 $token->delete();
+                $user->log( array("message"=>"Cached token deleted", "idNAS"=>$idNAS, "idClient"=>$idClient));
             }
         }
     }
@@ -121,9 +123,10 @@ try {
             echo $user->getPassPhrase();
 
             // Save the token if token caching is enabled for this NAS
-            if(isset($tokenCache[$idNAS])) {
+            if(isset($token)) {
                 $token->setToken($user->getPassPhrase());
                 $token->save();
+                $user->log( array("message"=>"Caching token", "idNAS"=>$idNAS, "idClient"=>$idClient));
             }
         }
     } else {
