@@ -1,13 +1,14 @@
-This is a standard CentOS 5.7 installation, with the following additional packages:
+Install a standard CentOS 6.x installation, with the following additional packages:
 
-php53-common
-php53-process
-php53
-php53-pdo
-php53-mysql
-php53-mcrypt
-php53-cli
-freeradius2
+Freeradius
+php
+php-cli
+php-common
+php-mcrypt
+php-mysql
+php-pdo
+php-process
+freeradius
 httpd
 mysql-server
 
