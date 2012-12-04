@@ -74,13 +74,14 @@ class Token {
         }
 
         global $dbh;
-        $ps = $dbh->prepare("SELECT `token` FROM `User` where `userName`=:userName and `idNAS`=:idNAS and `idClient`=:idClient and `time`>DATE_SUB(now(), INTERVAL " . $this->tokenLife . ")");
+        $ps = $dbh->prepare("SELECT `token` FROM `TokenCache` where `userName`=:userName and `idNAS`=:idNAS and `idClient`=:idClient and `time`>DATE_SUB(now(), INTERVAL " . $this->tokenLife . ")");
         $ps->execute(array(":userName" => $this->userName, 
                            ":idNAS"    => $this->idNAS, 
                            ":idClient" => $this->idClient));
 
-        $this->setToken($ps->fetchColumn());
-        return(!empty($this->token));
+        $tokenCached = $ps->fetchColumn();
+        $this->setToken($tokenCached);
+        return(!empty($tokenCached));
     }
 
     /**
