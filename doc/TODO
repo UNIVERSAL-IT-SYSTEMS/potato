@@ -1,1 +1,4 @@
-* Fix mschapv2 retries
+* Update source documentation
+* Automatic testing of code paths
+* SELinux policy
+* Automatically generate wifi connection xml from values in config.php
