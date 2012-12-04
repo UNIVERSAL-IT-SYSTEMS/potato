@@ -33,7 +33,7 @@ class User {
     private $invalidLogins;
     public $errors = array();
     private $passPhrase;
-    private $maxDrift = 300;
+    private $maxDrift = 180;
     private $hotpCounter;
     private $hotpLookahead = 10;
 
@@ -126,7 +126,12 @@ class User {
         return false;
     }
 
-    // perform mschapv2 authentication
+    /**
+     * Verify validity of MSCHAPv2 handshake
+     *
+     * param string $challengeHash
+     * param string $response
+     */
     function checkOTPmschap ($challengeHash, $response) {
         if ($this->isHOTP()) {
             // OATH HOTP algorithm
@@ -161,7 +166,11 @@ class User {
         return false;
     }
 
-    // Authenticate user
+    /**
+     * Perform posix authentication of user
+     *
+     * @param string $password The user-supplied password
+     */
     function authenticate($password) {
         global $demo;
         if (isset($demo)) {
@@ -170,7 +179,9 @@ class User {
         return (pam_auth( $this->userName, $password ) );
     }
 
-    // Get the fullname of the user
+    /**
+     * Get the posix fullname of the user
+     */
     function getFullName() {
         global $demo;
         if (isset($demo)) {
@@ -180,12 +191,26 @@ class User {
         return iconv('UTF-8', 'UTF-16LE', $userInfo['gecos']);
     }
 
-    // Get the username of the user
+    /**
+     * Get the username of the user
+     */
     function getUserName() {
         return $this->userName;
     }
 
-    // Save/create the user
+    /**
+     * Set the username of this user
+     *
+     * @param string $userName
+     */
+    function setUserName($userName) {
+        $this->userName = strtolower($userName);
+    }
+
+
+    /**
+     * Save/create the user
+     */
     function save() {
         global $dbh;
 
@@ -196,17 +221,18 @@ class User {
                             ":hotpCounter" => $this->hotpCounter));
     }
 
-    // Set the amount of invalid login attempts performed against this account
+    /**
+     * Set the current amount of invalid login attempts performed against this account
+     *
+     * @param integer $invalidLogins
+     */
     function setInvalidLogins($invalidLogins) {
         $this->invalidLogins = $invalidLogins;
     }
 
-    // Set the username of this user
-    function setUserName($userName) {
-        $this->userName = strtolower($userName);
-    }
-
-    // Delete the user from the database
+    /**
+     * Delete the user from the database
+     */
     function delete() {
         global $dbh;
         $ps = $dbh->prepare("DELETE FROM User where `userName`=:userName");
@@ -220,14 +246,25 @@ class User {
         return "<ul><li>" . implode("</li>\n<li>", $this->errors) . "</li></ul>\n";
     }
 
+    /**
+     * Does the user have a registered token?
+     */
     function hasToken() {
         return ( !empty($this->secret) );
     }
 
+    /**
+     * Does the user have a registered pin?
+     */
     function hasPin() {
         return ( !empty($this->pin) );
     }
 
+    /**
+     * Log an invalid login attempt
+     *
+     * Update the invalid logins database column, and log the invalid attempt
+     */
     function invalidLogin( $aLog=array()) {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = invalidLogins+1 where userName=:userName");
@@ -236,7 +273,9 @@ class User {
         $this->log( $aLog );
     }
 
-    // Is this user an administrator
+    /**
+     * Is this user an administrator. Checks posix group membership
+     */
     function isAdmin() {
         global $groupAdmin, $demo;
         if (isset($demo)) {
@@ -246,7 +285,11 @@ class User {
         return (in_array($this->userName, $groupInfo['members']));
     }
 
-    // Is the user a member of $group?
+    /**
+     * Is the user a member of $group?
+     *
+     * @param string $group Posix group to check membership of
+     */
     function isMemberOf($group) {
         global $demo;
         if (isset($demo)) {
@@ -257,12 +300,17 @@ class User {
         return ( in_array( $this->userName, $groupInfo['members'] ) || $userInfo['gid'] == $groupInfo['gid'] );
     }
 
+    /**
+     * Is this user currently locked out?
+     */
     function isLockedOut() {
         global $invalidLoginLimit;
         return ( !isset($invalidLoginLimit) ? false : ($this->invalidLogins > $invalidLoginLimit ? true : false ));
     }
 
-    // Have there been too many failed login attempts in the past $throttleLoginTime seconds?
+    /**
+     * Have there been too many failed login attempts in the past $throttleLoginTime seconds?
+     */
     function isThrottled() {
         global $dbh, $throttleLoginTime, $throttleLoginAttempts;
         if (!isset($throttleLoginTime)) {
@@ -275,6 +323,11 @@ class User {
         return ($result[0] > $throttleLoginAttempts);
     }
 
+    /**
+     * Add entry to the log
+     *
+     * @param array $aLog key/value pairs of information to log. Keys can be one or more of [idNAS, idClient, status, message]
+     */
     function log( $aLog ) {
         global $dbh;
 
@@ -290,6 +343,9 @@ class User {
                             ":message" => (isset($aLog['message']) ? $aLog['message'] : null)));
     }
 
+    /**
+     * Has this passphrase already been used?
+     */
     function replayAttack() {
         global $dbh;
         $ps = $dbh->prepare('SELECT count(*) from Log where time > (now() - ' . $this->maxDrift*2 . ') AND userName=:userName AND passPhrase=:passPhrase AND status="Success"');
@@ -299,6 +355,11 @@ class User {
         return ($result[0] > 0);
     }
 
+    /**
+     * Set the user pin
+     *
+     * @param string $newPin Four-digit (minimum) pin
+     */
     function setPin($newPin) {
         if ( strlen($newPin) >= 4 
              && is_numeric($newPin) ) {
@@ -308,6 +369,11 @@ class User {
         }
     }
 
+    /**
+     * Set the user secret
+     *
+     * @param string $newSecret Hexadecimal string (16, 24 or 32 characters in length)
+     */
     function setSecret($newSecret) {
         $s = str_replace(" ", "", $newSecret);
         if (strlen($s)%8 != 0) {
@@ -322,6 +388,9 @@ class User {
         }
     }
 
+    /**
+     * Unlock user account
+     */
     function unlock($unlocker) {
         global $dbh;
         $ps = $dbh->prepare("UPDATE User set invalidLogins = 0 where userName=:userName");
