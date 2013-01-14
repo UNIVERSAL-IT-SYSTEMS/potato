@@ -40,6 +40,7 @@ if (isset($_POST['action'])) {
             case 'delete':
                 $user->delete();
                 $_SESSION['msgInfo'] = 'User account "' . htmlentities($user->getUserName()) . '" deleted.';
+                $currentUser->log(array("message"=>"Deleted account " . $user->getUserName()));
                 break;
 
             case 'unlock':
