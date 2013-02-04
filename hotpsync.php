@@ -26,21 +26,13 @@
 
 include "config.php";
 include "session.php";
+$page->prepTabBar();
 
-if ( ! $currentUser->isAdmin() ) {
-    header("Location: index.php");
-    exit;
-}
+if ( !empty($_POST['passPhrase1']) && 
+     !empty($_POST['passPhrase2']) && 
+     !empty($_POST['passPhrase3']) ) {
 
-$userName = empty($_POST['userName']) ? $currentUser->getUserName() : $_POST['userName'];
-
-$user = new User();
-
-try {
-    $user->fetch($userName);
-    if ( !empty($_POST['passPhrase1']) && 
-         !empty($_POST['passPhrase2']) && 
-         !empty($_POST['passPhrase3']) ) {
+    if ( $user->isHOTP() ) {
         $offset = $user->hotpResync($_POST['passPhrase1'], $_POST['passPhrase2'], $_POST['passPhrase3']);
         if ( $offset == 0 ) {
             $_SESSION['msgWarning'] = "Unable to sync.";
@@ -48,10 +40,8 @@ try {
             $_SESSION['msgInfo'] = "Token counter synced by " . $offset;
             $user->log( array("message"=>"Token counter resynced by " . $offset));
         }
-    }
-} catch (NoSuchUserException $e) {
-    if (!empty($_POST['passPhrase'])) {
-        $_SESSION['msgWarning'] = "FAIL! No token registered to account.";
+    } else {
+        $_SESSION['msgWarning'] = "FAIL! No HOTP token registered to this account.";
     }
 }
 
@@ -63,11 +53,11 @@ $page->printHeader();
 <p>If a HOTP token (such as a yubikey) gets out of sync, you can use this web interface to resync it. Use
 your HOTP token to generate three consecutive passphrases, and enter them here:</p>
 
-<form method="post" action="hotpsync.php" onsubmit="return(sanityCheckForm());"> 
+<form method="post" action="<?php echo $page->getUrl("hotpsync.php")  ?>" autocomplete="off" onsubmit="return(sanityCheckForm());"> 
     <table> 
         <tr> 
             <th>Username:</th> 
-            <td><input type="text" name="userName" value="<?php echo htmlentities($user->getUserName()) ?>" size="20" maxlength="16" /></td> 
+            <td><?php echo htmlentities($user->getUserName()) ?></td> 
         </tr> 
         <tr> 
             <th>Passphrase 1:</th> 

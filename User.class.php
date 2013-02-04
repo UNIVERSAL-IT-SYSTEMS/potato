@@ -407,20 +407,19 @@ class User {
     }
 
     function hotpResync($passPhrase1, $passPhrase2, $passPhrase3) {
-        if ($this->isHOTP()) {
-            for ($offset=0; $offset<1000; $offset++) {
-                $c = $this->hotpCounter + $offset;
-                if ( $this->oathTruncate($this->oathHotp($c)) == $passPhrase1 ) {
-                    // We found a match. Verify the other passPhrases as well.
-                    if ( ( $this->oathTruncate($this->oathHotp($c+1)) == $passPhrase2 ) &&
-                         ( $this->oathTruncate($this->oathHotp($c+2)) == $passPhrase3 ) ) {
-                        $this->hotpCounter = $c+3;
-                        $this->save();
-                        return $offset+3;
-                    }
+        for ($offset=0; $offset<1000; $offset++) {
+            $c = $this->hotpCounter + $offset;
+            if ( $this->oathTruncate($this->oathHotp($c)) == $passPhrase1 ) {
+                // We found a match. Verify the other passPhrases as well.
+                if ( ( $this->oathTruncate($this->oathHotp($c+1)) == $passPhrase2 ) &&
+                     ( $this->oathTruncate($this->oathHotp($c+2)) == $passPhrase3 ) ) {
+                    $this->hotpCounter = $c+3;
+                    $this->save();
+                    return $offset+3;
                 }
             }
         }
+        // Not able to sync. Return 0
         return 0;
     }
 

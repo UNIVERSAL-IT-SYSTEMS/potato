@@ -113,6 +113,9 @@ class Page {
         echo '<div id="tabs">' . "\n";
         $this->printTab('index.php', 'Home');
         $this->printTab('testtoken.php', 'Test token');
+        if ( $user->isHOTP() ) {
+            $this->printTab('hotpsync.php', 'HOTP resync');
+        }
         $this->printTab('logviewer.php', 'Logs');
         if (isset($wifiGuestSSID)) {
             $this->printTab('wifiguest.php', 'Wifi guest');
@@ -155,7 +158,6 @@ class Page {
         if ( $currentUser->isAdmin() ) {
             echo '  <a href="accountadd.php">Add account</a>' . "\n";
             echo '  <a href="accountadmin.php">Account admin</a>' . "\n";
-            echo '  <a href="hotpsync.php">HOTP sync</a>' . "\n";
             echo '  <a href="syslog.php">System log</a>' . "\n";
             echo '  <br />';
         }
