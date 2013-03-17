@@ -91,6 +91,31 @@ class User {
     }
 
     /**
+     * Verify if the user token clock is off. This is a very common source for errors
+     * 
+     * @param  string       $passPhrase the passphrase to be tested
+     * @return false/string false if unable to sync, otherwise the amount of time that the clock is off
+     */
+    function checkClockDiff($passPhrase) {
+        if ($this->isHOTP()) {
+            return false;
+        }
+        $timeBase = gmdate("U");
+        // search +/- twelve hours, and +/- 10 minutes on every hour
+        for ($hour=-12; $hour<=12; $hour++) {
+            $now = intval(($timeBase + $hour*60*60)/10);
+            for ( $time = $now + 60 ; $time >= $now - 60 ; $time-- ) {
+                $otp = substr( md5($time . $this->secret . $this->pin ), 0, 6);
+                if ( $otp == $passPhrase ) {
+                    // return the amount of diff in seconds
+                    return( ($time-$now)*10 + $hour*3600 );
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Perform motp standard authentication
      * 
      * @param string $passPhrase the passphrase to be tested

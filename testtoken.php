@@ -44,15 +44,24 @@ if ( ! empty($_POST['testPassPhrase']) ) {
                 $_SESSION['msgWarning'] = "Valid login, but there have been too many failed login attempts from this account lately. Please wait " . $throttleLoginTime . " seconds before trying again.";
                 $user->invalidLogin( array( "message"=>"Valid login, but login denied due to throttling", "idNAS"=>"token testing area"));
             } elseif ( $user->replayAttack($testPassPhrase)) {
-                $_SESSION['msgWarning'] = "FAIL! Passphrase has been used before, and is no longer valid.";
+                $_SESSION['msgWarning'] = "Passphrase has been used before, and is no longer valid.";
                 $user->invalidLogin( array( "message"=>"OTP replay", "idNAS"=>"token testing area"));
             } else {
-                $_SESSION['msgInfo'] = "ACCEPT! Login was successful.";
+                $_SESSION['msgInfo'] = "Authentication was successful.";
                 $user->validLogin( array("idNAS"=>"token testing area"));
             }
         } else {
-            $_SESSION['msgWarning'] = "FAIL! Login was unsuccessful.";
-            $user->invalidLogin( array( "idNAS"=>"token testing area"));
+            // Check for the most common cause of failed logins: clock diff
+            if ($diff = $user->checkClockDiff($testPassPhrase)) {
+                // Make a nicely formatted time diff to tell the user what's wrong
+                $offset = ($diff>0?"-":"") . gmdate( "H:i:s", abs($diff) );
+                $_SESSION['msgWarning'] = "Authentication failed due to incorrect time on user token. Adjust the token clock by " . $offset . ", and try again.";
+                $user->invalidLogin( array( "idNAS"=>"token testing area",
+                                            "message"=>"Failed due to incorrect time on user token (" . $offset . ")"));
+            } else {
+                $_SESSION['msgWarning'] = "Authentication failed.";
+                $user->invalidLogin( array( "idNAS"=>"token testing area"));
+            }
         }
     } catch (NoSuchUserException $ignore) {
         $_SESSION['msgWarning'] = "FAIL! No token and/or PIN registered for this user.";
