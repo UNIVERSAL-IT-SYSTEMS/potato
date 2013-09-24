@@ -195,11 +195,11 @@ if ( $user->hasToken() ) {
 ?>
 
 <div id="secret" <?php echo $user->hasToken() ? 'style="display: none;"' : '' ?>>
-    <form method="post" action="index.php?userName=<?php echo urlencode($user->getUserName()) ?>"> 
+    <form method="post" action="index.php?userName=<?php echo urlencode($user->getUserName()) ?>" autocomplete="off"> 
         <table>
             <tr>
                 <th>Secret:</th>
-                <td><input id="focusSecret" type="text" name="secret" value="" size="32" /></td>
+                <td><input id="focusSecret" type="text" name="secret" value="" size="32" autocomplete="off" /></td>
                 <td><input id="submit" type="submit" value="Save"></td>
             </tr>
         </table>
@@ -210,7 +210,6 @@ if ( $user->hasToken() ) {
 <?php
 if ( $user->hasPin() ) {
     echo '<div id="infoPin">' . "\n";
-    // echo "A pin is already registered to this account.\n";
     echo '<input type="button" name="Change your pin..." value="Change your pin..." onclick="setVisibility(\'pin\', true); setVisibility(\'infoPin\', false); document.getElementById(\'focusPin\').focus(); return(false); "/>' . "\n";
     echo "</div>\n";
 }
@@ -220,7 +219,7 @@ if ( $user->hasPin() ) {
         <table>
             <tr>
                 <th>Pin:</th>
-                <td><input id="focusPin" type="password" name="pin" value="" size="10" /></td>
+                <td><input id="focusPin" type="password" name="pin" value="" size="10" autocomplete="off" /></td>
                 <td><input id="submit" type="submit" value="Save"></td>
             </tr>
         </table>
