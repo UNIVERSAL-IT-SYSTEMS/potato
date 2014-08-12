@@ -159,6 +159,10 @@ $instructions .= getPopup('winphone', 'Windows Phone', 'Windows Phone',
                 </ol>
 ');
 
+####################################################################################
+# Page output begins here
+# all onload javascript must be loaded by this point
+
 $page->printHeader();
 
 echo '<p>In order to use the Mobile OTP service, you must configure your mobile.
@@ -170,14 +174,14 @@ echo "  </p>\n";
 
 if ( $user->hasToken() ) {
     echo '<div id="infoSecret">' . "\n";
-    // echo "A token is already registered to this account.\n";
-    echo '<input type="button" name="Reset" value="Change your token secret..." onclick="setVisibility(\'secret\', true); setVisibility(\'infoSecret\', false); document.getElementById(\'focusSecret\').focus(); return(false); "/>' . "\n";
+    echo '<button type="button" name="Reset" onclick="setVisibility(\'secret\', true); setVisibility(\'infoSecret\', false); document.getElementById(\'focusSecret\').focus(); return(false); ">Change your token secret...</button>' . "\n";
     echo "</div>\n";
 }
 ?>
 
 <div id="secret" <?php echo $user->hasToken() ? 'style="display: none;"' : '' ?>>
     <form method="post" action="index.php?userName=<?php echo urlencode($user->getUserName()) ?>" autocomplete="off"> 
+        <input type="hidden" name="CSRFToken" value="FIXME" />
         <table>
             <tr>
                 <th>Secret:</th>
@@ -192,12 +196,13 @@ if ( $user->hasToken() ) {
 <?php
 if ( $user->hasPin() ) {
     echo '<div id="infoPin">' . "\n";
-    echo '<input type="button" name="Change your pin..." value="Change your pin..." onclick="setVisibility(\'pin\', true); setVisibility(\'infoPin\', false); document.getElementById(\'focusPin\').focus(); return(false); "/>' . "\n";
+    echo '<button type="button" name="Change your pin..." value="Change your pin..." onclick="setVisibility(\'pin\', true); setVisibility(\'infoPin\', false); document.getElementById(\'focusPin\').focus(); return(false); ">Change your pin...</button>' . "\n";
     echo "</div>\n";
 }
 ?>
 <div id="pin" <?php echo ($user->hasPin() || !$user->hasToken()) ? 'style="display: none;"' : '' ?>>
-    <form method="post" action="index.php?userName=<?php echo urlencode($user->getUserName()) ?>" autocomplete="off"> 
+    <form method="post" action="index.php?userName=<?php echo urlencode($user->getUserName()) ?>" autocomplete="off">
+        <input type="hidden" name="CSRFToken" value="FIXME" />
         <table>
             <tr>
                 <th>Pin:</th>
