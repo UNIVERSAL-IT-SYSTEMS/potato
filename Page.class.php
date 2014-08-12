@@ -28,6 +28,7 @@
 class Page {
     public $bMenu = true;
     public $bTabBar = false;
+    public $jsOnLoad = array();
 
     /**
      * print the html page header
@@ -35,15 +36,17 @@ class Page {
     function printHeader() {
         global $currentUser;
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
+<!DOCTYPE html>
  
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=9" /> 
     <link href="style.css?version=13" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="main.js?version=7"></script>
+<?php
+$this->printJsOnLoad();
+?>
     <title>One-time password configuration</title>
   </head>
 
@@ -166,7 +169,32 @@ class Page {
         echo "</div>\n";
     }
 
+    /**
+     * Add javascript to be executed on page load
+     * in order to prevent inlining code
+     */
+    function addJsOnload($jsOnLoad) {
+        array_push($this->jsOnLoad, $jsOnLoad);
+    }
 
+    /**
+     * Print onload javascript block
+     */
+    function printJsOnLoad() {
+        if ($this->jsOnLoad != array()) {
+            echo "    <script>\n";
+            echo '      window.onload=function() {', "\n";
+            foreach($this->jsOnLoad as $func) {
+                echo '        ', $func, "\n";
+            }
+            echo "      }\n";
+            echo "    </script>\n";
+        }
+    }
+
+    /**
+     * Print message boxes, if any
+     */
     function printMessageBox() {
         if ( isset($_SESSION['msgWarning']) ) {
             echo '<div class="msgWarning">';
@@ -188,7 +216,7 @@ class Page {
         <div id="footer">
           Logged in as: <?php echo htmlentities($currentUser->getUserName()) ?><br />
           Server epoch: <?php echo intval(gmdate("U")/10) ?><br/>
-          <a href="http://kelvin.nu/software/potato/">Server side potato</a> v1.4
+          <a href="http://kelvin.nu/software/potato/">Server side potato</a> v1.5
         </div>
 <?php
         }
