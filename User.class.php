@@ -133,6 +133,25 @@ class User {
     }
 
     /**
+     * Perform standard TOTP authentication
+     * 
+     * @param string $passPhrase the passphrase to be tested
+     */
+    function checkTOTP ($passPhrase) {
+        for ( $c = $this->hotpCounter; $c < $this->hotpCounter + $this->hotpLookahead ; $c++ ) {
+            $otp = $this->oathTruncate($this->oathHotp($c));
+            if ( $otp == $passPhrase ) {
+                // php is weakly typed, so we need to make sure to zero-pad our otp
+                $this->passPhrase = $this->pin . str_pad($otp, 6, "0", STR_PAD_LEFT);
+                $this->hotpCounter = $c+1;
+                $this->save();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Perform standard HOTP authentication
      * 
      * @param string $passPhrase the passphrase to be tested
