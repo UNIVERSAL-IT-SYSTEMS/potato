@@ -38,23 +38,28 @@ $guest = new Guest();
 $guest->setUserName($user->getUserName());
 
 if ( isset($_POST['action']) ) {
-    switch ($_POST['action']) {
-        case "generate":
-            $guest->generate();
-            break;
-        case "deactivate":
-            $guest->deactivate();
-            break;
+    if ($currentUser->isValidCSRFToken($_POST['CSRFToken'])) {
+        switch ($_POST['action']) {
+            case "generate":
+                $guest->generate();
+                break;
+            case "deactivate":
+                $guest->deactivate();
+                break;
+        }
+    } else {
+        $_SESSION['msgWarning'] = "Invalid CSRF Token";
     }
 }
-
 $page->printHeader();
 
 ?>
 <p>In order to provide wifi access to <?php echo $orgName; ?> guests, you can activate a
 guest account which is only granted access to the external network.</p>
+
 <?php
 echo '<form method="POST" action="' . $page->getUrl("wifiguest.php") . '">';
+echo '<input type="hidden" name="CSRFToken" value="' . $currentUser->getCSRFToken() . '" />', "\n";
 echo "<p>\n";
 
 try {
