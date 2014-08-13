@@ -44,12 +44,14 @@ if ( !isset( $_SESSION['currentUser'] ) ) {
 
 $currentUser = new User();
 $currentUser->setUserName( $_SESSION['currentUser'] );
+$currentUser->setCSRFToken( $_SESSION['CSRFToken'] );
 
 if ( isset($_SESSION['timeActivity']) ) {
     if ( ((int) (gmdate("U") - $_SESSION['timeActivity'])) > (30 * 60) ) {
         $_SESSION['msgInfo'] = "You have been logged out due to inactivity.";
         unset( $_SESSION['currentUser'] );
         unset( $_SESSION['timeActivity'] );
+        unset( $_SESSION['CSRFToken'] );
         header("Location: login.php");
         exit;
     }

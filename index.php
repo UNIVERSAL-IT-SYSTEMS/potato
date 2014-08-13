@@ -30,29 +30,33 @@ $user = new User();
 $page->prepTabBar();
 
 if ( isset($_POST['action']) ) {
-    switch ($_POST['action']) {
-        case "updatePin":
-            $user->setPin($_POST['pin']);
-            break;
-        case "updateSecret":
-            $user->setSecret($_POST['secret']);
-            break;
-    }
-
-    if ( empty($user->errors) ) {
-        $user->save();
+    if ($currentUser->isValidCSRFToken($_POST['CSRFToken'])) {
         switch ($_POST['action']) {
             case "updatePin":
-                $_SESSION['msgInfo'] = "New PIN saved";
+                $user->setPin($_POST['pin']);
+            break;
+            case "updateSecret":
+                $user->setSecret($_POST['secret']);
+            break;
+        }
+
+        if ( empty($user->errors) ) {
+            $user->save();
+            switch ($_POST['action']) {
+                case "updatePin":
+                    $_SESSION['msgInfo'] = "New PIN saved";
                 $user->log( array("message"=>"PIN initialized"));
                 break;
-            case "updateSecret":
-                $_SESSION['msgInfo'] = "New token secret saved";
+                case "updateSecret":
+                    $_SESSION['msgInfo'] = "New token secret saved";
                 $user->log( array("message"=>"Token initialized"));
                 break;
+            }
+        } else {
+            $_SESSION['msgWarning'] = $user->getErrors();
         }
     } else {
-        $_SESSION['msgWarning'] = $user->getErrors();
+        $_SESSION['msgWarning'] = "Invalid CSRF Token";
     }
 }
 
@@ -159,6 +163,13 @@ $instructions .= getPopup('winphone', 'Windows Phone', 'Windows Phone',
                 </ol>
 ');
 
+##
+# Add onclick handlers to the change token secret and change pin buttons:
+
+$page->addJsOnLoad('document.getElementById("displayFormSecret").addEventListener("click", function() { setVisibility(\'infoSecret\', false); setVisibility(\'secret\', true); document.getElementById(\'focusSecret\').focus(); });');
+$page->addJsOnLoad('document.getElementById("displayFormPin").addEventListener("click", function() { setVisibility(\'infoPin\', false); setVisibility(\'pin\', true); document.getElementById(\'focusPin\').focus(); });');
+
+
 ####################################################################################
 # Page output begins here
 # all onload javascript must be loaded by this point
@@ -166,27 +177,26 @@ $instructions .= getPopup('winphone', 'Windows Phone', 'Windows Phone',
 $page->printHeader();
 
 echo '<p>In order to use the Mobile OTP service, you must configure your mobile.
-Click for detailed instructions for your phone:
+Click for detailed instructions for your phone:</p>
     <ul>';
 echo $instructions;
 echo "    </ul>\n";
-echo "  </p>\n";
 
 if ( $user->hasToken() ) {
     echo '<div id="infoSecret">' . "\n";
-    echo '<button type="button" name="Reset" onclick="setVisibility(\'secret\', true); setVisibility(\'infoSecret\', false); document.getElementById(\'focusSecret\').focus(); return(false); ">Change your token secret...</button>' . "\n";
+    echo '<button type="button" name="displayFormSecret" id="displayFormSecret">Change your token secret...</button>' . "\n";
     echo "</div>\n";
 }
 ?>
 
 <div id="secret" <?php echo $user->hasToken() ? 'style="display: none;"' : '' ?>>
     <form method="post" action="index.php?userName=<?php echo urlencode($user->getUserName()) ?>" autocomplete="off"> 
-        <input type="hidden" name="CSRFToken" value="FIXME" />
+        <input type="hidden" name="CSRFToken" value="<?php echo $currentUser->getCSRFToken(); ?>" />
         <table>
             <tr>
                 <th>Secret:</th>
                 <td><input id="focusSecret" type="text" name="secret" value="" size="32" autocomplete="off" /></td>
-                <td><input id="submit" type="submit" value="Save"></td>
+                <td><button id="submit" type="submit">Save</button></td>
             </tr>
         </table>
         <input type="hidden" name="action" value="updateSecret">
@@ -196,18 +206,18 @@ if ( $user->hasToken() ) {
 <?php
 if ( $user->hasPin() ) {
     echo '<div id="infoPin">' . "\n";
-    echo '<button type="button" name="Change your pin..." value="Change your pin..." onclick="setVisibility(\'pin\', true); setVisibility(\'infoPin\', false); document.getElementById(\'focusPin\').focus(); return(false); ">Change your pin...</button>' . "\n";
+    echo '<button type="button" name="displayFormPin" id="displayFormPin">Change your pin...</button>' . "\n";
     echo "</div>\n";
 }
 ?>
 <div id="pin" <?php echo ($user->hasPin() || !$user->hasToken()) ? 'style="display: none;"' : '' ?>>
     <form method="post" action="index.php?userName=<?php echo urlencode($user->getUserName()) ?>" autocomplete="off">
-        <input type="hidden" name="CSRFToken" value="FIXME" />
+        <input type="hidden" name="CSRFToken" value="<?php echo $currentUser->getCSRFToken(); ?>" />
         <table>
             <tr>
                 <th>Pin:</th>
                 <td><input id="focusPin" type="password" name="pin" value="" size="10" autocomplete="off" /></td>
-                <td><input id="submit" type="submit" value="Save"></td>
+                <td><button id="submit" type="submit">Save</button></td>
             </tr>
         </table>
         <input type="hidden" name="action" value="updatePin">

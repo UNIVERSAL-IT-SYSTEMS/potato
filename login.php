@@ -46,8 +46,10 @@ if ( !empty($_POST['loginUserName']) ) {
     $user->setUserName($loginUserName);
     if( $user->authenticate($loginPassword) ) {
         if ( $user->isMemberOf( $groupUser ) ) {
+            $user->generateCSRFToken();
             $_SESSION['currentUser'] = $loginUserName;
             $_SESSION['timeActivity'] = gmdate( "U" );
+            $_SESSION['CSRFToken'] = $user->getCSRFToken();
             header("Location: index.php");
             exit;
         } else {

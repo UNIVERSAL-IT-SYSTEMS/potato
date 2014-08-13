@@ -36,7 +36,47 @@ class User {
     private $maxDrift = 180;
     private $hotpCounter;
     private $hotpLookahead = 10;
+    private $CSRFToken = '';
 
+    /***
+     * Return the CSRF token of this session
+     */
+    function getCSRFToken() {
+        return $this->CSRFToken;
+    }
+
+    /***
+     * Set the CSRF token of this session
+     */
+    function setCSRFToken($token) {
+        $this->CSRFToken = $token;
+    }
+
+    /***
+     * Generate url/html-friendly CSRF token. Store in object
+     */
+    function generateCSRFToken() {
+        $vocabulary = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-';
+        $token = '';
+        for ($i=0; $i<32; $i++) {
+            $token.=substr($vocabulary, rand(0, 63), 1);
+        }
+        $this->CSRFToken = $token;
+    }
+
+    /***
+     * Verify validity of submitted CSRF token
+     */
+    function isValidCSRFToken($token) {
+        if (empty($token) || $this->CSRFToken=='') {
+            return false;
+        }
+        return ($token == $this->CSRFToken);
+    }
+
+    /***
+     * Fetch user from database
+     */
     function fetch($userName) {
         global $dbh;
         $ps = $dbh->prepare("SELECT * FROM User where userName=:userName");
