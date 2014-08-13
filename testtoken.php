@@ -89,11 +89,11 @@ getting your token to work, this is the first thing you should check.</p>
 
         <tr>
             <th>Passphrase:</th>
-            <td><input type="password" name="testPassPhrase" value="" size="10" id="focusme" class="iesux" /></td>
-        </tr> 
-        <tr> 
+            <td><input type="text" name="testPassPhrase" value="" size="10" id="focusme" autofocus="autofocus" /></td>
+        </tr>
+        <tr>
             <td></td>
-            <td><input id="submit" type="submit" value="Test"></td>
+            <td><button type="submit">Test</button></td>
         </tr> 
     </table>
 </form>
