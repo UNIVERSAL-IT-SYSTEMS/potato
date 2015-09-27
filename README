@@ -1,6 +1,0 @@
-If the log table gets too full, you can move all old entries to an archive table. Or simply trim old entries.
-
-mysql> create table Log2014 like Log;
-mysql> insert into Log2014 select * from Log where `time`<'2015-01-01';
-mysql> delete from Log where `time`<'2015-01-01';
-
