@@ -365,8 +365,7 @@ class User {
         if (isset($demo)) {
             return ( $demo[$this->userName]['admin'] );
         }
-        $groupInfo = posix_getgrnam($groupAdmin);
-        return (in_array($this->userName, $groupInfo['members']));
+        return $this->isMemberOf($groupAdmin);
     }
 
     /**
@@ -379,10 +378,20 @@ class User {
         if (isset($demo)) {
             return ( in_array( $this->userName, array_keys($demo) ) );
         }
-        $groupInfo = posix_getgrnam($group);
-        $userInfo = posix_getpwnam($this->userName);
-        return ( in_array( $this->userName, $groupInfo['members'] ) || $userInfo['gid'] == $groupInfo['gid'] );
+        return in_array($group, $this->getUserGroups());
     }
+
+    /**
+     * Get user posix groups
+     */
+    function getUserGroups() {
+        $groups = trim(shell_exec("id --name --groups " . $this->userName));
+        $aGroups = explode(" ", $groups);
+        $aGroups[] = trim(shell_exec("id --name --group " . $this->userName));
+
+        return $aGroups;
+    }
+
 
     /**
      * Is this user currently locked out?
