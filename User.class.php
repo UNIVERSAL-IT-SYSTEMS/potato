@@ -121,7 +121,7 @@ class User {
      * @param string $passPhrase the passphrase to be tested
      */
     function checkOTP($passPhrase) {
-        if ( strlen($passPhrase) > 6 ) {
+        if ( $this->isHOTP() ) {
             $providedPP = substr($passPhrase, -6);
             $providedPin = substr($passPhrase, 0, -6);
             return ( $providedPin != $this->pin ? false : $this->checkHOTP($providedPP) );
