@@ -386,6 +386,7 @@ class User {
      */
     function getUserGroups() {
         $groups = trim(shell_exec("id --name --groups " . $this->userName));
+        $groups = preg_replace('/\s+/', ' ', $groups);
         $aGroups = explode(" ", $groups);
         $aGroups[] = trim(shell_exec("id --name --group " . $this->userName));
 
